@@ -11,6 +11,7 @@ import Mapbox
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import UIKit
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     private var locationManager = CLLocationManager()
@@ -19,6 +20,8 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     @Published var userLocations: [CLLocation] = []
     @Published var isHeatmapActive: Bool = true
     @Published var isFlatStyle: Bool = false
+    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+
 
     private var locationListener: ListenerRegistration?
 
@@ -27,13 +30,31 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
     override init() {
         super.init()
-        self.locationManager.delegate = self
-        self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
-        self.mapView.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.startUpdatingLocation()
+        locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        mapView.delegate = self
         initializeUser()
         setupLocationListener()
     }
+    
+    func beginBackgroundUpdateTask() {
+        backgroundTask = UIApplication.shared.beginBackgroundTask {
+            self.endBackgroundUpdateTask()
+        }
+        // Also, add code here to start any long-running tasks (like saving to Firestore).
+    }
+
+    func endBackgroundUpdateTask() {
+        UIApplication.shared.endBackgroundTask(backgroundTask)
+        backgroundTask = .invalid
+    }
+
     
     func mapView(_ mapView: MGLMapView, regionDidChangeAnimated animated: Bool) {
         updateHeatmapRadius()
@@ -192,21 +213,28 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
 
     func saveLocationToFirestore(location: CLLocation) {
+        // Declare the backgroundTask outside the closure
+        var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+
+        backgroundTask = UIApplication.shared.beginBackgroundTask {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
+        
         guard let user = Auth.auth().currentUser else {
             // Handle the error - perhaps prompt the user to sign in
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
             return
         }
 
-        // Convert the CLLocation to a dictionary
         let locationData: [String: Any] = [
             "geoPoint": GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
             "timestamp": Timestamp(date: location.timestamp)
         ]
 
-        // Reference to the user's document in the "users" collection
         let userDocumentRef = db.collection("users").document(user.uid)
 
-        // Add the new location to the "locations" array field
         userDocumentRef.updateData([
             "locations": FieldValue.arrayUnion([locationData])
         ]) { error in
@@ -215,15 +243,16 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             } else {
                 print("Location saved successfully!")
             }
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
         }
     }
 
-
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.locationManager.distanceFilter = 1 // distance in meters, adjust as needed
         if let newLocation = locations.last {
-            currentLocation = newLocation
             saveLocationToFirestore(location: newLocation)
         }
     }
+
 }
+

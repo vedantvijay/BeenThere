@@ -34,13 +34,13 @@ struct ContentView: View {
                             .bold()
                     }
                     .padding()
-                    Button {
-//                        mapViewModel.toggleFlatStyle()
-                    } label: {
-                        Image(systemName: mapViewModel.isFlatStyle ? "square.fill" : "triangle.fill")
-                            .font(.largeTitle)
-                            .bold()
-                    }
+//                    Button {
+////                        mapViewModel.toggleFlatStyle()
+//                    } label: {
+//                        Image(systemName: mapViewModel.isFlatStyle ? "square.fill" : "triangle.fill")
+//                            .font(.largeTitle)
+//                            .bold()
+//                    }
                 }
                 
             }
@@ -53,6 +53,6 @@ struct ContentView: View {
 }
 
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}
