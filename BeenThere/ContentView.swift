@@ -12,11 +12,16 @@ import FirebaseAuth
 
 struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
+    private let locationManager = CLLocationManager()
+
     
     var body: some View {
         ZStack {
             MapView(viewModel: mapViewModel)
                 .ignoresSafeArea()
+                .onAppear {
+                    requestLocationAccess()
+                }
             
             VStack {
                 Spacer()
@@ -30,7 +35,7 @@ struct ContentView: View {
                     }
                     .padding()
                     Button {
-                        mapViewModel.toggleFlatStyle()
+//                        mapViewModel.toggleFlatStyle()
                     } label: {
                         Image(systemName: mapViewModel.isFlatStyle ? "square.fill" : "triangle.fill")
                             .font(.largeTitle)
@@ -41,6 +46,10 @@ struct ContentView: View {
             }
         }
     }
+    
+    private func requestLocationAccess() {
+            locationManager.requestAlwaysAuthorization()
+        }
 }
 
 

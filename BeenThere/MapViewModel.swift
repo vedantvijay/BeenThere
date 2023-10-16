@@ -30,7 +30,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         self.locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
-        self.mapView.delegate = self  // <-- Add this line
+        self.mapView.delegate = self
         initializeUser()
         setupLocationListener()
     }
@@ -39,47 +39,19 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         updateHeatmapRadius()
     }
     
+    func toggleHeatmap() {
+        isHeatmapActive.toggle()
+        updateHeatmapVisibility()
+    }
+
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         fetchLocationsFromFirestore()
-        adjustHeatmapStyle()
     }
-    
-    func adjustHeatmapStyle() {
-        guard let heatmapLayer = mapView.style?.layer(withIdentifier: "locationHeatmap") as? MGLHeatmapStyleLayer else {
-            return
-        }
-
-        if isFlatStyle {
-            // Set a single color for all heatmap intensity values
-            let colorExpression = NSExpression(forConstantValue: UIColor.red)  // Use your desired color
-            heatmapLayer.heatmapColor = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($heatmapDensity, 'linear', nil, %@)",
-                                                     [0: colorExpression, 1: colorExpression])  // Same color for all stops
-            heatmapLayer.heatmapIntensity = NSExpression(forConstantValue: NSNumber(value: 1))
-        } else {
-            // Default heatmap colors
-            heatmapLayer.heatmapColor = NSExpression(format: """
-                mgl_interpolate:withCurveType:parameters:stops:(
-                    linear,
-                    $heatmapDensity,
-                    nil,
-                    0.01, mgl_rgba(33,102,172,0),
-                    0.25, mgl_rgba(103,169,207,0.5),
-                    0.5, mgl_rgba(209,229,240,0.5),
-                    0.75, mgl_rgba(253,219,199,0.5),
-                    1, mgl_rgba(239,138,98,0.5)
-                )
-            """)
-            heatmapLayer.heatmapIntensity = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [0: 1, 9: 3])
-        }
-    }
-
-
-
     
     func toggleFlatStyle() {
         isFlatStyle.toggle()
-        adjustHeatmapStyle()
     }
+
 
     func updateHeatmapRadius() {
         if let heatmapLayer = mapView.style?.layer(withIdentifier: "locationHeatmap") as? MGLHeatmapStyleLayer {
@@ -87,11 +59,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             heatmapLayer.heatmapRadius = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
                                                       [10: 10, 100: 100, 1000: 1000, 2000: 1000])
         }
-    }
-    
-    func toggleHeatmap() {
-        isHeatmapActive.toggle()
-        updateHeatmapVisibility()
     }
     
     func updateHeatmapVisibility() {
