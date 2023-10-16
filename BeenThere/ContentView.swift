@@ -6,18 +6,43 @@
 //
 
 import SwiftUI
+import Mapbox
+import CoreLocation
+import FirebaseAuth
 
 struct ContentView: View {
+    @StateObject private var mapViewModel = MapViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack {
+            MapView(viewModel: mapViewModel)
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Button {
+                        mapViewModel.toggleHeatmap()
+                    } label: {
+                        Image(systemName: mapViewModel.isHeatmapActive ? "eye" : "eye.slash")
+                            .font(.largeTitle)
+                            .bold()
+                    }
+                    .padding()
+                    Button {
+                        mapViewModel.toggleFlatStyle()
+                    } label: {
+                        Image(systemName: mapViewModel.isFlatStyle ? "square.fill" : "triangle.fill")
+                            .font(.largeTitle)
+                            .bold()
+                    }
+                }
+                
+            }
         }
-        .padding()
     }
 }
+
 
 #Preview {
     ContentView()

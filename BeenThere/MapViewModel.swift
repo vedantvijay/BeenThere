@@ -1,0 +1,262 @@
+//
+//  MapViewModel.swift
+//  BeenThere
+//
+//  Created by Jared Jones on 10/16/23.
+//
+
+import Foundation
+import CoreLocation
+import Mapbox
+import SwiftUI
+import Firebase
+import FirebaseAuth
+
+class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
+    private var locationManager = CLLocationManager()
+    @Published var currentLocation: CLLocation?
+    @Published var mapView = MGLMapView(frame: .zero, styleURL: URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")!)
+    @Published var userLocations: [CLLocation] = []
+    @Published var isHeatmapActive: Bool = true
+    @Published var isFlatStyle: Bool = false
+
+    private var locationListener: ListenerRegistration?
+
+
+    private let db = Firestore.firestore() // Firebase Firestore instance
+
+    override init() {
+        super.init()
+        self.locationManager.delegate = self
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        self.mapView.delegate = self  // <-- Add this line
+        initializeUser()
+        setupLocationListener()
+    }
+    
+    func mapView(_ mapView: MGLMapView, regionDidChangeAnimated animated: Bool) {
+        updateHeatmapRadius()
+    }
+    
+    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+        fetchLocationsFromFirestore()
+        adjustHeatmapStyle()
+    }
+    
+    func adjustHeatmapStyle() {
+        guard let heatmapLayer = mapView.style?.layer(withIdentifier: "locationHeatmap") as? MGLHeatmapStyleLayer else {
+            return
+        }
+
+        if isFlatStyle {
+            // Set a single color for all heatmap intensity values
+            let colorExpression = NSExpression(forConstantValue: UIColor.red)  // Use your desired color
+            heatmapLayer.heatmapColor = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($heatmapDensity, 'linear', nil, %@)",
+                                                     [0: colorExpression, 1: colorExpression])  // Same color for all stops
+            heatmapLayer.heatmapIntensity = NSExpression(forConstantValue: NSNumber(value: 1))
+        } else {
+            // Default heatmap colors
+            heatmapLayer.heatmapColor = NSExpression(format: """
+                mgl_interpolate:withCurveType:parameters:stops:(
+                    linear,
+                    $heatmapDensity,
+                    nil,
+                    0.01, mgl_rgba(33,102,172,0),
+                    0.25, mgl_rgba(103,169,207,0.5),
+                    0.5, mgl_rgba(209,229,240,0.5),
+                    0.75, mgl_rgba(253,219,199,0.5),
+                    1, mgl_rgba(239,138,98,0.5)
+                )
+            """)
+            heatmapLayer.heatmapIntensity = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)", [0: 1, 9: 3])
+        }
+    }
+
+
+
+    
+    func toggleFlatStyle() {
+        isFlatStyle.toggle()
+        adjustHeatmapStyle()
+    }
+
+    func updateHeatmapRadius() {
+        if let heatmapLayer = mapView.style?.layer(withIdentifier: "locationHeatmap") as? MGLHeatmapStyleLayer {
+            // Adjust the radius of the heatmap based on zoom level
+            heatmapLayer.heatmapRadius = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
+                                                      [10: 10, 100: 100, 1000: 1000, 2000: 1000])
+        }
+    }
+    
+    func toggleHeatmap() {
+        isHeatmapActive.toggle()
+        updateHeatmapVisibility()
+    }
+    
+    func updateHeatmapVisibility() {
+        if let heatmapLayer = mapView.style?.layer(withIdentifier: "locationHeatmap") as? MGLHeatmapStyleLayer {
+            heatmapLayer.isVisible = isHeatmapActive
+        }
+    }
+    
+    func setupLocationListener() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        let userDocumentRef = db.collection("users").document(userId)
+
+        locationListener = userDocumentRef.addSnapshotListener { (documentSnapshot, error) in
+            guard let document = documentSnapshot else {
+                print("Error fetching document: \(error!)")
+                return
+            }
+            guard let data = document.data() else {
+                print("Document data was empty.")
+                return
+            }
+
+            self.userLocations = (data["locations"] as? [[String: Any]])?.compactMap { dict in
+                if let geoPoint = dict["geoPoint"] as? GeoPoint {
+                    return CLLocation(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                }
+                return nil
+            } ?? []
+            self.updateHeatmap()
+        }
+    }
+
+    deinit {
+        locationListener?.remove()  // Clean up the listener when the view model is deinitialized
+    }
+    
+    func featuresFromLocations(locations: [CLLocation]) -> MGLShapeCollectionFeature {
+        let features = locations.map { location -> MGLPointFeature in
+            let feature = MGLPointFeature()
+            feature.coordinate = location.coordinate
+            return feature
+        }
+        return MGLShapeCollectionFeature(shapes: features)
+    }
+
+    func updateHeatmap() {
+        let sourceId = "locations"
+            
+        if let source = mapView.style?.source(withIdentifier: sourceId) as? MGLShapeSource {
+            source.shape = self.featuresFromLocations(locations: self.userLocations)
+        } else {
+            let source = MGLShapeSource(identifier: sourceId, shape: self.featuresFromLocations(locations: self.userLocations))
+            mapView.style?.addSource(source)
+
+            if isHeatmapActive {
+                let layer = MGLHeatmapStyleLayer(identifier: "locationHeatmap", source: source)
+                mapView.style?.addLayer(layer)
+            }
+        }
+    }
+
+
+
+    
+    func fetchLocationsFromFirestore() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            return
+        }
+        let userDocumentRef = db.collection("users").document(userId)
+        userDocumentRef.getDocument { (document, error) in
+            if let document = document, let data = document.data() {
+                self.userLocations = (data["locations"] as? [[String: Any]])?.compactMap { dict in
+                    if let geoPoint = dict["geoPoint"] as? GeoPoint {
+                        return CLLocation(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
+                    }
+                    return nil
+                } ?? []
+                self.updateHeatmap()
+            } else if let error = error {
+                print("Error fetching locations: \(error)")
+            }
+        }
+    }
+
+    func initializeUser() {
+        if let currentUser = Auth.auth().currentUser {
+            setupUserDocumentIfNeeded(userId: currentUser.uid)
+        } else {
+            authenticateAnonymously()
+        }
+    }
+    
+    func authenticateAnonymously() {
+        Auth.auth().signInAnonymously { (authResult, error) in
+            if let error = error {
+                print("Error with anonymous authentication: \(error)")
+                return
+            }
+            
+            // Successfully authenticated
+            if let user = authResult?.user {
+                print("Logged in anonymously with user ID: \(user.uid)")
+                self.setupUserDocumentIfNeeded(userId: user.uid)
+            }
+        }
+    }
+
+    func setupUserDocumentIfNeeded(userId: String) {
+        // Check if user document already exists
+        let userDocumentRef = self.db.collection("users").document(userId)
+        userDocumentRef.getDocument { (document, error) in
+            if let document = document, !document.exists {
+                // If user document doesn't exist, create one with an empty 'locations' array
+                userDocumentRef.setData([
+                    "locations": []
+                ]) { error in
+                    if let error = error {
+                        print("Error creating user document: \(error)")
+                    } else {
+                        print("User document created successfully!")
+                    }
+                }
+            } else if let error = error {
+                print("Error checking user document: \(error)")
+            }
+        }
+    }
+
+
+    func saveLocationToFirestore(location: CLLocation) {
+        guard let user = Auth.auth().currentUser else {
+            // Handle the error - perhaps prompt the user to sign in
+            return
+        }
+
+        // Convert the CLLocation to a dictionary
+        let locationData: [String: Any] = [
+            "geoPoint": GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
+            "timestamp": Timestamp(date: location.timestamp)
+        ]
+
+        // Reference to the user's document in the "users" collection
+        let userDocumentRef = db.collection("users").document(user.uid)
+
+        // Add the new location to the "locations" array field
+        userDocumentRef.updateData([
+            "locations": FieldValue.arrayUnion([locationData])
+        ]) { error in
+            if let error = error {
+                print("Error saving location: \(error)")
+            } else {
+                print("Location saved successfully!")
+            }
+        }
+    }
+
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.locationManager.distanceFilter = 1 // distance in meters, adjust as needed
+        if let newLocation = locations.last {
+            currentLocation = newLocation
+            saveLocationToFirestore(location: newLocation)
+        }
+    }
+}
