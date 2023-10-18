@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C0453EB92AE0836300EAD893 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0453EB82AE0836300EAD893 /* PersistenceController.swift */; };
+		C0453EBC2AE0838600EAD893 /* BeenThere.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */; };
+		C0453EBF2AE093EC00EAD893 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0453EBE2AE093EC00EAD893 /* SettingsView.swift */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
 		C0C808DC2ADD83440070E679 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DB2ADD83440070E679 /* Assets.xcassets */; };
@@ -15,16 +18,13 @@
 		C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808E82ADD85670070E679 /* MapViewModel.swift */; };
 		C0C808EC2ADD857A0070E679 /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808EB2ADD857A0070E679 /* Mapbox */; };
 		C0C808EE2ADD8A460070E679 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */; };
-		C0C808F12ADD8A6F0070E679 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808F02ADD8A6F0070E679 /* FirebaseAnalytics */; };
-		C0C808F32ADD8A6F0070E679 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808F22ADD8A6F0070E679 /* FirebaseAnalyticsOnDeviceConversion */; };
-		C0C808F52ADD8A6F0070E679 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808F42ADD8A6F0070E679 /* FirebaseAnalyticsSwift */; };
-		C0C808F72ADD8A6F0070E679 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808F62ADD8A6F0070E679 /* FirebaseAnalyticsWithoutAdIdSupport */; };
-		C0C808F92ADD8A6F0070E679 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808F82ADD8A6F0070E679 /* FirebaseAppCheck */; };
-		C0C808FC2ADD8A9F0070E679 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808FB2ADD8A9F0070E679 /* FirebaseFirestore */; };
-		C0C808FE2ADD8BC00070E679 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C0C808FD2ADD8BC00070E679 /* FirebaseAuth */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C0453EB82AE0836300EAD893 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BeenThere.xcdatamodel; sourceTree = "<group>"; };
+		C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeenThere.entitlements; sourceTree = "<group>"; };
+		C0453EBE2AE093EC00EAD893 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0C808D42ADD83420070E679 /* BeenThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeenThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0C808D72ADD83420070E679 /* BeenThereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeenThereApp.swift; sourceTree = "<group>"; };
 		C0C808D92ADD83420070E679 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -41,14 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0C808F52ADD8A6F0070E679 /* FirebaseAnalyticsSwift in Frameworks */,
-				C0C808F72ADD8A6F0070E679 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
-				C0C808F12ADD8A6F0070E679 /* FirebaseAnalytics in Frameworks */,
-				C0C808F32ADD8A6F0070E679 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
-				C0C808F92ADD8A6F0070E679 /* FirebaseAppCheck in Frameworks */,
 				C0C808EC2ADD857A0070E679 /* Mapbox in Frameworks */,
-				C0C808FC2ADD8A9F0070E679 /* FirebaseFirestore in Frameworks */,
-				C0C808FE2ADD8BC00070E679 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,12 +68,16 @@
 		C0C808D62ADD83420070E679 /* BeenThere */ = {
 			isa = PBXGroup;
 			children = (
+				C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */,
 				C0C808E52ADD84AE0070E679 /* Info.plist */,
 				C0C808D72ADD83420070E679 /* BeenThereApp.swift */,
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
+				C0453EBE2AE093EC00EAD893 /* SettingsView.swift */,
 				C0C808E62ADD855C0070E679 /* MapView.swift */,
 				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
+				C0453EB82AE0836300EAD893 /* PersistenceController.swift */,
 				C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */,
+				C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */,
 				C0C808DB2ADD83440070E679 /* Assets.xcassets */,
 				C0C808DD2ADD83440070E679 /* Preview Content */,
 			);
@@ -120,13 +117,6 @@
 			name = BeenThere;
 			packageProductDependencies = (
 				C0C808EB2ADD857A0070E679 /* Mapbox */,
-				C0C808F02ADD8A6F0070E679 /* FirebaseAnalytics */,
-				C0C808F22ADD8A6F0070E679 /* FirebaseAnalyticsOnDeviceConversion */,
-				C0C808F42ADD8A6F0070E679 /* FirebaseAnalyticsSwift */,
-				C0C808F62ADD8A6F0070E679 /* FirebaseAnalyticsWithoutAdIdSupport */,
-				C0C808F82ADD8A6F0070E679 /* FirebaseAppCheck */,
-				C0C808FB2ADD8A9F0070E679 /* FirebaseFirestore */,
-				C0C808FD2ADD8BC00070E679 /* FirebaseAuth */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -158,7 +148,6 @@
 			mainGroup = C0C808CB2ADD83420070E679;
 			packageReferences = (
 				C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
-				C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -187,9 +176,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0453EBF2AE093EC00EAD893 /* SettingsView.swift in Sources */,
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
+				C0453EB92AE0836300EAD893 /* PersistenceController.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
+				C0453EBC2AE0838600EAD893 /* BeenThere.xcdatamodeld in Sources */,
 				C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,8 +313,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -355,8 +348,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -416,14 +410,6 @@
 				minimumVersion = 5.13.0;
 			};
 		};
-		C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.16.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -432,42 +418,20 @@
 			package = C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = Mapbox;
 		};
-		C0C808F02ADD8A6F0070E679 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		C0C808F22ADD8A6F0070E679 /* FirebaseAnalyticsOnDeviceConversion */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsOnDeviceConversion;
-		};
-		C0C808F42ADD8A6F0070E679 /* FirebaseAnalyticsSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsSwift;
-		};
-		C0C808F62ADD8A6F0070E679 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsWithoutAdIdSupport;
-		};
-		C0C808F82ADD8A6F0070E679 /* FirebaseAppCheck */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAppCheck;
-		};
-		C0C808FB2ADD8A9F0070E679 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-		C0C808FD2ADD8BC00070E679 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0C808EF2ADD8A6F0070E679 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */,
+			);
+			currentVersion = C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */;
+			path = BeenThere.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C0C808CC2ADD83420070E679 /* Project object */;
 }

@@ -8,48 +8,23 @@
 import SwiftUI
 import Mapbox
 import CoreLocation
-import FirebaseAuth
 
 struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
     private let locationManager = CLLocationManager()
-
+    
     
     var body: some View {
-        ZStack {
-            MapView(viewModel: mapViewModel)
-                .ignoresSafeArea()
-                .onAppear {
-                    requestLocationAccess()
-                }
-            
-            VStack {
-                Spacer()
-                HStack {
-                    Button {
-                        mapViewModel.toggleHeatmap()
-                    } label: {
-                        Image(systemName: mapViewModel.isHeatmapActive ? "eye" : "eye.slash")
-                            .font(.largeTitle)
-                            .bold()
-                    }
-                    .padding()
-//                    Button {
-////                        mapViewModel.toggleFlatStyle()
-//                    } label: {
-//                        Image(systemName: mapViewModel.isFlatStyle ? "square.fill" : "triangle.fill")
-//                            .font(.largeTitle)
-//                            .bold()
-//                    }
-                }
-                
+        MapView(viewModel: mapViewModel)
+            .ignoresSafeArea()
+            .onAppear {
+                requestLocationAccess()
             }
-        }
     }
     
     private func requestLocationAccess() {
-            locationManager.requestAlwaysAuthorization()
-        }
+        locationManager.requestAlwaysAuthorization()
+    }
 }
 
 
