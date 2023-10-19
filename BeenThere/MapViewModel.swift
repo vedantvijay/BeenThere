@@ -15,6 +15,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
     @Published var mapView = MGLMapView(frame: .zero, styleURL: URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")!)
+    @AppStorage("chunksCount") var chunksCount: Int = 0
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     let moc = PersistenceController.shared.container.viewContext
     
@@ -96,6 +97,10 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         }
     }
 
+    func updateChunksCount() {
+        chunksCount = PersistenceController.shared.totalChunksCount()
+    }
+    
     func checkBeenThere(location: CLLocation) {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
@@ -123,6 +128,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
                 locationEntity.lowLongitude = lowLongitude
                 locationEntity.highLongitude = highLongitude
                 PersistenceController.shared.saveContext()
+                updateChunksCount()
             }
         }
     }

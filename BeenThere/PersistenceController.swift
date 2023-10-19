@@ -8,8 +8,11 @@
 import Foundation
 import CoreData
 import CloudKit
+import SwiftUI
 
 class PersistenceController {
+    @AppStorage("chunksCount") var chunksCount: Int = 0
+
     static let shared = PersistenceController()
 
     let container: NSPersistentCloudKitContainer
@@ -112,6 +115,17 @@ extension PersistenceController {
             case .failure(let error):
                 completion(error)
             }
+        }
+    }
+    
+    func totalChunksCount() -> Int {
+        let request: NSFetchRequest<Location> = Location.fetchRequest()
+        do {
+            let count = try container.viewContext.count(for: request)
+            return count
+        } catch {
+            print("Error fetching count: \(error)")
+            return 0
         }
     }
 }
