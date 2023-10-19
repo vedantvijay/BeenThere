@@ -15,6 +15,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
     @Published var mapView = MGLMapView(frame: .zero, styleURL: URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")!)
+    @Published var tappedLocation: CLLocationCoordinate2D?
+    @Published var showTappedLocation: Bool = false
+    @Published var tappedAnnotation: MGLPointAnnotation?
     @AppStorage("chunksCount") var chunksCount: Int = 0
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     let moc = PersistenceController.shared.container.viewContext
@@ -41,6 +44,12 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             addSquaresToMap(locations: newLocations)
         }
     }
+    
+
+        func handleLongPress(coordinate: CLLocationCoordinate2D) {
+            tappedLocation = coordinate
+            showTappedLocation = true
+        }
     
     func addSquaresToMap(locations: [Location]) {
         for square in locations {
@@ -132,5 +141,42 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             }
         }
     }
+    
+    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let point = gesture.location(in: gesture.view)
+            if let mapView = gesture.view as? MGLMapView {
+                let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
+
+                // Create a new annotation
+                let annotation = MGLPointAnnotation()
+                annotation.coordinate = coordinate
+                tappedAnnotation = annotation
+
+                handleLongPress(coordinate: coordinate)
+            }
+        }
+    }
+
+    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
+        if annotation is MGLPointAnnotation {
+            let identifier = "dotAnnotation"
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+            if annotationView == nil {
+                annotationView = MGLAnnotationView(reuseIdentifier: identifier)
+                annotationView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+                annotationView?.backgroundColor = UIColor.red
+                annotationView?.layer.cornerRadius = 10
+            }
+
+            return annotationView
+        }
+
+        return nil
+    }
+
+
 
 }
+

@@ -25,17 +25,26 @@ struct ContentView: View {
                 }
             VStack {
                 Spacer()
-                // I want to display the total number of chunks/squares the user has been to
                 Text("Chunks: \(chunksCount - 1)")
                     .bold()
-                    .foregroundStyle(.black)
             }
         }
-        
+        .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
+            if let location = mapViewModel.tappedLocation {
+                Link("Open in Google Maps", destination: googleMapsURL(for: location))
+                Link("Open in Apple Maps", destination: appleMapsURL(for: location))
+            }
+        }
     }
     
     private func requestLocationAccess() {
         locationManager.requestAlwaysAuthorization()
+    }
+    private func googleMapsURL(for location: CLLocationCoordinate2D) -> URL {
+        URL(string: "comgooglemaps://?q=\(location.latitude),\(location.longitude)&center=\(location.latitude),\(location.longitude)&zoom=14")!
+    }
+    private func appleMapsURL(for location: CLLocationCoordinate2D) -> URL {
+        URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&z=14")!
     }
 }
 
