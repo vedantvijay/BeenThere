@@ -13,6 +13,7 @@ struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
     private let locationManager = CLLocationManager()
     @AppStorage("chunksCount") var chunksCount: Int = 0
+    @State private var showTestDialog = false
     
     
     var body: some View {
@@ -28,11 +29,11 @@ struct ContentView: View {
                 Text("Chunks: \(chunksCount - 1)")
                     .bold()
             }
-        }
-        .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
-            if let location = mapViewModel.tappedLocation {
-                Link("Open in Google Maps", destination: googleMapsURL(for: location))
-                Link("Open in Apple Maps", destination: appleMapsURL(for: location))
+            .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
+                if let location = mapViewModel.tappedLocation {
+                    Link("Open in Google Maps", destination: googleMapsURL(for: location))
+                    Link("Open in Apple Maps", destination: appleMapsURL(for: location))
+                }
             }
         }
     }

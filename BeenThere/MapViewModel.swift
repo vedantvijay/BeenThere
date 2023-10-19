@@ -46,10 +46,18 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     }
     
 
-        func handleLongPress(coordinate: CLLocationCoordinate2D) {
-            tappedLocation = coordinate
-            showTappedLocation = true
-        }
+    func handleLongPress(coordinate: CLLocationCoordinate2D) {
+        tappedLocation = coordinate
+        print("Tapped Location Set: \(tappedLocation!)")
+        showTappedLocation = true
+        print("Should show confirmation: \(showTappedLocation)")
+        
+        // Center the map on the annotation
+        mapView.setCenter(coordinate, animated: true)
+    }
+
+
+
     
     func addSquaresToMap(locations: [Location]) {
         for square in locations {
@@ -152,7 +160,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
                 let annotation = MGLPointAnnotation()
                 annotation.coordinate = coordinate
                 tappedAnnotation = annotation
-
                 handleLongPress(coordinate: coordinate)
             }
         }
@@ -175,8 +182,5 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
         return nil
     }
-
-
-
 }
 
