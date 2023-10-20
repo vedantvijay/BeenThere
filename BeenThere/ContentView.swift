@@ -15,6 +15,18 @@ struct ContentView: View {
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
     
+    var usesMetric: Bool {
+        let locale = Locale.current
+        switch locale.measurementSystem {
+        case .metric:
+            return true
+        case .us, .uk:
+            return false
+        default:
+            return true // Default to metric for unknown measurement systems
+        }
+    }
+
     
     var body: some View {
         ZStack {
@@ -27,7 +39,11 @@ struct ContentView: View {
             VStack {
                 Spacer()
                 Text("Chunks: \(chunksCount - 1)")
-                    .bold()
+                    .fontWeight(.black)
+                    .foregroundStyle(.black)
+                Text("Area: \(String(format: "%.0f", mapViewModel.totalAreaInChunks())) \(usesMetric ? "sq. km" : "sq. miles")")
+                    .fontWeight(.black)
+                    .foregroundStyle(.black)
             }
             .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
                 if let location = mapViewModel.tappedLocation {

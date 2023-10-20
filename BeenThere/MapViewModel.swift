@@ -22,6 +22,18 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     let moc = PersistenceController.shared.container.viewContext
     
+    var usesMetric: Bool {
+        let locale = Locale.current
+        switch locale.measurementSystem {
+        case .metric:
+            return true
+        case .us, .uk:
+            return false
+        default:
+            return true // Default to metric for unknown measurement systems
+        }
+    }
+    
     override init() {
         super.init()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -182,5 +194,31 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
         return nil
     }
+    
+    func calculateAreaOfChunk(lowLat: Double, highLat: Double, lowLong: Double, highLong: Double) -> Double {
+        // Earth's circumference in kilometers by default
+        var earthCircumference = 40075.0
+        
+        // If the user's locale is not metric, switch to miles
+        if !usesMetric {
+            earthCircumference = 24901.0
+        }
+        
+        let latDistance = (highLat - lowLat) * earthCircumference / 360.0
+        let longDistanceAtEquator = (highLong - lowLong) * earthCircumference / 360.0
+        
+        // Adjusting the longitude distance based on the latitude (cosine adjustment)
+        let avgLat = (highLat + lowLat) / 2.0
+        let longDistance = longDistanceAtEquator * cos(avgLat * .pi / 180)
+        
+        return latDistance * longDistance
+    }
+
+
+    func totalAreaInChunks() -> Double {
+        let squares: [Location] = PersistenceController.shared.fetchLocations()
+        return squares.map { calculateAreaOfChunk(lowLat: $0.lowLatitude, highLat: $0.highLatitude, lowLong: $0.lowLongitude, highLong: $0.highLongitude) }.reduce(0, +)
+    }
+
 }
 
