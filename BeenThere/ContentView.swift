@@ -14,6 +14,8 @@ struct ContentView: View {
     private let locationManager = CLLocationManager()
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
+    @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -37,6 +39,16 @@ struct ContentView: View {
                     mapViewModel.updateChunksCount()
                 }
             VStack {
+                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+                    Button("Enable Always Location Access") {
+                        requestLocationAccess()
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                }
+
                 Spacer()
                 Text("Chunks: \(chunksCount - 1)")
                     .fontWeight(.black)
@@ -53,10 +65,15 @@ struct ContentView: View {
             }
         }
     }
-    
     private func requestLocationAccess() {
+        locationManager.delegate = locationManagerDelegate
         locationManager.requestAlwaysAuthorization()
     }
+
+//    
+//    private func requestLocationAccess() {
+//        locationManager.requestAlwaysAuthorization()
+//    }
     private func googleMapsURL(for location: CLLocationCoordinate2D) -> URL {
         URL(string: "comgooglemaps://?q=\(location.latitude),\(location.longitude)&center=\(location.latitude),\(location.longitude)&zoom=14")!
     }
@@ -65,7 +82,18 @@ struct ContentView: View {
     }
 }
 
+class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableObject {
+    @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
-//#Preview {
-//    ContentView()
-//}
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        self.authorizationStatus = status
+    }
+}
+
+
+
+
+
+#Preview {
+    ContentView()
+}
