@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C0453EB92AE0836300EAD893 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0453EB82AE0836300EAD893 /* PersistenceController.swift */; };
-		C0453EBC2AE0838600EAD893 /* BeenThere.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */; };
-		C0453EBF2AE093EC00EAD893 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0453EBE2AE093EC00EAD893 /* SettingsView.swift */; };
+		C011082A2AE487C000406837 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C01108292AE487C000406837 /* FirebaseAnalytics */; };
+		C011082C2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = C011082B2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion */; };
+		C011082E2AE487C000406837 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C011082D2AE487C000406837 /* FirebaseAnalyticsSwift */; };
+		C01108302AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = C011082F2AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		C01108322AE487C000406837 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C01108312AE487C000406837 /* FirebaseAppCheck */; };
+		C01108342AE4884D00406837 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01108332AE4884D00406837 /* LoginView.swift */; };
+		C01108362AE4894C00406837 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C01108352AE4894C00406837 /* FirebaseAuth */; };
+		C011083A2AE4921500406837 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C01108392AE4921500406837 /* FirebaseFirestore */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
 		C0C808DC2ADD83440070E679 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DB2ADD83440070E679 /* Assets.xcassets */; };
@@ -21,10 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C0453EB82AE0836300EAD893 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BeenThere.xcdatamodel; sourceTree = "<group>"; };
+		C01108332AE4884D00406837 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeenThere.entitlements; sourceTree = "<group>"; };
-		C0453EBE2AE093EC00EAD893 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0C808D42ADD83420070E679 /* BeenThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeenThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0C808D72ADD83420070E679 /* BeenThereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeenThereApp.swift; sourceTree = "<group>"; };
 		C0C808D92ADD83420070E679 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -41,6 +44,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C011082E2AE487C000406837 /* FirebaseAnalyticsSwift in Frameworks */,
+				C01108302AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				C011082A2AE487C000406837 /* FirebaseAnalytics in Frameworks */,
+				C011082C2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
+				C01108322AE487C000406837 /* FirebaseAppCheck in Frameworks */,
+				C011083A2AE4921500406837 /* FirebaseFirestore in Frameworks */,
+				C01108362AE4894C00406837 /* FirebaseAuth in Frameworks */,
 				C0C808EC2ADD857A0070E679 /* Mapbox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,13 +81,11 @@
 				C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */,
 				C0C808E52ADD84AE0070E679 /* Info.plist */,
 				C0C808D72ADD83420070E679 /* BeenThereApp.swift */,
+				C01108332AE4884D00406837 /* LoginView.swift */,
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
-				C0453EBE2AE093EC00EAD893 /* SettingsView.swift */,
 				C0C808E62ADD855C0070E679 /* MapView.swift */,
 				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
-				C0453EB82AE0836300EAD893 /* PersistenceController.swift */,
 				C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */,
-				C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */,
 				C0C808DB2ADD83440070E679 /* Assets.xcassets */,
 				C0C808DD2ADD83440070E679 /* Preview Content */,
 			);
@@ -117,6 +125,13 @@
 			name = BeenThere;
 			packageProductDependencies = (
 				C0C808EB2ADD857A0070E679 /* Mapbox */,
+				C01108292AE487C000406837 /* FirebaseAnalytics */,
+				C011082B2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion */,
+				C011082D2AE487C000406837 /* FirebaseAnalyticsSwift */,
+				C011082F2AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				C01108312AE487C000406837 /* FirebaseAppCheck */,
+				C01108352AE4894C00406837 /* FirebaseAuth */,
+				C01108392AE4921500406837 /* FirebaseFirestore */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -148,6 +163,7 @@
 			mainGroup = C0C808CB2ADD83420070E679;
 			packageReferences = (
 				C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -176,12 +192,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0453EBF2AE093EC00EAD893 /* SettingsView.swift in Sources */,
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
-				C0453EB92AE0836300EAD893 /* PersistenceController.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
-				C0453EBC2AE0838600EAD893 /* BeenThere.xcdatamodeld in Sources */,
+				C01108342AE4884D00406837 /* LoginView.swift in Sources */,
 				C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,7 +329,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -350,7 +364,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -402,6 +416,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.16.0;
+			};
+		};
 		C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
@@ -413,25 +435,47 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C01108292AE487C000406837 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		C011082B2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		C011082D2AE487C000406837 /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
+		};
+		C011082F2AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		C01108312AE487C000406837 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		C01108352AE4894C00406837 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		C01108392AE4921500406837 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		C0C808EB2ADD857A0070E679 /* Mapbox */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = Mapbox;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		C0453EBA2AE0838600EAD893 /* BeenThere.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */,
-			);
-			currentVersion = C0453EBB2AE0838600EAD893 /* BeenThere.xcdatamodel */;
-			path = BeenThere.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = C0C808CC2ADD83420070E679 /* Project object */;
 }

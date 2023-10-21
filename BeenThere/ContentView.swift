@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
+    @State private var showSettingsAlert: Bool = false
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -25,32 +26,41 @@ struct ContentView: View {
         case .us, .uk:
             return false
         default:
-            return true // Default to metric for unknown measurement systems
+            return true
         }
     }
 
-    
     var body: some View {
         ZStack {
             MapView(viewModel: mapViewModel)
                 .ignoresSafeArea()
                 .onAppear {
                     requestLocationAccess()
-                    mapViewModel.updateChunksCount()
                 }
+            
             VStack {
                 if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                    Button("Enable Always Location Access") {
-                        requestLocationAccess()
+                    if locationManagerDelegate.authorizationStatus == .denied || locationManagerDelegate.authorizationStatus == .restricted {
+                        Button("Update Location Settings") {
+                            showSettingsAlert = true
+                        }
+                        .padding()
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    } else {
+                        Button("Enable Always Location Access") {
+                            requestLocationAccess()
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
                     }
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
                 }
-
+                
                 Spacer()
-                Text("Chunks: \(chunksCount - 1)")
+                Text("Chunks: \(mapViewModel.locations.count)")
                     .fontWeight(.black)
                     .foregroundStyle(.black)
                 Text("Area: \(String(format: "%.0f", mapViewModel.totalAreaInChunks())) \(usesMetric ? "sq. km" : "sq. miles")")
@@ -64,21 +74,34 @@ struct ContentView: View {
                 }
             }
         }
+        .alert(isPresented: $showSettingsAlert) {
+            Alert(
+                title: Text("Location Access Denied"),
+                message: Text("To enable location access, please go to Settings and allow always location access for this app."),
+                primaryButton: .default(Text("Go to Settings"), action: {
+                    openAppSettings()
+                }),
+                secondaryButton: .cancel()
+            )
+        }
     }
+
     private func requestLocationAccess() {
         locationManager.delegate = locationManagerDelegate
         locationManager.requestAlwaysAuthorization()
     }
 
-//    
-//    private func requestLocationAccess() {
-//        locationManager.requestAlwaysAuthorization()
-//    }
     private func googleMapsURL(for location: CLLocationCoordinate2D) -> URL {
         URL(string: "comgooglemaps://?q=\(location.latitude),\(location.longitude)&center=\(location.latitude),\(location.longitude)&zoom=14")!
     }
     private func appleMapsURL(for location: CLLocationCoordinate2D) -> URL {
         URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&z=14")!
+    }
+
+    func openAppSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
     }
 }
 

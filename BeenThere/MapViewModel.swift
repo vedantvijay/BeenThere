@@ -9,7 +9,8 @@ import Foundation
 import CoreLocation
 import Mapbox
 import SwiftUI
-import CoreData
+import FirebaseFirestore
+import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     private var locationManager = CLLocationManager()
@@ -18,10 +19,16 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var showTappedLocation: Bool = false
     @Published var tappedAnnotation: MGLPointAnnotation?
-    @AppStorage("chunksCount") var chunksCount: Int = 0
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
-    let moc = PersistenceController.shared.container.viewContext
-    
+    private var db = Firestore.firestore()
+    private var locationsListener: ListenerRegistration?
+    @Published var locations: [Location] = [] {
+        didSet {
+            addSquaresToMap(locations: locations)
+        }
+    }
+
+
     var usesMetric: Bool {
         let locale = Locale.current
         switch locale.measurementSystem {
@@ -30,7 +37,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         case .us, .uk:
             return false
         default:
-            return true // Default to metric for unknown measurement systems
+            return true
         }
     }
     
@@ -44,19 +51,73 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        self.setUpFirestoreListener()
         mapView.delegate = self
-        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange), name: .NSManagedObjectContextObjectsDidChange, object: nil)
+    }
+    deinit {
+        locationsListener?.remove()
     }
     
-    @objc func managedObjectContextObjectsDidChange(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-
-        if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, !inserts.isEmpty {
-            let newLocations = inserts.compactMap { $0 as? Location }
-            addSquaresToMap(locations: newLocations)
+    func setUpFirestoreListener() {
+        locationsListener = db.collection("users").document(Auth.auth().currentUser!.uid).addSnapshotListener { (documentSnapshot, error) in
+            guard let data = documentSnapshot?.data() else {
+                print("No data in document")
+                return
+            }
+            
+            if let locationData = data["locations"] as? [[String: Any]] {
+                self.locations = locationData.compactMap { locationDict in
+                    do {
+                        let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
+                        let location = try JSONDecoder().decode(Location.self, from: jsonData)
+                        return location
+                    } catch {
+                        print("Error decoding location: \(error)")
+                        return nil
+                    }
+                }
+            }
         }
     }
     
+    func saveLocationToFirestore(lowLat: Double, highLat: Double, lowLong: Double, highLong: Double) {
+        let locationData: [String: Any] = [
+            "lowLatitude": lowLat,
+            "highLatitude": highLat,
+            "lowLongitude": lowLong,
+            "highLongitude": highLong
+        ]
+        
+        let userDocumentRef = db.collection("users").document(Auth.auth().currentUser!.uid)
+        
+        userDocumentRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                // If document exists, update the locations array
+                userDocumentRef.updateData([
+                    "locations": FieldValue.arrayUnion([locationData])
+                ]) { error in
+                    if let error = error {
+                        print("Error adding location: \(error)")
+                    } else {
+                        print("Location successfully updated!")
+                    }
+                }
+            } else {
+                // If document doesn't exist, create a new one with the locations array
+                userDocumentRef.setData([
+                    "locations": [locationData]
+                ]) { error in
+                    if let error = error {
+                        print("Error creating document with location: \(error)")
+                    } else {
+                        print("Document successfully created with location!")
+                    }
+                }
+            }
+        }
+    }
+
+
 
     func handleLongPress(coordinate: CLLocationCoordinate2D) {
         tappedLocation = coordinate
@@ -67,8 +128,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         // Center the map on the annotation
         mapView.setCenter(coordinate, animated: true)
     }
-
-
 
     
     func addSquaresToMap(locations: [Location]) {
@@ -114,20 +173,13 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     }
     
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
-        let squares: [Location] = PersistenceController.shared.fetchLocations()
-        addSquaresToMap(locations: squares)
+        addSquaresToMap(locations: locations)
     }
-
-
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let newLocation = locations.last {
             checkBeenThere(location: newLocation)
         }
-    }
-
-    func updateChunksCount() {
-        chunksCount = PersistenceController.shared.totalChunksCount()
     }
     
     func checkBeenThere(location: CLLocation) {
@@ -142,25 +194,17 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         let lowLongitude = floor(longitude / increment) * increment
         let highLongitude = lowLongitude + increment
 
-        // Create a predicate to check if the location is within any of the stored squares
-        let predicate = NSPredicate(format: "lowLatitude <= %lf AND highLatitude > %lf AND lowLongitude <= %lf AND highLongitude > %lf", latitude, latitude, longitude, longitude)
-
-        // Use the fetch function from PersistenceController to retrieve the filtered results
-        let results: [Location] = PersistenceController.shared.fetchLocations(predicate: predicate)
-
-        if results.isEmpty {
-            // If the location is not within any existing square, create a new Location entity and save the context
-            let context = PersistenceController.shared.container.viewContext
-            if let locationEntity = NSEntityDescription.insertNewObject(forEntityName: "Location", into: context) as? Location {
-                locationEntity.lowLatitude = lowLatitude
-                locationEntity.highLatitude = highLatitude
-                locationEntity.lowLongitude = lowLongitude
-                locationEntity.highLongitude = highLongitude
-                PersistenceController.shared.saveContext()
-                updateChunksCount()
+        let result = locations.filter {
+                $0.lowLatitude <= latitude && $0.highLatitude > latitude &&
+                $0.lowLongitude <= longitude && $0.highLongitude > longitude
             }
+
+        if result.isEmpty {
+            self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
         }
     }
+    
+    
     
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
@@ -216,9 +260,15 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
 
     func totalAreaInChunks() -> Double {
-        let squares: [Location] = PersistenceController.shared.fetchLocations()
-        return squares.map { calculateAreaOfChunk(lowLat: $0.lowLatitude, highLat: $0.highLatitude, lowLong: $0.lowLongitude, highLong: $0.highLongitude) }.reduce(0, +)
+        return locations.map { calculateAreaOfChunk(lowLat: $0.lowLatitude, highLat: $0.highLatitude, lowLong: $0.lowLongitude, highLong: $0.highLongitude) }.reduce(0, +)
     }
 
+}
+
+struct Location: Codable {
+    var lowLatitude: Double
+    var highLatitude: Double
+    var lowLongitude: Double
+    var highLongitude: Double
 }
 
