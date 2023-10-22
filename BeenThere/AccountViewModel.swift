@@ -64,6 +64,42 @@ class AccountViewModel: ObservableObject {
         }
     }
     
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let signOutError {
+            print("Error signing out: \(signOutError.localizedDescription)")
+        }
+    }
+    
+    func deleteAccount() {
+        // 1. Get the currently authenticated user
+        guard let user = Auth.auth().currentUser else {
+            print("No user is signed in.")
+            return
+        }
+        
+        // 2. Delete the user's document from Firestore
+        let db = Firestore.firestore()
+        db.collection("users").document(user.uid).delete { (error) in
+            if let error = error {
+                print("Error removing document: \(error.localizedDescription)")
+                return
+            }
+            
+            // 3. Delete the user from Firebase Authentication
+            user.delete { (error) in
+                if let error = error {
+                    print("Error deleting user: \(error.localizedDescription)")
+                    return
+                }
+                
+                print("User account and associated document deleted successfully.")
+            }
+        }
+    }
+
+    
     func setUsernameInFirestore() {
         guard let userID = Auth.auth().currentUser?.uid else {
             print("Error: No authenticated user found")

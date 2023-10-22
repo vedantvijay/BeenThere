@@ -44,15 +44,12 @@ struct AccountView: View {
             Spacer()
             Form {
                 Button("Sign Out") {
-                    do {
-                        try Auth.auth().signOut()
-                        dismiss()
-                    } catch let signOutError {
-                        print("Error signing out: \(signOutError.localizedDescription)")
-                    }
+                    viewModel.signOut()
+                    dismiss()
                 }
                 Button("Delete Account") {
-                    // this should delete the account from firebase and delete the
+                    viewModel.deleteAccount()
+                    dismiss()
                 }
             }
         }
