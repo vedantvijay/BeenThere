@@ -14,8 +14,9 @@ import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     private var locationManager = CLLocationManager()
+    @AppStorage("mapStyle") var mapStyle = MapStyles.backdrop.rawValue
     @Published var currentLocation: CLLocation?
-    @Published var mapView = MGLMapView(frame: .zero, styleURL: URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")!)
+    @Published var mapView: MGLMapView!
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var showTappedLocation: Bool = false
     @Published var tappedAnnotation: MGLPointAnnotation?
@@ -27,6 +28,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             addSquaresToMap(locations: locations)
         }
     }
+    var currentSquares = Set<String>()
 
 
     var usesMetric: Bool {
@@ -40,9 +42,15 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             return true
         }
     }
+
     
     override init() {
         super.init()
+        if let url = URL(string: "https://api.maptiler.com/maps/\(mapStyle)/style.json?key=s9gJbpLafAf5TyI9DyDr") {
+            mapView = MGLMapView(frame: .zero, styleURL: url)
+        } else {
+            print("Error: Invalid URL")
+        }
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false
@@ -59,7 +67,12 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     }
     
     func setUpFirestoreListener() {
-        locationsListener = db.collection("users").document(Auth.auth().currentUser!.uid).addSnapshotListener { (documentSnapshot, error) in
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found")
+            return
+        }
+        
+        locationsListener = db.collection("users").document(userID).addSnapshotListener { (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 print("No data in document")
                 return
@@ -77,6 +90,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
                     }
                 }
             }
+
         }
     }
     
@@ -88,7 +102,12 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             "highLongitude": highLong
         ]
         
-        let userDocumentRef = db.collection("users").document(Auth.auth().currentUser!.uid)
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found")
+            return
+        }
+
+        let userDocumentRef = db.collection("users").document(userID)
         
         userDocumentRef.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -121,7 +140,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
     func handleLongPress(coordinate: CLLocationCoordinate2D) {
         tappedLocation = coordinate
-        print("Tapped Location Set: \(tappedLocation!)")
+        if let tappedLocation = tappedLocation {
+            print("Tapped Location Set: \(tappedLocation)")
+        }
         showTappedLocation = true
         print("Should show confirmation: \(showTappedLocation)")
         
@@ -129,8 +150,11 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         mapView.setCenter(coordinate, animated: true)
     }
 
+
     
     func addSquaresToMap(locations: [Location]) {
+        var squaresToKeep = Set<String>() // This will hold the squares that are still valid after this update.
+
         for square in locations {
             let lowLat = square.lowLatitude
             let highLat = square.highLatitude
@@ -145,7 +169,8 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             let shape = MGLPolygon(coordinates: [bottomLeft, bottomRight, topRight, topLeft, bottomLeft], count: 5)
                 
             let sourceIdentifier = "square-\(lowLat)-\(lowLong)"
-            
+            squaresToKeep.insert(sourceIdentifier) // Mark this square as still valid.
+
             // Check if the source already exists to avoid adding duplicates
             if mapView.style?.source(withIdentifier: sourceIdentifier) == nil {
                 let source = MGLShapeSource(identifier: sourceIdentifier, shape: shape, options: nil)
@@ -153,11 +178,26 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
                 let layer = MGLFillStyleLayer(identifier: "square-layer-\(lowLat)-\(lowLong)", source: source)
                 layer.fillColor = NSExpression(forConstantValue: UIColor.green)
-                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
+                layer.fillOpacity = NSExpression(forConstantValue: 0.5)
                 
                 mapView.style?.addLayer(layer)
+                currentSquares.insert(sourceIdentifier) // Add this square to our set of current squares.
             }
         }
+
+        // Remove any squares that are on the map but not in the provided locations
+        for squareIdentifier in currentSquares {
+            if !squaresToKeep.contains(squareIdentifier) {
+                if let sourceToRemove = mapView.style?.source(withIdentifier: squareIdentifier) {
+                    mapView.style?.removeSource(sourceToRemove)
+                }
+                let layerIdentifier = "square-layer-\(squareIdentifier.replacingOccurrences(of: "square-", with: ""))"
+                if let layerToRemove = mapView.style?.layer(withIdentifier: layerIdentifier) {
+                    mapView.style?.removeLayer(layerToRemove)
+                }
+            }
+        }
+        currentSquares = squaresToKeep
     }
 
     
