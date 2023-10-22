@@ -10,7 +10,7 @@ import Mapbox
 import CoreLocation
 
 struct MapView: UIViewRepresentable {
-    @ObservedObject var viewModel: MapViewModel
+    @ObservedObject var viewModel = MapViewModel.shared
 
     func makeCoordinator() -> MapViewModel {
         return viewModel

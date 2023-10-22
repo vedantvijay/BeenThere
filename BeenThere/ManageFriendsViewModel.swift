@@ -8,5 +8,5 @@
 import Foundation
 
 class ManageFriendsViewModel: ObservableObject {
-    
+    static let shared = ManageFriendsViewModel()
 }

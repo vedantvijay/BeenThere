@@ -50,12 +50,17 @@ struct BeenThereApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var authViewModel = AuthViewModel()
     @AppStorage("isAuthenticated") var isAuthenticated = false
+    @AppStorage("username") var username = ""
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            NavigationStack {
                 if isAuthenticated {
-                    ContentView()
+                    if username != "" {
+                        ContentView()
+                    } else {
+                        CreateUsernameView()
+                    }
                 } else {
                     LoginView()
                 }

@@ -8,8 +8,17 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @ObservedObject var accountViewModel = AccountViewModel.shared
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Form {
+            Button("Sign Out") {
+                accountViewModel.signOut()
+            }
+            NavigationLink("Delete Account") {
+                ConfirmDeleteAccountView()
+            }
+        }
     }
 }
 

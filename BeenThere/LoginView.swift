@@ -13,8 +13,11 @@ import FirebaseAuth
 struct LoginView: View {
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
+    
+    @AppStorage("username") var username = ""
 
-    let imageNames = ["background1", "background2", "background3"]
+
+    let imageNames = ["background1", "background2"]
     
     let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
@@ -63,7 +66,7 @@ struct LoginView: View {
         .background(
             ZStack {
                 Image(imageNames[currentImageIndex])
-                    .aspectRatio(contentMode: .fill)
+                    .scaledToFill()
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                 
                 // Vignette Effect

@@ -9,9 +9,10 @@ import SwiftUI
 import Mapbox
 import CoreLocation
 
-struct ContentView: View {
+struct ContentView: View {    
     @StateObject var accountViewModel = AccountViewModel()
     @StateObject private var mapViewModel = MapViewModel()
+
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined

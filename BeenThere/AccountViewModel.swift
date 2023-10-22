@@ -7,13 +7,17 @@
 
 import Foundation
 import Firebase
+import AuthenticationServices
+import SwiftUI
 
 class AccountViewModel: ObservableObject {
+    static let shared = AccountViewModel()
+    
     @Published var firstName = ""
     @Published var lastName = ""
     @Published var email = ""
     @Published var newUsername = ""
-    @Published var username = ""
+    @AppStorage("username") var username = ""
     @Published var friends: [String] = []
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
@@ -27,6 +31,19 @@ class AccountViewModel: ObservableObject {
     var isUsernameValid: Bool {
         let regex = "^[a-z]{5,}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
+    }
+    
+    var minutesSinceLastLogin: Int? {
+        guard let user = Auth.auth().currentUser else {
+            return nil
+        }
+
+        let now = Date()
+        let lastSignInDate = user.metadata.lastSignInDate!
+        let timeInterval = now.timeIntervalSince(lastSignInDate)
+        let minutes = Int(timeInterval / 60)
+
+        return minutes
     }
     
     var invalidUsernameReason: String {
@@ -81,26 +98,26 @@ class AccountViewModel: ObservableObject {
             return
         }
         
-        db.collection("users").document(user.uid).updateData([
-            "locations": FieldValue.delete()
-        ]) { error in
+        // 2. Delete the user's document from Firestore
+        let db = Firestore.firestore()
+        db.collection("users").document(user.uid).delete { (error) in
             if let error = error {
-                print("Error removing 'locations' attribute: \(error.localizedDescription)")
-            } else {
-                print("'locations' attribute successfully removed!")
-            }
-        }
-        
-        // 3. Delete the user from Firebase Authentication
-        user.delete { (error) in
-            if let error = error {
-                print("Error deleting user: \(error.localizedDescription)")
+                print("Error removing document: \(error.localizedDescription)")
                 return
             }
             
-            print("User account and associated document deleted successfully.")
+            // 3. Delete the user from Firebase Authentication
+            user.delete { (error) in
+                if let error = error {
+                    print("Error deleting user: \(error.localizedDescription)")
+                    return
+                }
+                self.username = ""
+                print("User account and associated document deleted successfully.")
+            }
         }
     }
+
 
     
     func setUsernameInFirestore() {

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ManageFriendsView: View {
-    @ObservedObject var viewModel = ManageFriendsViewModel()
-    @ObservedObject var accountViewModel: AccountViewModel
+    @ObservedObject var viewModel = ManageFriendsViewModel.shared
+    @ObservedObject var accountViewModel = AccountViewModel.shared
     
     @State private var newFriendUsername = ""
     

@@ -13,6 +13,8 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
+    static let shared = MapViewModel()
+    
     @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
