@@ -13,6 +13,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
+    @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!
@@ -45,7 +46,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     
     override init() {
         super.init()
-        if let url = URL(string: "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr") {
+        if let url = URL(string: colorScheme == .dark ? "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr" : "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr") {
             mapView = MGLMapView(frame: .zero, styleURL: url)
         } else {
             print("Error: Invalid URL")

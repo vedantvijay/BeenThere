@@ -10,6 +10,8 @@ import SwiftUI
 struct CreateUsernameView: View {
     @ObservedObject var accountViewModel: AccountViewModel
     
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         VStack {
             TextField("Username", text: $accountViewModel.newUsername)
@@ -30,6 +32,7 @@ struct CreateUsernameView: View {
             } else {
                 Button("Create Username") {
                     accountViewModel.setUsernameInFirestore()
+                    dismiss()
                 }
                 .disabled(!accountViewModel.isUsernameValid || accountViewModel.isCheckingUsername || accountViewModel.isUsernameTaken)
                 .buttonStyle(.bordered)

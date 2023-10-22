@@ -18,6 +18,8 @@ class AccountViewModel: ObservableObject {
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
+    @Published var sentFriendRequests: [String] = []
+    @Published var receivedFriendRequests: [String] = []
     
     private var accountListener: ListenerRegistration?
     private var db = Firestore.firestore()
@@ -79,23 +81,24 @@ class AccountViewModel: ObservableObject {
             return
         }
         
-        // 2. Delete the user's document from Firestore
-        let db = Firestore.firestore()
-        db.collection("users").document(user.uid).delete { (error) in
+        db.collection("users").document(user.uid).updateData([
+            "locations": FieldValue.delete()
+        ]) { error in
             if let error = error {
-                print("Error removing document: \(error.localizedDescription)")
+                print("Error removing 'locations' attribute: \(error.localizedDescription)")
+            } else {
+                print("'locations' attribute successfully removed!")
+            }
+        }
+        
+        // 3. Delete the user from Firebase Authentication
+        user.delete { (error) in
+            if let error = error {
+                print("Error deleting user: \(error.localizedDescription)")
                 return
             }
             
-            // 3. Delete the user from Firebase Authentication
-            user.delete { (error) in
-                if let error = error {
-                    print("Error deleting user: \(error.localizedDescription)")
-                    return
-                }
-                
-                print("User account and associated document deleted successfully.")
-            }
+            print("User account and associated document deleted successfully.")
         }
     }
 
@@ -156,6 +159,7 @@ class AccountViewModel: ObservableObject {
             self.lastName = data["lastName"] as? String ?? ""
             self.email = data["email"] as? String ?? ""
             self.username = data["username"] as? String ?? ""
+            self.friends = data["friends"] as? [String] ?? []
             
             if let locationData = data["locations"] as? [[String: Any]] {
                 self.locations = locationData.compactMap { locationDict in

@@ -53,7 +53,7 @@ struct BeenThereApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationView {
                 if isAuthenticated {
                     ContentView()
                 } else {

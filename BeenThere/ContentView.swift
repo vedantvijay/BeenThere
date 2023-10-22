@@ -52,21 +52,25 @@ struct ContentView: View {
                         .cornerRadius(8)
                     }
                 }
-                HStack {
-                    Spacer()
-                    NavigationLink {
-                        AccountView(viewModel: accountViewModel)
-                    } label: {
-                        Image(systemName: "person.circle.fill")
-                            .fontWeight(.black)
-                            .font(.largeTitle)
-                    }
-                    .padding()
-                    .padding()
-                }
-                .ignoresSafeArea()
-                .foregroundStyle(.white)
+//                HStack {
+//                    NavigationLink {
+//                        AccountView(viewModel: accountViewModel)
+//                    } label: {
+//                        Image(systemName: "person.circle.fill")
+//                            .fontWeight(.black)
+//                            .font(.largeTitle)
+//                    }
+//                    .padding()
+//                    .padding()
+//                    Spacer()
+//                }
+//                .ignoresSafeArea()
+//                .foregroundStyle(.white)
                 Spacer()
+                NavigationLink("My Profile") {
+                    AccountView(viewModel: accountViewModel)
+                }
+                .buttonStyle(.borderedProminent)
             }
             .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
                 if let location = mapViewModel.tappedLocation {
