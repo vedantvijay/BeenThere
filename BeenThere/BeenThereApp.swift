@@ -60,6 +60,9 @@ struct BeenThereApp: App {
                     LoginView()
                 }
             }
+//            .preferredColorScheme(.light)
+            .statusBarHidden()
+
         }
         .environmentObject(authViewModel)
     }

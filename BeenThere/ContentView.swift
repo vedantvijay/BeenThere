@@ -9,13 +9,8 @@ import SwiftUI
 import Mapbox
 import CoreLocation
 
-enum MapStyles: String, CaseIterable {
-    case backdrop = "backdrop"
-    case basic = "basic-v2"
-}
-
 struct ContentView: View {
-    @AppStorage("mapStyle") var mapStyle = MapStyles.backdrop.rawValue
+    @StateObject var accountViewModel = AccountViewModel()
     @StateObject private var mapViewModel = MapViewModel()
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
@@ -57,23 +52,21 @@ struct ContentView: View {
                         .cornerRadius(8)
                     }
                 }
-                Spacer()
                 HStack {
                     Spacer()
-                    Picker("Map Style", selection: $mapStyle) {
-                        ForEach(MapStyles.allCases, id: \.self) { style in
-                            Text(style.rawValue).tag(style.rawValue)
-                        }
+                    NavigationLink {
+                        AccountView(viewModel: accountViewModel)
+                    } label: {
+                        Image(systemName: "person.circle.fill")
+                            .fontWeight(.black)
+                            .font(.largeTitle)
                     }
+                    .padding()
+                    .padding()
                 }
-                
+                .ignoresSafeArea()
+                .foregroundStyle(.white)
                 Spacer()
-                Text("Chunks: \(mapViewModel.locations.count)")
-                    .fontWeight(.black)
-                    .foregroundStyle(.black)
-                Text("Area: \(String(format: "%.0f", mapViewModel.totalAreaInChunks())) \(usesMetric ? "sq. km" : "sq. miles")")
-                    .fontWeight(.black)
-                    .foregroundStyle(.black)
             }
             .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
                 if let location = mapViewModel.tappedLocation {
@@ -131,9 +124,6 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
 }
 
 
-
-
-
-//#Preview {
-//    ContentView()
-//}
+#Preview {
+    ContentView()
+}

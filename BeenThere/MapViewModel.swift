@@ -14,7 +14,6 @@ import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     private var locationManager = CLLocationManager()
-    @AppStorage("mapStyle") var mapStyle = MapStyles.backdrop.rawValue
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!
     @Published var tappedLocation: CLLocationCoordinate2D?
@@ -46,7 +45,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     
     override init() {
         super.init()
-        if let url = URL(string: "https://api.maptiler.com/maps/\(mapStyle)/style.json?key=s9gJbpLafAf5TyI9DyDr") {
+        if let url = URL(string: "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr") {
             mapView = MGLMapView(frame: .zero, styleURL: url)
         } else {
             print("Error: Invalid URL")
@@ -150,8 +149,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         mapView.setCenter(coordinate, animated: true)
     }
 
-
-    
     func addSquaresToMap(locations: [Location]) {
         var squaresToKeep = Set<String>() // This will hold the squares that are still valid after this update.
 
@@ -178,7 +175,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
 
                 let layer = MGLFillStyleLayer(identifier: "square-layer-\(lowLat)-\(lowLong)", source: source)
                 layer.fillColor = NSExpression(forConstantValue: UIColor.green)
-                layer.fillOpacity = NSExpression(forConstantValue: 0.5)
+                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
                 
                 mapView.style?.addLayer(layer)
                 currentSquares.insert(sourceIdentifier) // Add this square to our set of current squares.
