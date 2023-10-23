@@ -15,11 +15,17 @@ struct CreateUsernameView: View {
     @State private var newUsername = ""
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
+    @State private var currentImageIndex: Int = 0
+
     
     var isUsernameValid: Bool {
         let regex = "^[a-z]{5,}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
+    
+    let imageNames = ["background1", "background2"]
+    
+    let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
@@ -45,6 +51,25 @@ struct CreateUsernameView: View {
                 .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
                 .buttonStyle(.bordered)
                 .tint(.green)
+            }
+        }
+        .background(
+            ZStack {
+                Image(imageNames[currentImageIndex])
+                    .scaledToFill()
+                    .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+                
+                // Vignette Effect
+                RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
+                               center: .center,
+                               startRadius: 0,
+                               endRadius: UIScreen.main.bounds.height*0.6)
+            }
+            .ignoresSafeArea()
+        )
+        .onReceive(timer) { _ in
+            withAnimation(.easeInOut(duration: 2)) {
+                currentImageIndex = (currentImageIndex + 1) % imageNames.count
             }
         }
     }
