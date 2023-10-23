@@ -70,6 +70,7 @@ struct ConfirmDeleteAccountView: View {
                             isPresented: $showDeleteAccount, titleVisibility: .visible) {
             Button("Delete Account", role: .destructive) {
                 accountViewModel.deleteAccount()
+                dismiss()
             }
             Button("Cancel", role: .cancel, action: { })
         }

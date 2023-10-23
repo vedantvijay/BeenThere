@@ -16,7 +16,6 @@ struct LoginView: View {
     
     @AppStorage("username") var username = ""
 
-
     let imageNames = ["background1", "background2"]
     
     let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()

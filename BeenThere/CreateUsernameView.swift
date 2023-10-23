@@ -16,7 +16,8 @@ struct CreateUsernameView: View {
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
     @State private var currentImageIndex: Int = 0
-
+    
+    @FocusState private var isUsernameFieldFocused: Bool
     
     var isUsernameValid: Bool {
         let regex = "^[a-z]{5,}$"
@@ -37,6 +38,8 @@ struct CreateUsernameView: View {
                 .padding(.horizontal)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .focused($isUsernameFieldFocused)
+            
             if invalidUsernameReason != "" {
                 Text(invalidUsernameReason)
             } else if isUsernameTaken {
@@ -52,6 +55,7 @@ struct CreateUsernameView: View {
                 .buttonStyle(.bordered)
                 .tint(.green)
             }
+            Spacer()
         }
         .background(
             ZStack {
@@ -65,12 +69,16 @@ struct CreateUsernameView: View {
                                startRadius: 0,
                                endRadius: UIScreen.main.bounds.height*0.6)
             }
-            .ignoresSafeArea()
+                .ignoresSafeArea()
         )
         .onReceive(timer) { _ in
             withAnimation(.easeInOut(duration: 2)) {
                 currentImageIndex = (currentImageIndex + 1) % imageNames.count
             }
+        }
+        .task {
+            // Set the focus to the text field when the view appears
+            isUsernameFieldFocused = true
         }
     }
     

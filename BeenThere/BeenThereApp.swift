@@ -67,7 +67,6 @@ struct BeenThereApp: App {
             }
 //            .preferredColorScheme(.light)
             .statusBarHidden()
-
         }
         .environmentObject(authViewModel)
     }

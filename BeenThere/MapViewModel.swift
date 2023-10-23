@@ -68,6 +68,15 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         locationsListener?.remove()
     }
     
+    func updateMapStyleURL() {
+        if UITraitCollection.current.userInterfaceStyle == .dark {
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr")
+        } else {
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")
+        }
+    }
+
+    
     func setUpFirestoreListener() {
         guard let userID = Auth.auth().currentUser?.uid else {
             print("Error: No authenticated user found")

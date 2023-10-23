@@ -12,6 +12,7 @@ import CoreLocation
 struct ContentView: View {    
     @StateObject var accountViewModel = AccountViewModel()
     @StateObject private var mapViewModel = MapViewModel()
+    @Environment(\.colorScheme) var colorScheme
 
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
@@ -53,25 +54,28 @@ struct ContentView: View {
                         .cornerRadius(8)
                     }
                 }
-//                HStack {
-//                    NavigationLink {
-//                        AccountView(viewModel: accountViewModel)
-//                    } label: {
-//                        Image(systemName: "person.circle.fill")
-//                            .fontWeight(.black)
-//                            .font(.largeTitle)
-//                    }
-//                    .padding()
-//                    .padding()
-//                    Spacer()
-//                }
-//                .ignoresSafeArea()
-//                .foregroundStyle(.white)
                 Spacer()
-                NavigationLink("My Profile") {
-                    AccountView(viewModel: accountViewModel)
+                Text("Chunks: \(mapViewModel.locations.count)")
+                    .fontWeight(.black)
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                HStack {
+                    NavigationLink {
+                        AccountView(viewModel: accountViewModel)
+                    } label: {
+                        Image(systemName: "person.2.circle.fill")
+                            .font(.largeTitle)
+                            .fontWeight(.black)
+                    }
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape.circle.fill")
+                            .font(.largeTitle)
+                            .fontWeight(.black)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
+                .foregroundStyle(colorScheme == .dark ? .white : .black)
+                
             }
             .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
                 if let location = mapViewModel.tappedLocation {
@@ -89,6 +93,9 @@ struct ContentView: View {
                 }),
                 secondaryButton: .cancel()
             )
+        }
+        .onChange(of: colorScheme) {
+            mapViewModel.updateMapStyleURL()
         }
     }
 

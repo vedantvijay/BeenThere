@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @ObservedObject var accountViewModel = AccountViewModel.shared
     
     var body: some View {
         Form {
             Button("Sign Out") {
                 accountViewModel.signOut()
+                dismiss()
             }
             NavigationLink("Delete Account") {
                 ConfirmDeleteAccountView()

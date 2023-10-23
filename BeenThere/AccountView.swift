@@ -24,9 +24,6 @@ struct AccountView: View {
             NavigationLink("Manage Friends") {
                 ManageFriendsView(accountViewModel: viewModel)
             }
-            NavigationLink("Setttings") {
-                SettingsView()
-            }
         }
     }
 }
