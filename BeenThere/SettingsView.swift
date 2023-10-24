@@ -13,15 +13,18 @@ struct SettingsView: View {
     @ObservedObject var accountViewModel = AccountViewModel.shared
     
     var body: some View {
-        Form {
-            Button("Sign Out") {
-                accountViewModel.signOut()
-                dismiss()
-            }
-            NavigationLink("Delete Account") {
-                ConfirmDeleteAccountView()
+        NavigationView {
+            Form {
+                Button("Sign Out") {
+                    accountViewModel.signOut()
+                    dismiss()
+                }
+                NavigationLink("Delete Account") {
+                    ConfirmDeleteAccountView()
+                }
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 

@@ -34,70 +34,44 @@ struct ContentView: View {
             return true
         }
     }
+    
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemMaterial)
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
 
     var body: some View {
-//        ZStack {
-//            MapView(viewModel: mapViewModel)
-//                .ignoresSafeArea()
-//                .onAppear {
-//                    requestLocationAccess()
-//                }
-//            
-//            VStack {
-//                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-//                    if locationManagerDelegate.authorizationStatus == .denied {
-//                        Button("Update Location Settings") {
-//                            showSettingsAlert = true
-//                        }
-//                        .padding()
-//                        .background(Color.orange)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(8)
-//                    }
-//                }
-//                Spacer()
-//                Text("Chunks: \(mapViewModel.locations.count)")
-//                    .fontWeight(.black)
-//                    .foregroundStyle(colorScheme == .dark ? .white : .black)
-//                    .padding()
-//                HStack {
-//                    NavigationLink {
-//                        AccountView(viewModel: accountViewModel)
-//                    } label: {
-//                        Image(systemName: "person.2.circle.fill")
-//                            .font(.largeTitle)
-//                            .fontWeight(.black)
-//                            .padding()
-//                    }
-//                    NavigationLink {
-//                        SettingsView()
-//                    } label: {
-//                        Image(systemName: "gearshape.circle.fill")
-//                            .font(.largeTitle)
-//                            .fontWeight(.black)
-//                            .padding()
-//                    }
-//                }
-//                .foregroundStyle(colorScheme == .dark ? .white : .black)
-//                
-//            }
-//
-//        }
         TabView(selection: $selection) {
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
+                    Image(systemName: "gearshape.fill")
                 }
                 .tag(1)
-            MapView(viewModel: mapViewModel)
-                .ignoresSafeArea()
+            ZStack {
+                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+                    if locationManagerDelegate.authorizationStatus == .denied {
+                        Button("Update Location Settings") {
+                            showSettingsAlert = true
+                        }
+                        .padding()
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                }
+                MapView(viewModel: mapViewModel)
+                    .ignoresSafeArea()
+            }
                 .tabItem {
-                    Label("Map", systemImage: "map.fill")
+                    Image(systemName: "map.fill")
                 }
                 .tag(2)
             AccountView(viewModel: accountViewModel)
                 .tabItem {
-                    Label("Account", systemImage: "person.2.fill")
+                    Image(systemName: "person.2.fill")
                 }
                 .tag(3)
         }

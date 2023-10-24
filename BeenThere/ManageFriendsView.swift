@@ -39,7 +39,6 @@ struct ManageFriendsView: View {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            // Safely extract the username from the dictionary.
                             if let username = accountViewModel.sentFriendRequests[index]["username"] as? String {
                                 Text(username)
                                     .foregroundColor(.gray)
@@ -47,9 +46,6 @@ struct ManageFriendsView: View {
                                 Image(systemName: "xmark.circle")
                                     .foregroundColor(.red)
                                     .onTapGesture {
-                                        // Handle friend request cancellation here.
-                                        // If you need to pass the entire friend request dictionary:
-    //                                    viewModel.cancelFriendRequest(friend: accountViewModel.sentFriendRequests[index])
                                         viewModel.cancelFriendRequest(friendUsername: username)
                                     }
                             }
@@ -62,41 +58,44 @@ struct ManageFriendsView: View {
                 Section("Received") {
                     ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            if let username = accountViewModel.sentFriendRequests[index]["username"] as? String {
+                            if let username = accountViewModel.receivedFriendRequests[index]["username"] as? String {
                                 Text(username)
                                     .foregroundColor(.gray)
+                                Spacer()
+                                Image(systemName: "xmark.circle")
+                                    .foregroundColor(.red)
+                                    .onTapGesture {
+                                        viewModel.rejectFriendRequest(friendUsername: username)
+                                    }
+                                Image(systemName: "checkmark.circle")
+                                    .foregroundColor(.green)
+                                    .onTapGesture {
+                                        viewModel.acceptFriendRequest(friendUsername: username)
+                                    }
+                                    .padding(.horizontal)
                             }
-                            Spacer()
-                            Image(systemName: "xmark.circle")
-                                .foregroundColor(.red)
-                                .onTapGesture {
-//                                    rejectFriendRequest(friend: friend)
-                                }
-                            Image(systemName: "checkmark.circle")
-                                .foregroundColor(.green)
-                                .onTapGesture {
-//                                    acceptFriendRequest(friend: friend)
-                                }
-                                .padding(.horizontal)
                         }
                     }
                 }
             }
             if !accountViewModel.friends.isEmpty {
                 Section("Friends") {
-                    ForEach(accountViewModel.friends, id: \.self) { friend in
+                    ForEach(accountViewModel.friends.indices, id: \.self) { index in
                         HStack {
-                            Text(friend)
-                            Spacer()
-                            Text("unfriend")
-                                .foregroundColor(.blue)
-                                .onTapGesture {
-//                                    viewModel.cancelFriendRequest(friendUsername: friend)
-                                }
+                            if let username = accountViewModel.friends[index]["username"] as? String {
+                                Text(username)
+                                Spacer()
+                                Text("unfriend")
+                                    .foregroundColor(.blue)
+                                    .onTapGesture {
+                                        viewModel.unfriend(friendUsername: username)
+                                    }
+                            }
                         }
                     }
                 }
             }
+
        }
         .toast(isPresenting: $viewModel.showRequestSent) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Sent!")
@@ -106,6 +105,15 @@ struct ManageFriendsView: View {
         }
         .toast(isPresenting: $viewModel.showRequestError) {
             AlertToast(displayMode: .alert, type: .error(.red), title: "Something Went Wrong")
+        }
+        .toast(isPresenting: $viewModel.showRequestRejected) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "Friend Request Rejected")
+        }
+        .toast(isPresenting: $viewModel.showRequestCancelled) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "Friend Request Cancelled")
+        }
+        .toast(isPresenting: $viewModel.showRequestAccepted) {
+            AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Accepted!")
         }
     }
 }

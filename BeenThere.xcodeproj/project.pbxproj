@@ -20,6 +20,10 @@
 		C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */; };
 		C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */; };
 		C09C698B2AE8419E008A3148 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C09C698A2AE8419E008A3148 /* AlertToast */; };
+		C09C698D2AE88382008A3148 /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C698C2AE88382008A3148 /* FriendView.swift */; };
+		C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C698E2AE8838A008A3148 /* FriendViewModel.swift */; };
+		C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69902AE883C2008A3148 /* FriendMapView.swift */; };
+		C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69922AE88405008A3148 /* FriendMapViewModel.swift */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
 		C0C808DC2ADD83440070E679 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DB2ADD83440070E679 /* Assets.xcassets */; };
@@ -41,6 +45,10 @@
 		C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsViewModel.swift; sourceTree = "<group>"; };
 		C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDeleteAccountView.swift; sourceTree = "<group>"; };
+		C09C698C2AE88382008A3148 /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
+		C09C698E2AE8838A008A3148 /* FriendViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendViewModel.swift; sourceTree = "<group>"; };
+		C09C69902AE883C2008A3148 /* FriendMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapView.swift; sourceTree = "<group>"; };
+		C09C69922AE88405008A3148 /* FriendMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapViewModel.swift; sourceTree = "<group>"; };
 		C0C808D42ADD83420070E679 /* BeenThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeenThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0C808D72ADD83420070E679 /* BeenThereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeenThereApp.swift; sourceTree = "<group>"; };
 		C0C808D92ADD83420070E679 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -103,6 +111,8 @@
 				C0D2A90D2AE5A16C006326C1 /* CreateUsernameView.swift */,
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
 				C0D2A9072AE585CB006326C1 /* AccountView.swift */,
+				C09C698C2AE88382008A3148 /* FriendView.swift */,
+				C09C698E2AE8838A008A3148 /* FriendViewModel.swift */,
 				C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */,
 				C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */,
 				C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */,
@@ -111,6 +121,8 @@
 				C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */,
 				C0C808E62ADD855C0070E679 /* MapView.swift */,
 				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
+				C09C69902AE883C2008A3148 /* FriendMapView.swift */,
+				C09C69922AE88405008A3148 /* FriendMapViewModel.swift */,
 				C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */,
 				C0C808DB2ADD83440070E679 /* Assets.xcassets */,
 				C0C808DD2ADD83440070E679 /* Preview Content */,
@@ -220,10 +232,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C09C698D2AE88382008A3148 /* FriendView.swift in Sources */,
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
+				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
+				C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* AccountView.swift in Sources */,
 				C0949EFE2AE5B59A006EE5D2 /* MissingInfoView.swift in Sources */,
 				C0D2A90E2AE5A16C006326C1 /* CreateUsernameView.swift in Sources */,
@@ -233,6 +248,7 @@
 				C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */,
 				C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */,
 				C0949F002AE5BC22006EE5D2 /* SettingsView.swift in Sources */,
+				C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,7 +381,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -400,7 +416,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;

@@ -19,7 +19,7 @@ class AccountViewModel: ObservableObject {
     @Published var email = ""
     @Published var newUsername = ""
     @AppStorage("username") var username = ""
-    @Published var friends: [String] = []
+    @Published var friends: [[String: Any]] = []
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
@@ -27,6 +27,7 @@ class AccountViewModel: ObservableObject {
     @Published var receivedFriendRequests: [[String: Any]] = []
     
     private var accountListener: ListenerRegistration?
+    var listeners: [ListenerRegistration] = []
     private var db = Firestore.firestore()
     
     var isUsernameValid: Bool {
@@ -70,7 +71,44 @@ class AccountViewModel: ObservableObject {
     }
     deinit {
         accountListener?.remove()
+        for listener in listeners {
+            listener.remove()
+        }
     }
+    
+    func sortedFriendsByLocationCount() -> [[String: Any]] {
+        return friends.sorted { friendA, friendB in
+            let locationsCountA = (friendA["locations"] as? [[String: Any]])?.count ?? 0
+            let locationsCountB = (friendB["locations"] as? [[String: Any]])?.count ?? 0
+            return locationsCountA > locationsCountB
+        }
+    }
+
+    
+    func fetchFriendsData() {
+        print("LOG: fetching friends data")
+        print(friends)
+        for friend in friends {
+                print(friend)
+                guard let friendUID = friend["uid"] as? String else { continue }
+                
+                let friendRef = db.collection("users").document(friendUID)
+                
+                let listener = friendRef.addSnapshotListener { [weak self] (snapshot, error) in
+                    guard let data = snapshot?.data() else {
+                        print("Failed to fetch data for friend: \(friendUID)")
+                        return
+                    }
+                    print("Fetched data for friend \(friendUID): \(data)")
+                    if let friendIndex = self?.friends.firstIndex(where: { ($0["uid"] as? String) == friendUID }) {
+                        self?.friends[friendIndex] = data
+                    }
+                }
+
+                
+                listeners.append(listener)
+            }
+        }
     
     func checkAndSetUsername() {
         if isUsernameValid {
@@ -167,23 +205,24 @@ class AccountViewModel: ObservableObject {
             return
         }
         
-        accountListener = db.collection("users").document(userID).addSnapshotListener { (documentSnapshot, error) in
+        accountListener = db.collection("users").document(userID).addSnapshotListener { [weak self] (documentSnapshot, error) in
             guard let data = documentSnapshot?.data() else {
                 print("No data in document")
                 return
             }
             
-            self.firstName = data["firstName"] as? String ?? ""
-            self.lastName = data["lastName"] as? String ?? ""
-            self.email = data["email"] as? String ?? ""
-            self.username = data["username"] as? String ?? ""
-            self.friends = data["friends"] as? [String] ?? []
-            self.uid = userID
-            self.sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
-            self.receivedFriendRequests = data["receivedFriendRequests"] as? [[String: Any]] ?? []
+            self?.firstName = data["firstName"] as? String ?? ""
+            self?.lastName = data["lastName"] as? String ?? ""
+            self?.email = data["email"] as? String ?? ""
+            self?.username = data["username"] as? String ?? ""
+            self?.friends = data["friends"] as? [[String: Any]] ?? []
+            self?.uid = userID
+            self?.sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
+            self?.receivedFriendRequests = data["receivedFriendRequests"] as? [[String: Any]] ?? []
+            self?.fetchFriendsData()
 
             if let locationData = data["locations"] as? [[String: Any]] {
-                self.locations = locationData.compactMap { locationDict in
+                self?.locations = locationData.compactMap { locationDict in
                     do {
                         let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
                         let location = try JSONDecoder().decode(Location.self, from: jsonData)

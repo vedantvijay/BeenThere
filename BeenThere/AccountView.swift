@@ -20,16 +20,48 @@ struct AccountView: View {
     @State private var isUsernameTaken: Bool = false
     
     var body: some View {
-        Form {
-            Section {
-                Text("Chunks: \(viewModel.locations.count)")
-            }
-            Section {
-                NavigationLink("Manage Friends") {
-                    ManageFriendsView(accountViewModel: viewModel)
+        NavigationView {
+            Form {
+                Section {
+                    Text("Chunks: \(viewModel.locations.count)")
                 }
+                Section {
+                    NavigationLink("Manage Friends") {
+                        ManageFriendsView(accountViewModel: viewModel)
+                    }
+                }
+                Section(header: Text("Friends")) {
+                    let sortedFriends = viewModel.sortedFriendsByLocationCount()
+                    if !sortedFriends.isEmpty {
+                        ForEach(sortedFriends.indices, id: \.self) { index in
+                            let friend = sortedFriends[index]
+                            NavigationLink {
+                                if let friendUID = friend["uid"] as? String {
+                                    FriendView(friendUID: friend["uid"] as! String)
+                                }
+                            } label: {
+                                HStack {
+                                    if let friendName = friend["username"] as? String {
+                                        Text(friendName)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    if let locations = friend["locations"] as? [[String: Any]] {
+                                        Text("\(locations.count)")
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Text("You have no friends added yet.")
+                            .foregroundColor(.gray)
+                    }
+                }
+
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 
