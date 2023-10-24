@@ -64,6 +64,9 @@ struct ContentView: View {
                 }
                 MapView(viewModel: mapViewModel)
                     .ignoresSafeArea()
+                    .onAppear {
+                        requestLocationAccess()
+                    }
             }
                 .tabItem {
                     Image(systemName: "map.fill")
