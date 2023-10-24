@@ -21,6 +21,7 @@ struct ContentView: View {
     @StateObject private var locationManagerDelegate = LocationManagerDelegate(locationManager: CLLocationManager())
 
     @State private var showSettingsAlert: Bool = false
+    @State private var selection = 2
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -35,57 +36,70 @@ struct ContentView: View {
     }
 
     var body: some View {
-        ZStack {
+//        ZStack {
+//            MapView(viewModel: mapViewModel)
+//                .ignoresSafeArea()
+//                .onAppear {
+//                    requestLocationAccess()
+//                }
+//            
+//            VStack {
+//                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+//                    if locationManagerDelegate.authorizationStatus == .denied {
+//                        Button("Update Location Settings") {
+//                            showSettingsAlert = true
+//                        }
+//                        .padding()
+//                        .background(Color.orange)
+//                        .foregroundColor(.white)
+//                        .cornerRadius(8)
+//                    }
+//                }
+//                Spacer()
+//                Text("Chunks: \(mapViewModel.locations.count)")
+//                    .fontWeight(.black)
+//                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+//                    .padding()
+//                HStack {
+//                    NavigationLink {
+//                        AccountView(viewModel: accountViewModel)
+//                    } label: {
+//                        Image(systemName: "person.2.circle.fill")
+//                            .font(.largeTitle)
+//                            .fontWeight(.black)
+//                            .padding()
+//                    }
+//                    NavigationLink {
+//                        SettingsView()
+//                    } label: {
+//                        Image(systemName: "gearshape.circle.fill")
+//                            .font(.largeTitle)
+//                            .fontWeight(.black)
+//                            .padding()
+//                    }
+//                }
+//                .foregroundStyle(colorScheme == .dark ? .white : .black)
+//                
+//            }
+//
+//        }
+        TabView(selection: $selection) {
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.fill")
+                }
+                .tag(1)
             MapView(viewModel: mapViewModel)
                 .ignoresSafeArea()
-                .onAppear {
-                    requestLocationAccess()
+                .tabItem {
+                    Label("Map", systemImage: "map.fill")
                 }
-            
-            VStack {
-                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                    if locationManagerDelegate.authorizationStatus == .denied {
-                        Button("Update Location Settings") {
-                            showSettingsAlert = true
-                        }
-                        .padding()
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                    }
+                .tag(2)
+            AccountView(viewModel: accountViewModel)
+                .tabItem {
+                    Label("Account", systemImage: "person.2.fill")
                 }
-                Spacer()
-                Text("Chunks: \(mapViewModel.locations.count)")
-                    .fontWeight(.black)
-                    .foregroundStyle(colorScheme == .dark ? .white : .black)
-                    .padding()
-                HStack {
-                    NavigationLink {
-                        AccountView(viewModel: accountViewModel)
-                    } label: {
-                        Image(systemName: "person.2.circle.fill")
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                            .padding()
-                    }
-                    NavigationLink {
-                        SettingsView()
-                    } label: {
-                        Image(systemName: "gearshape.circle.fill")
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                            .padding()
-                    }
-                }
-                .foregroundStyle(colorScheme == .dark ? .white : .black)
-                
-            }
-            .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
-                if let location = mapViewModel.tappedLocation {
-                    Link("Open in Google Maps", destination: googleMapsURL(for: location))
-                    Link("Open in Apple Maps", destination: appleMapsURL(for: location))
-                }
-            }
+                .tag(3)
         }
         .alert(isPresented: $showSettingsAlert) {
             Alert(
@@ -102,6 +116,12 @@ struct ContentView: View {
         }
         .onAppear {
             mapViewModel.updateMapStyleURL()
+        }
+        .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
+            if let location = mapViewModel.tappedLocation {
+                Link("Open in Google Maps", destination: googleMapsURL(for: location))
+                Link("Open in Apple Maps", destination: appleMapsURL(for: location))
+            }
         }
     }
 

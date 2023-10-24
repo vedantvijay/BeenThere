@@ -13,6 +13,7 @@ import SwiftUI
 class AccountViewModel: ObservableObject {
     static let shared = AccountViewModel()
     
+    @Published var uid = ""
     @Published var firstName = ""
     @Published var lastName = ""
     @Published var email = ""
@@ -22,8 +23,8 @@ class AccountViewModel: ObservableObject {
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
-    @Published var sentFriendRequests: [String] = []
-    @Published var receivedFriendRequests: [String] = []
+    @Published var sentFriendRequests: [[String: Any]] = []
+    @Published var receivedFriendRequests: [[String: Any]] = []
     
     private var accountListener: ListenerRegistration?
     private var db = Firestore.firestore()
@@ -177,7 +178,10 @@ class AccountViewModel: ObservableObject {
             self.email = data["email"] as? String ?? ""
             self.username = data["username"] as? String ?? ""
             self.friends = data["friends"] as? [String] ?? []
-            
+            self.uid = userID
+            self.sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
+            self.receivedFriendRequests = data["receivedFriendRequests"] as? [[String: Any]] ?? []
+
             if let locationData = data["locations"] as? [[String: Any]] {
                 self.locations = locationData.compactMap { locationDict in
                     do {

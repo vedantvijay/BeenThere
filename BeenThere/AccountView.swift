@@ -21,8 +21,13 @@ struct AccountView: View {
     
     var body: some View {
         Form {
-            NavigationLink("Manage Friends") {
-                ManageFriendsView(accountViewModel: viewModel)
+            Section {
+                Text("Chunks: \(viewModel.locations.count)")
+            }
+            Section {
+                NavigationLink("Manage Friends") {
+                    ManageFriendsView(accountViewModel: viewModel)
+                }
             }
         }
     }

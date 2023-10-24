@@ -19,6 +19,7 @@
 		C0949F002AE5BC22006EE5D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */; };
 		C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */; };
 		C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */; };
+		C09C698B2AE8419E008A3148 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C09C698A2AE8419E008A3148 /* AlertToast */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
 		C0C808DC2ADD83440070E679 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DB2ADD83440070E679 /* Assets.xcassets */; };
@@ -63,6 +64,7 @@
 				C011082E2AE487C000406837 /* FirebaseAnalyticsSwift in Frameworks */,
 				C01108302AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				C011082A2AE487C000406837 /* FirebaseAnalytics in Frameworks */,
+				C09C698B2AE8419E008A3148 /* AlertToast in Frameworks */,
 				C011082C2AE487C000406837 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				C01108322AE487C000406837 /* FirebaseAppCheck in Frameworks */,
 				C011083A2AE4921500406837 /* FirebaseFirestore in Frameworks */,
@@ -156,6 +158,7 @@
 				C01108312AE487C000406837 /* FirebaseAppCheck */,
 				C01108352AE4894C00406837 /* FirebaseAuth */,
 				C01108392AE4921500406837 /* FirebaseFirestore */,
+				C09C698A2AE8419E008A3148 /* AlertToast */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -188,6 +191,7 @@
 			packageReferences = (
 				C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 				C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C09C69892AE8419E008A3148 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -456,6 +460,14 @@
 				minimumVersion = 10.16.0;
 			};
 		};
+		C09C69892AE8419E008A3148 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 		C0C808EA2ADD857A0070E679 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
@@ -501,6 +513,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C01108282AE487C000406837 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		C09C698A2AE8419E008A3148 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C09C69892AE8419E008A3148 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 		C0C808EB2ADD857A0070E679 /* Mapbox */ = {
 			isa = XCSwiftPackageProductDependency;

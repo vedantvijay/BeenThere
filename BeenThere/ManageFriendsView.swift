@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AlertToast
 
 struct ManageFriendsView: View {
     @ObservedObject var viewModel = ManageFriendsViewModel.shared
@@ -14,7 +15,7 @@ struct ManageFriendsView: View {
     @State private var newFriendUsername = ""
     
     var body: some View {
-        Form {
+        List {
            Section {
                HStack {
                    TextField("Add Friend", text: $newFriendUsername)
@@ -22,8 +23,9 @@ struct ManageFriendsView: View {
                        .disableAutocorrection(true)
                        .foregroundColor(.gray)
                    Button("Add") {
-//                       sendFriendRequest(friendUsername: newFriendUsername)
+                       viewModel.sendFriendRequest(friendUsername: newFriendUsername)
                        newFriendUsername = ""
+                       print(accountViewModel.sentFriendRequests)
                    }
                    .buttonStyle(.bordered)
                    .tint(.green)
@@ -35,29 +37,35 @@ struct ManageFriendsView: View {
            }
             if !accountViewModel.sentFriendRequests.isEmpty {
                 Section("Sent") {
-                    ForEach(accountViewModel.sentFriendRequests, id: \.self) { friend in
+                    ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            Text(friend)
-                                .foregroundColor(.gray)
-                            Spacer()
-                            Image(systemName: "xmark.circle")
-                                .foregroundColor(.red)
-                                .onTapGesture {
-//                                    cancelFriendRequest(friend: friend)
-                                }
+                            // Safely extract the username from the dictionary.
+                            if let username = accountViewModel.sentFriendRequests[index]["username"] as? String {
+                                Text(username)
+                                    .foregroundColor(.gray)
+                                Spacer()
+                                Image(systemName: "xmark.circle")
+                                    .foregroundColor(.red)
+                                    .onTapGesture {
+                                        // Handle friend request cancellation here.
+                                        // If you need to pass the entire friend request dictionary:
+    //                                    viewModel.cancelFriendRequest(friend: accountViewModel.sentFriendRequests[index])
+                                        viewModel.cancelFriendRequest(friendUsername: username)
+                                    }
+                            }
                         }
                     }
                 }
             }
+
             if !accountViewModel.receivedFriendRequests.isEmpty {
                 Section("Received") {
-                    ForEach(accountViewModel.receivedFriendRequests, id: \.self) { friend in
+                    ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            Text(friend)
-                                .foregroundColor(.gray)
-                                .onAppear {
-                                    print("friend \(friend)")
-                                }
+                            if let username = accountViewModel.sentFriendRequests[index]["username"] as? String {
+                                Text(username)
+                                    .foregroundColor(.gray)
+                            }
                             Spacer()
                             Image(systemName: "xmark.circle")
                                 .foregroundColor(.red)
@@ -83,13 +91,22 @@ struct ManageFriendsView: View {
                             Text("unfriend")
                                 .foregroundColor(.blue)
                                 .onTapGesture {
-//                                    removeFriend(friend: friend)
+//                                    viewModel.cancelFriendRequest(friendUsername: friend)
                                 }
                         }
                     }
                 }
             }
        }
+        .toast(isPresenting: $viewModel.showRequestSent) {
+            AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Sent!")
+        }
+        .toast(isPresenting: $viewModel.showRequestAlreadySent) {
+            AlertToast(displayMode: .alert, type: .complete(.orange), title: "Friend Request Already Sent")
+        }
+        .toast(isPresenting: $viewModel.showRequestError) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "Something Went Wrong")
+        }
     }
 }
 
