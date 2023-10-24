@@ -58,6 +58,7 @@ struct ContentView: View {
                 Text("Chunks: \(mapViewModel.locations.count)")
                     .fontWeight(.black)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .padding()
                 HStack {
                     NavigationLink {
                         AccountView(viewModel: accountViewModel)
@@ -65,6 +66,7 @@ struct ContentView: View {
                         Image(systemName: "person.2.circle.fill")
                             .font(.largeTitle)
                             .fontWeight(.black)
+                            .padding()
                     }
                     NavigationLink {
                         SettingsView()
@@ -72,6 +74,7 @@ struct ContentView: View {
                         Image(systemName: "gearshape.circle.fill")
                             .font(.largeTitle)
                             .fontWeight(.black)
+                            .padding()
                     }
                 }
                 .foregroundStyle(colorScheme == .dark ? .white : .black)
@@ -95,6 +98,9 @@ struct ContentView: View {
             )
         }
         .onChange(of: colorScheme) {
+            mapViewModel.updateMapStyleURL()
+        }
+        .onAppear {
             mapViewModel.updateMapStyleURL()
         }
     }

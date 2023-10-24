@@ -76,6 +76,9 @@ struct CreateUsernameView: View {
                 currentImageIndex = (currentImageIndex + 1) % imageNames.count
             }
         }
+        .onDisappear {
+            timer.upstream.connect().cancel()
+        }
         .task {
             // Set the focus to the text field when the view appears
             isUsernameFieldFocused = true

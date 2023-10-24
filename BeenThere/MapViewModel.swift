@@ -48,11 +48,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     
     override init() {
         super.init()
-        if let url = URL(string: colorScheme == .dark ? "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr" : "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr") {
-            mapView = MGLMapView(frame: .zero, styleURL: url)
-        } else {
-            print("Error: Invalid URL")
-        }
+        mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false

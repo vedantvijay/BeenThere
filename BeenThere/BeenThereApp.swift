@@ -54,7 +54,7 @@ struct BeenThereApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationView {
                 if isAuthenticated {
                     if username != "" {
                         ContentView()
@@ -65,8 +65,8 @@ struct BeenThereApp: App {
                     LoginView()
                 }
             }
-//            .preferredColorScheme(.light)
             .statusBarHidden()
+            .navigationViewStyle(.stack)
         }
         .environmentObject(authViewModel)
     }

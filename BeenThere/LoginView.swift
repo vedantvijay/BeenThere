@@ -81,6 +81,9 @@ struct LoginView: View {
                 currentImageIndex = (currentImageIndex + 1) % imageNames.count
             }
         }
+        .onDisappear {
+            timer.upstream.connect().cancel()
+        }
     }
 
     // Function to create user document in Firestore

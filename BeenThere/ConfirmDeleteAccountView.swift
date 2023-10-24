@@ -56,7 +56,9 @@ struct ConfirmDeleteAccountView: View {
             }
         }
         .onReceive(timer) { _ in
-            minutesSinceLastLogin = accountViewModel.minutesSinceLastLogin ?? 10
+            if let minutes = accountViewModel.minutesSinceLastLogin {
+                minutesSinceLastLogin = minutes
+            }
         }
         .onChange(of: minutesSinceLastLogin) {
             if minutesSinceLastLogin > 3 {
@@ -64,7 +66,12 @@ struct ConfirmDeleteAccountView: View {
             }
         }
         .onAppear {
-            minutesSinceLastLogin = accountViewModel.minutesSinceLastLogin!
+            if let minutes = accountViewModel.minutesSinceLastLogin {
+                minutesSinceLastLogin = minutes
+            }
+        }
+        .onDisappear {
+            timer.upstream.connect().cancel()
         }
         .confirmationDialog("This action is permanent. Are you sure?",
                             isPresented: $showDeleteAccount, titleVisibility: .visible) {
