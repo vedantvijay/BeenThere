@@ -21,7 +21,8 @@ struct FriendMapView: UIViewRepresentable {
         viewModel.mapView.showsUserLocation = true
         viewModel.mapView.attributionButtonPosition = .topRight
         viewModel.mapView.logoViewPosition = .topLeft
-        viewModel.mapView.setUserTrackingMode(.follow, animated: true, completionHandler: nil)
+        viewModel.adjustMapViewToLocations()
+        viewModel.mapView.setUserTrackingMode(.none, animated: true, completionHandler: nil)
         
         // Disable autoresizing mask translation
         viewModel.mapView.logoView.translatesAutoresizingMaskIntoConstraints = false

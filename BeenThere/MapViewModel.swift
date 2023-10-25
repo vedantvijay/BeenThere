@@ -66,9 +66,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/backdrop-dark/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/d60cc1d4-e18c-4dfa-81d6-55214c71c53a/style.json?key=s9gJbpLafAf5TyI9DyDr")
         } else {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/backdrop/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/9175ed1e-70ec-4433-9bc5-b4609df28fcd/style.json?key=s9gJbpLafAf5TyI9DyDr")
         }
     }
 
@@ -205,6 +205,35 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         currentSquares = squaresToKeep
     }
 
+    
+    func boundingBox(for locations: [Location]) -> (southWest: CLLocationCoordinate2D, northEast: CLLocationCoordinate2D)? {
+        guard !locations.isEmpty else { return nil }
+        
+        var minLat = locations[0].lowLatitude
+        var maxLat = locations[0].highLatitude
+        var minLong = locations[0].lowLongitude
+        var maxLong = locations[0].highLongitude
+
+        for location in locations {
+            minLat = min(minLat, location.lowLatitude)
+            maxLat = max(maxLat, location.highLatitude)
+            minLong = min(minLong, location.lowLongitude)
+            maxLong = max(maxLong, location.highLongitude)
+        }
+
+        let southWest = CLLocationCoordinate2D(latitude: minLat, longitude: minLong)
+        let northEast = CLLocationCoordinate2D(latitude: maxLat, longitude: maxLong)
+        
+        return (southWest, northEast)
+    }
+
+    func adjustMapViewToLocations() {
+        if let boundingBox = self.boundingBox(for: self.locations) {
+            let padding = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+            let region = MGLCoordinateBounds(sw: boundingBox.southWest, ne: boundingBox.northEast)
+            mapView.setVisibleCoordinateBounds(region, edgePadding: padding, animated: true)
+        }
+    }
     
     func beginBackgroundUpdateTask() {
         backgroundTask = UIApplication.shared.beginBackgroundTask {

@@ -19,9 +19,11 @@ struct AccountView: View {
     @State private var userPhoto: Image = Image("background1")
     @State private var isUsernameTaken: Bool = false
     
+    @State private var showFriendView = false
+    
     var body: some View {
         NavigationView {
-            Form {
+            List {
                 Section {
                     Text("Chunks: \(viewModel.locations.count)")
                 }
@@ -35,23 +37,21 @@ struct AccountView: View {
                     if !sortedFriends.isEmpty {
                         ForEach(sortedFriends.indices, id: \.self) { index in
                             let friend = sortedFriends[index]
-                            NavigationLink {
-                                if let friendUID = friend["uid"] as? String {
-                                    FriendView(friendUID: friend["uid"] as! String)
-                                }
-                            } label: {
-                                HStack {
-                                    if let friendName = friend["username"] as? String {
-                                        Text(friendName)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    if let locations = friend["locations"] as? [[String: Any]] {
-                                        Text("\(locations.count)")
+                            NavigationLink(destination: FriendView(friend: friend)) {
+                                    HStack {
+                                        if let friendName = friend["username"] as? String {
+                                            Text(friendName)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        if let locations = friend["locations"] as? [[String: Any]] {
+                                            Text("\(locations.count)")
+                                        }
                                     }
                                 }
-                            }
+                            
+
                         }
                     } else {
                         Text("You have no friends added yet.")

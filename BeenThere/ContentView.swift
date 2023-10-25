@@ -65,7 +65,10 @@ struct ContentView: View {
                 MapView(viewModel: mapViewModel)
                     .ignoresSafeArea()
                     .onAppear {
-                        requestLocationAccess()
+                        mapViewModel.adjustMapViewToLocations()
+                    }
+                    .onChange(of: $mapViewModel.locations.count) {
+                        mapViewModel.adjustMapViewToLocations()
                     }
             }
                 .tabItem {

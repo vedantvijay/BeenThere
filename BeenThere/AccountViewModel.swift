@@ -89,26 +89,30 @@ class AccountViewModel: ObservableObject {
         print("LOG: fetching friends data")
         print(friends)
         for friend in friends {
-                print(friend)
-                guard let friendUID = friend["uid"] as? String else { continue }
-                
-                let friendRef = db.collection("users").document(friendUID)
-                
-                let listener = friendRef.addSnapshotListener { [weak self] (snapshot, error) in
-                    guard let data = snapshot?.data() else {
-                        print("Failed to fetch data for friend: \(friendUID)")
-                        return
-                    }
-                    print("Fetched data for friend \(friendUID): \(data)")
-                    if let friendIndex = self?.friends.firstIndex(where: { ($0["uid"] as? String) == friendUID }) {
-                        self?.friends[friendIndex] = data
-                    }
+            print(friend)
+            guard let friendUID = friend["uid"] as? String else { continue }
+            
+            let friendRef = db.collection("users").document(friendUID)
+            
+            let listener = friendRef.addSnapshotListener { [weak self] (snapshot, error) in
+                guard var data = snapshot?.data() else {
+                    print("Failed to fetch data for friend: \(friendUID)")
+                    return
                 }
-
+                print("Fetched data for friend \(friendUID): \(data)")
                 
-                listeners.append(listener)
+                // Manually add the UID to the document data
+                data["uid"] = friendUID
+                
+                if let friendIndex = self?.friends.firstIndex(where: { ($0["uid"] as? String) == friendUID }) {
+                    self?.friends[friendIndex] = data
+                }
             }
+            
+            listeners.append(listener)
         }
+    }
+
     
     func checkAndSetUsername() {
         if isUsernameValid {

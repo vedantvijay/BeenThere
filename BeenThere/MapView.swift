@@ -21,7 +21,7 @@ struct MapView: UIViewRepresentable {
         viewModel.mapView.showsUserLocation = true
         viewModel.mapView.attributionButtonPosition = .topRight
         viewModel.mapView.logoViewPosition = .topLeft
-        viewModel.mapView.setUserTrackingMode(.follow, animated: true, completionHandler: nil)
+        viewModel.mapView.setUserTrackingMode(.none, animated: true, completionHandler: nil)
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
         longPress.minimumPressDuration = 1.0
         viewModel.mapView.addGestureRecognizer(longPress)
