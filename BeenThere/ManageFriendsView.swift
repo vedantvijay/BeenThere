@@ -95,8 +95,9 @@ struct ManageFriendsView: View {
                     }
                 }
             }
-
        }
+        .navigationTitle(viewModel.accountViewModel.username)
+
         .toast(isPresenting: $viewModel.showRequestSent) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Sent!")
         }
