@@ -13,6 +13,7 @@ import SwiftUI
 class AccountViewModel: ObservableObject {
     static let shared = AccountViewModel()
     
+    @Published var users: [[String: Any]] = []
     @Published var uid = ""
     @Published var firstName = ""
     @Published var lastName = ""
@@ -34,6 +35,8 @@ class AccountViewModel: ObservableObject {
         let regex = "^[a-z]{5,}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
+    
+    
     
     var minutesSinceLastLogin: Int? {
         guard let user = Auth.auth().currentUser else {
@@ -76,13 +79,54 @@ class AccountViewModel: ObservableObject {
         }
     }
     
+    func sortedUsersByLocationCount() -> [[String: Any]] {
+        return users.sorted { userA, userB in
+            let locationsCountA = (userA["locations"] as? [[String: Any]])?.count ?? 0
+            let locationsCountB = (userB["locations"] as? [[String: Any]])?.count ?? 0
+            return locationsCountA > locationsCountB
+        }
+    }
+
+    
+    func fetchAllUsers() {
+        db.collection("users").getDocuments { [weak self] (snapshot, error) in
+            guard let documents = snapshot?.documents else {
+                print("No users found in Firestore.")
+                return
+            }
+            
+            self?.users = documents.map { document in
+                var data = document.data()
+                data["uid"] = document.documentID
+                return data
+            }
+        }
+    }
+
+    
     func sortedFriendsByLocationCount() -> [[String: Any]] {
-        return friends.sorted { friendA, friendB in
+        var friendsAndMe = friends
+        
+        // Convert your [Location] to [[String: Any]]
+        let myLocations: [[String: Any]] = locations.map { location in
+            do {
+                let encodedData = try JSONEncoder().encode(location)
+                let dictionary = try JSONSerialization.jsonObject(with: encodedData, options: .allowFragments) as! [String: Any]
+                return dictionary
+            } catch {
+                print("Error encoding location: \(error)")
+                return [:]
+            }
+        }
+        
+        friendsAndMe.append(["username": self.username, "locations": myLocations])
+        return friendsAndMe.sorted { friendA, friendB in
             let locationsCountA = (friendA["locations"] as? [[String: Any]])?.count ?? 0
             let locationsCountB = (friendB["locations"] as? [[String: Any]])?.count ?? 0
             return locationsCountA > locationsCountB
         }
     }
+
 
     
     func fetchFriendsData() {
@@ -239,5 +283,6 @@ class AccountViewModel: ObservableObject {
             }
 
         }
+        fetchAllUsers()
     }
 }

@@ -45,9 +45,9 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            SettingsView()
+            AccountView(viewModel: accountViewModel)
                 .tabItem {
-                    Image(systemName: "gearshape.fill")
+                    Image(systemName: "person.fill")
                 }
                 .tag(1)
             ZStack {
@@ -75,9 +75,9 @@ struct ContentView: View {
                     Image(systemName: "map.fill")
                 }
                 .tag(2)
-            AccountView(viewModel: accountViewModel)
+            LeaderboardView(viewModel: accountViewModel)
                 .tabItem {
-                    Image(systemName: "person.2.fill")
+                    Image(systemName: "chart.bar.fill")
                 }
                 .tag(3)
         }

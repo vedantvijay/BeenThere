@@ -1,0 +1,41 @@
+//
+//  SettingsView.swift
+//  BeenThere
+//
+//  Created by Jared Jones on 10/22/23.
+//
+
+//import SwiftUI
+//
+//struct SettingsView: View {
+//    @Environment(\.dismiss) var dismiss
+//    
+//    @ObservedObject var accountViewModel = AccountViewModel.shared
+//    
+//    var body: some View {
+//        NavigationView {
+//            Form {
+//                Section {
+////                    NavigationLink("Manage Friends") {
+////                        ManageFriendsView(accountViewModel: viewModel)
+////                    }
+//                }
+//                Section {
+//                    Button("Sign Out") {
+//                        accountViewModel.signOut()
+//                        dismiss()
+//                    }
+//                    NavigationLink("Delete Account") {
+//                        ConfirmDeleteAccountView()
+//                    }
+//                }
+//               
+//            }
+//        }
+//        .navigationViewStyle(.stack)
+//    }
+//}
+//
+//#Preview {
+//    SettingsView()
+//}
