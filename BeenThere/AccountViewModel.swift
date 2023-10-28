@@ -86,21 +86,35 @@ class AccountViewModel: ObservableObject {
             return locationsCountA > locationsCountB
         }
     }
-
     
-    func fetchAllUsers() {
-        db.collection("users").getDocuments { [weak self] (snapshot, error) in
-            guard let documents = snapshot?.documents else {
-                print("No users found in Firestore.")
+    func listenForGlobalLeaderboardUpdates() {
+        let leaderboardRef = db.collection("leaderboards").document("globalLeaderboard")
+        
+        // This listener will keep updating `users` whenever the globalLeaderboard document changes.
+        let listener = leaderboardRef.addSnapshotListener { [weak self] (documentSnapshot, error) in
+            if let error = error {
+                print("Error fetching global leaderboard: \(error.localizedDescription)")
+                return
+            }
+
+            guard let document = documentSnapshot, document.exists, let data = document.data(), let users = data["users"] as? [[String: Any]] else {
+                print("No global leaderboard found or there was an error.")
                 return
             }
             
-            self?.users = documents.map { document in
-                var data = document.data()
-                data["uid"] = document.documentID
-                return data
+            self?.users = users.map { user in
+                var userData = user
+                if let uid = user["uid"] as? String {
+                    userData["uid"] = uid
+                }
+                print("LOG: Fetched global leaderboard data: \(data)")
+
+                return userData
             }
+
         }
+        // Add the listener to your listeners array so you can remove it later if needed.
+        listeners.append(listener)
     }
 
     
@@ -226,6 +240,42 @@ class AccountViewModel: ObservableObject {
         }
     }
 
+    func ensureUserHasUIDAttribute() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found")
+            return
+        }
+        // Reference to the user's document in Firestore
+        let userRef = db.collection("users").document(userID)
+
+        // Fetch the user document to check for the uid attribute
+        userRef.getDocument { [weak self] (documentSnapshot, error) in
+            guard let strongSelf = self else { return }
+
+            if let error = error {
+                print("Error fetching user document: \(error)")
+                return
+            }
+            
+            guard let documentSnapshot else { return }
+
+            // If the document doesn't exist or doesn't have a uid attribute, add one
+            if documentSnapshot.data()?["uid"] == nil {
+                strongSelf.addUIDAttributeToUserDocument(userRef: userRef, userID: userID)
+            }
+        }
+    }
+
+    func addUIDAttributeToUserDocument(userRef: DocumentReference, userID: String) {
+        userRef.updateData(["uid": userID]) { (error) in
+            if let error = error {
+                print("Error adding uid attribute: \(error)")
+                return
+            }
+            print("uid attribute added successfully!")
+        }
+    }
+
 
     
     func isUsernameTaken(username: String, completion: @escaping (Bool) -> Void) {
@@ -283,6 +333,6 @@ class AccountViewModel: ObservableObject {
             }
 
         }
-        fetchAllUsers()
+        listenForGlobalLeaderboardUpdates()
     }
 }

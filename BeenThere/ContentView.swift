@@ -96,6 +96,7 @@ struct ContentView: View {
         }
         .onAppear {
             mapViewModel.updateMapStyleURL()
+            accountViewModel.ensureUserHasUIDAttribute()
         }
         .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
             if let location = mapViewModel.tappedLocation {

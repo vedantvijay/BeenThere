@@ -30,7 +30,12 @@ struct LeaderboardView: View {
                             ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
                                 let friend = viewModel.sortedFriendsByLocationCount()[index]
                                 NavigationLink(destination: FriendView(friend: friend)) {
+                                    
                                     HStack {
+                                        Text("\(index + 1).")
+                                            .bold()
+                                            .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                        
                                         if let friendName = friend["username"] as? String {
                                             Text(friendName)
                                                 .fontWeight(friendName == viewModel.username ? .black : .regular)
@@ -54,21 +59,26 @@ struct LeaderboardView: View {
                             if let personName = person["username"] as? String,
                                let personUID = person["uid"] as? String,
                                let personLocations = person["locations"] as? [[String: Any]] {
-                                
                                 HStack {
+                                    // Display the rank
+                                    Text("\(index + 1).")
+                                        .bold()
+                                        .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                    
                                     if viewModel.friends.contains(where: { friend in friend["username"] as? String == personName }) || personName == viewModel.username {
                                         Text(personName)
                                             .fontWeight(personName == viewModel.username ? .black : .regular)
                                     } else {
-                                        Text(personUID)
+                                        Text("UnknownUser")
+                                            .blur(radius: 5)
                                     }
                                     Spacer()
                                     Text("\(personLocations.count)")
                                 }
                             }
                         }
-
                     }
+
 
                 }
                 
