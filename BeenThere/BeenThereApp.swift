@@ -51,22 +51,21 @@ struct BeenThereApp: App {
     @StateObject var authViewModel = AuthViewModel()
     @AppStorage("isAuthenticated") var isAuthenticated = false
     @AppStorage("username") var username = ""
-
+    
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                if isAuthenticated {
-                    if username != "" {
-                        ContentView()
-                    } else {
-                        CreateUsernameView()
-                    }
+            if isAuthenticated {
+                if username != "" {
+                    ContentView()
+                        .statusBarHidden()
                 } else {
-                    LoginView()
+                    CreateUsernameView()
+                        .statusBarHidden()
                 }
+            } else {
+                LoginView()
+                    .statusBarHidden()
             }
-            .statusBarHidden()
-            .navigationViewStyle(.stack)
         }
         .environmentObject(authViewModel)
     }

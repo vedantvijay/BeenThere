@@ -22,7 +22,7 @@ struct AccountView: View {
     @State private var showFriendView = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section {
                     NavigationLink("Manage Friends") {
@@ -38,36 +38,10 @@ struct AccountView: View {
                         ConfirmDeleteAccountView()
                     }
                 }
-//                Section(header: Text("Friends")) {
-//                    let sortedFriends = viewModel.sortedFriendsByLocationCount()
-//                    if !sortedFriends.isEmpty {
-//                        ForEach(sortedFriends.indices, id: \.self) { index in
-//                            let friend = sortedFriends[index]
-//                            NavigationLink(destination: FriendView(friend: friend)) {
-//                                    HStack {
-//                                        if let friendName = friend["username"] as? String {
-//                                            Text(friendName)
-//                                        }
-//                                        
-//                                        Spacer()
-//                                        
-//                                        if let locations = friend["locations"] as? [[String: Any]] {
-//                                            Text("\(locations.count)")
-//                                        }
-//                                    }
-//                                }
-//                            
-//
-//                        }
-//                    } else {
-//                        Text("You have no friends added yet.")
-//                            .foregroundColor(.gray)
-//                    }
-//                }
-
             }
+            .navigationTitle("Account")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationViewStyle(.stack)
     }
 }
 

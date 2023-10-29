@@ -11,6 +11,7 @@ import AuthenticationServices
 
 struct ConfirmDeleteAccountView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var accountViewModel = AccountViewModel.shared
     @State private var showDeleteAccount = false
     @State private var minutesSinceLastLogin: Int = 0
@@ -30,31 +31,63 @@ struct ConfirmDeleteAccountView: View {
                 }
             }
             if minutesSinceLastLogin > 3 {
-                SignInWithAppleButton { request in
-                    request.requestedScopes = [.fullName, .email]
-                } onCompletion: { result in
-                    switch result {
-                    case .success(let authResults):
-                        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                            let credential = OAuthProvider.credential(withProviderID: "apple.com",
-                                                                      idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
-                                                                      rawNonce: nil)
-                            
-                            Auth.auth().signIn(with: credential) { (authResult, error) in
-                                if let error = error {
-                                    print("Firebase Auth Error: \(error.localizedDescription)")
-                                    return
+                if colorScheme == .dark {
+                    SignInWithAppleButton(.continue) { request in
+                        request.requestedScopes = []
+                    } onCompletion: { result in
+                        switch result {
+                        case .success(let authResults):
+                            if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+                                let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                                          idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
+                                                                          rawNonce: nil)
+                                
+                                Auth.auth().signIn(with: credential) { (authResult, error) in
+                                    if let error = error {
+                                        print("Firebase Auth Error: \(error.localizedDescription)")
+                                        return
+                                    }
+                                    print("Successfully signed in with Apple!")
                                 }
-                                print("Successfully signed in with Apple!")
                             }
+                        case .failure(let error):
+                            print("Authentication failed: \(error)")
                         }
-                    case .failure(let error):
-                        print("Authentication failed: \(error)")
                     }
+                    .frame(width: 280, height: 45)
+                    .padding()
+                    .signInWithAppleButtonStyle(.white)
+                } else {
+                    SignInWithAppleButton(.continue) { request in
+                        request.requestedScopes = []
+                    } onCompletion: { result in
+                        switch result {
+                        case .success(let authResults):
+                            if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+                                let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                                          idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
+                                                                          rawNonce: nil)
+                                
+                                Auth.auth().signIn(with: credential) { (authResult, error) in
+                                    if let error = error {
+                                        print("Firebase Auth Error: \(error.localizedDescription)")
+                                        return
+                                    }
+                                    print("Successfully signed in with Apple!")
+                                }
+                            }
+                        case .failure(let error):
+                            print("Authentication failed: \(error)")
+                        }
+                    }
+                    .frame(width: 280, height: 45)
+                    .padding()
+                    .signInWithAppleButtonStyle(.black)
                 }
-                .frame(width: 280, height: 45)
             }
         }
+        .navigationTitle("Delete Account")
+        .background(Color(uiColor: UIColor.systemGroupedBackground))
         .onReceive(timer) { _ in
             if let minutes = accountViewModel.minutesSinceLastLogin {
                 minutesSinceLastLogin = minutes

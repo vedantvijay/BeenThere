@@ -17,9 +17,6 @@ struct ContentView: View {
     @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
-    private let locationManager = CLLocationManager()
-    @StateObject private var locationManagerDelegate = LocationManagerDelegate(locationManager: CLLocationManager())
-
     @State private var showSettingsAlert: Bool = false
     @State private var selection = 2
     
@@ -34,6 +31,9 @@ struct ContentView: View {
             return true
         }
     }
+    
+    @StateObject private var locationManagerDelegate = LocationManagerDelegate()
+
     
     init() {
         let appearance = UITabBarAppearance()
@@ -51,30 +51,35 @@ struct ContentView: View {
                 }
                 .tag(1)
             ZStack {
-                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                    if locationManagerDelegate.authorizationStatus == .denied {
-                        Button("Update Location Settings") {
-                            showSettingsAlert = true
-                        }
-                        .padding()
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                    }
-                }
                 MapView(viewModel: mapViewModel)
                     .ignoresSafeArea()
                     .onAppear {
                         mapViewModel.adjustMapViewToLocations()
+                        let status = locationManagerDelegate.authorizationStatus
+                        print("Authorization Status: \(status.rawValue)")
+                        print("LOG: \(status)")
                     }
                     .onChange(of: $mapViewModel.locations.count) {
                         mapViewModel.adjustMapViewToLocations()
                     }
-            }
-                .tabItem {
-                    Image(systemName: "map.fill")
+                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+                    VStack {
+                        Button("Update Location Settings") {
+                            showSettingsAlert = true
+                        }
+                        .fontWeight(.black)
+                        .buttonStyle(.bordered)
+                        .tint(.orange)
+                        .padding()
+                        Spacer()
+                    }
                 }
-                .tag(2)
+            }
+            .tabItem {
+                Image(systemName: "map.fill")
+            }
+            .tag(2)
+
             LeaderboardView(viewModel: accountViewModel)
                 .tabItem {
                     Image(systemName: "chart.bar.fill")
@@ -107,8 +112,7 @@ struct ContentView: View {
     }
 
     private func requestLocationAccess() {
-        locationManager.delegate = locationManagerDelegate
-        locationManager.requestWhenInUseAuthorization() // Start with 'When in Use' authorization
+        locationManagerDelegate.requestLocationAccess()
     }
 
     private func googleMapsURL(for location: CLLocationCoordinate2D) -> URL {
@@ -129,8 +133,18 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     private var locationManager: CLLocationManager?
 
-    init(locationManager: CLLocationManager) {
-        self.locationManager = locationManager
+    override init() {
+        self.locationManager = CLLocationManager()
+        super.init()
+        self.locationManager?.delegate = self
+    }
+    
+    func requestLocationAccess() {
+        locationManager?.requestWhenInUseAuthorization()
+    }
+
+    func requestAlways() {
+        locationManager?.requestAlwaysAuthorization()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -141,8 +155,8 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
         self.authorizationStatus = status
     }
 }
-
-
-#Preview {
-    ContentView()
-}
+//
+//
+//#Preview {
+//    ContentView()
+//}

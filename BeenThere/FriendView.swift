@@ -23,7 +23,6 @@ struct FriendView: View {
                         username = friendUsername as! String
                     }
                     viewModel.updateMapStyleURL()
-                    print("LOG: \(friend["locations"])")
                     if let locationDictionaries = friend["locations"] as? [[String: Any]] {
                         let locations: [Location] = locationDictionaries.compactMap { locationDict in
                             do {

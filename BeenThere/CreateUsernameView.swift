@@ -42,8 +42,10 @@ struct CreateUsernameView: View {
             
             if invalidUsernameReason != "" {
                 Text(invalidUsernameReason)
+                    .foregroundStyle(.white)
             } else if isUsernameTaken {
                 Text("Username is already taken")
+                    .foregroundStyle(.white)
             }
             if isCheckingUsername {
                 ProgressView()
@@ -57,6 +59,8 @@ struct CreateUsernameView: View {
             }
             Spacer()
         }
+        .padding()
+        .preferredColorScheme(.dark)
         .background(
             ZStack {
                 Image(imageNames[currentImageIndex])

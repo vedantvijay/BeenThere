@@ -14,7 +14,7 @@ struct LeaderboardView: View {
     let scopeOptions = ["friends", "global"]
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Picker("Scope", selection: $leaderboardScope) {
                     ForEach(scopeOptions, id: \.self) {
@@ -57,7 +57,7 @@ struct LeaderboardView: View {
                         ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                             let person = viewModel.sortedUsersByLocationCount()[index]
                             if let personName = person["username"] as? String,
-                               let personUID = person["uid"] as? String,
+//                               let personUID = person["uid"] as? String,
                                let personLocations = person["locations"] as? [[String: Any]] {
                                 HStack {
                                     // Display the rank
