@@ -13,7 +13,6 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
-    static let shared = FriendMapViewModel()
     var lastAddedSquareLayerIdentifier: String?
 
     @Environment(\.colorScheme) var colorScheme
@@ -51,7 +50,6 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         super.init()
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.distanceFilter = 500
         locationManager.startUpdatingLocation()

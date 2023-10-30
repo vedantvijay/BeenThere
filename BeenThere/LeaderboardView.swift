@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct LeaderboardView: View {
-    @ObservedObject var viewModel: AccountViewModel
-
+    @StateObject var viewModel = AccountViewModel()
+    @StateObject var friendMapViewModel = FriendMapViewModel()
     @State private var leaderboardScope = "friends"
     let scopeOptions = ["friends", "global"]
     
@@ -84,7 +84,7 @@ struct LeaderboardView: View {
                 
             }
         }
-        
+        .environmentObject(friendMapViewModel)
     }
 }
 //

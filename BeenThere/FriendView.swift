@@ -9,14 +9,15 @@ import SwiftUI
 
 struct FriendView: View {
     @Environment(\.colorScheme) var colorScheme
-    @StateObject var viewModel = FriendMapViewModel.shared
+    @EnvironmentObject var viewModel: FriendMapViewModel
+
     @State private var username = ""
     
     let friend: [String: Any]
     
     var body: some View {
         VStack {
-            FriendMapView(viewModel: viewModel)
+            FriendMapView()
                 .ignoresSafeArea()
                 .onAppear {
                     if let friendUsername = friend["username"] {

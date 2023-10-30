@@ -11,10 +11,10 @@ import Firebase
 import FirebaseAuth
 
 struct LoginView: View {
+    @AppStorage("appState") var appState = "opening"
+    @EnvironmentObject var accountViewModel: AccountViewModel
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
-    
-    @AppStorage("username") var username = ""
 
     let imageNames = ["background1", "background2"]
     
@@ -45,7 +45,6 @@ struct LoginView: View {
                                 return
                             }
                             print("Successfully signed in with Apple!")
-                            
                             // Create a user document by default
                             if let user = authResult?.user {
                                 self.createUserDocument(user: user, appleIDCredential: appleIDCredential)

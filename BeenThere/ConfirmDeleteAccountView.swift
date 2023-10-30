@@ -12,7 +12,8 @@ import AuthenticationServices
 struct ConfirmDeleteAccountView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var accountViewModel = AccountViewModel.shared
+    @EnvironmentObject var accountViewModel: AccountViewModel
+    @AppStorage("appState") var appState = "opening"
     @State private var showDeleteAccount = false
     @State private var minutesSinceLastLogin: Int = 0
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -111,6 +112,7 @@ struct ConfirmDeleteAccountView: View {
             Button("Delete Account", role: .destructive) {
                 accountViewModel.deleteAccount()
                 dismiss()
+                appState = "notAuthenticated"
             }
             Button("Cancel", role: .cancel, action: { })
         }

@@ -10,7 +10,6 @@ import Firebase
 import SwiftUI
 
 class ManageFriendsViewModel: ObservableObject {
-    static let shared = ManageFriendsViewModel()
     @ObservedObject var accountViewModel = AccountViewModel()
     
     @Published var showRequestSent = false
@@ -176,6 +175,7 @@ class ManageFriendsViewModel: ObservableObject {
                     document.reference.updateData([
                         "receivedFriendRequests": receivedFriendRequests
                     ])
+                    self.showRequestSent = true
                 } else {
                     print("LOG: Friend request already sent to this user.")
                     self.showRequestAlreadySent = true
@@ -240,6 +240,7 @@ class ManageFriendsViewModel: ObservableObject {
 
             sentFriendRequests.removeAll { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() }
             selfRef.updateData(["sentFriendRequests": sentFriendRequests])
+            self.showRequestCancelled = true
         }
 
         // Step 2: Remove the friend request from the target friend's receivedFriendRequests

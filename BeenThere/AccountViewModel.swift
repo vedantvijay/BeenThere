@@ -11,13 +11,11 @@ import AuthenticationServices
 import SwiftUI
 
 class AccountViewModel: ObservableObject {
-    static let shared = AccountViewModel()
+    @ObservedObject var authViewModel = AuthViewModel()
+    @AppStorage("appState") var appState = ""
     
     @Published var users: [[String: Any]] = []
     @Published var uid = ""
-    @Published var firstName = ""
-    @Published var lastName = ""
-    @Published var email = ""
     @Published var newUsername = ""
     @AppStorage("username") var username = ""
     @Published var friends: [[String: Any]] = []
@@ -185,6 +183,7 @@ class AccountViewModel: ObservableObject {
     }
     
     func signOut() {
+        username = ""
         do {
             try Auth.auth().signOut()
         } catch let signOutError {
@@ -295,6 +294,20 @@ class AccountViewModel: ObservableObject {
             }
         }
     }
+    
+    func determineUIState() {
+        Auth.auth().addStateDidChangeListener() { auth, user in
+            if self.authViewModel.isAuthenticated && self.authViewModel.isSignedIn && user != nil {
+                if self.username != "" {
+                    self.appState = "authenticated"
+                } else {
+                    self.appState = "createUser"
+                }
+            } else {
+                self.appState = "notAuthenticated"
+            }
+        }
+    }
 
     
     func setUpFirestoreListener() {
@@ -309,9 +322,6 @@ class AccountViewModel: ObservableObject {
                 return
             }
             
-            self?.firstName = data["firstName"] as? String ?? ""
-            self?.lastName = data["lastName"] as? String ?? ""
-            self?.email = data["email"] as? String ?? ""
             self?.username = data["username"] as? String ?? ""
             self?.friends = data["friends"] as? [[String: Any]] ?? []
             self?.uid = userID

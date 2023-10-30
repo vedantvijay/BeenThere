@@ -10,8 +10,9 @@ import FirebaseAuth
 import AuthenticationServices
 
 struct AccountView: View {
-    @ObservedObject var viewModel: AccountViewModel
-    
+    @EnvironmentObject var viewModel: AccountViewModel
+    @AppStorage("appState") var appState = "opening"
+
     @State private var showDeleteAccount = false
 
     @Environment(\.dismiss) var dismiss
@@ -26,13 +27,14 @@ struct AccountView: View {
             Form {
                 Section {
                     NavigationLink("Manage Friends") {
-                        ManageFriendsView(accountViewModel: viewModel)
+                        ManageFriendsView()
                     }
                 }
                 Section {
                     Button("Sign Out") {
                         viewModel.signOut()
                         dismiss()
+                        appState = "notAuthenticated"
                     }
                     NavigationLink("Delete Account") {
                         ConfirmDeleteAccountView()
@@ -44,7 +46,7 @@ struct AccountView: View {
         }
     }
 }
-
-#Preview {
-    AccountView(viewModel: AccountViewModel())
-}
+//
+//#Preview {
+//    AccountView(viewModel: AccountViewModel)
+//}

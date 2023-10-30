@@ -9,9 +9,11 @@ import SwiftUI
 import Firebase
 
 struct CreateUsernameView: View {
-    @AppStorage("username") var username = ""
     @Environment(\.dismiss) var dismiss
-    
+    @AppStorage("appState") var appState = "opening"
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject var accountViewModel = AccountViewModel()
+    @AppStorage("username") var username = ""
     @State private var newUsername = ""
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
@@ -34,6 +36,20 @@ struct CreateUsernameView: View {
                 .onChange(of: newUsername) {
                     checkAndSetUsername()
                 }
+                .onChange(of: username) {
+                    if username != "" {
+                        appState = "authenticated"
+                    }
+                }
+                .onAppear {
+                    if username != "" {
+                        appState = "authenticated"
+                    }
+                    if !authViewModel.isAuthenticated || !authViewModel.isSignedIn || Auth.auth().currentUser == nil {
+                        accountViewModel.signOut()
+                        appState = "notAuthenticated"
+                    }
+                }
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
                 .textInputAutocapitalization(.never)
@@ -51,7 +67,10 @@ struct CreateUsernameView: View {
                 ProgressView()
             } else {
                 Button("Create Username") {
-                    setUsernameInFirestore()
+                    if authViewModel.isAuthenticated && authViewModel.isSignedIn {
+                        appState = "authenticated"
+                        setUsernameInFirestore()
+                    }
                 }
                 .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
                 .buttonStyle(.bordered)
@@ -83,8 +102,11 @@ struct CreateUsernameView: View {
         .onDisappear {
             timer.upstream.connect().cancel()
         }
-        .task {
-            // Set the focus to the text field when the view appears
+        .onAppear {
+            print("LOG: \(username)")
+            if accountViewModel.minutesSinceLastLogin ?? 5 > 10 {
+                appState = "notAuthenticated"
+            }
             isUsernameFieldFocused = true
         }
     }
@@ -103,7 +125,6 @@ struct CreateUsernameView: View {
             if let error = error {
                 print("Error updating username: \(error)")
             } else {
-                self.username = self.newUsername
                 print("Username successfully updated")
             }
         }

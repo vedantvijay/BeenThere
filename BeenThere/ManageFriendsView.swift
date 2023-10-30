@@ -9,8 +9,8 @@ import SwiftUI
 import AlertToast
 
 struct ManageFriendsView: View {
-    @ObservedObject var viewModel = ManageFriendsViewModel.shared
-    @ObservedObject var accountViewModel = AccountViewModel.shared
+    @StateObject var viewModel = ManageFriendsViewModel()
+    @EnvironmentObject var accountViewModel: AccountViewModel
     
     @State private var newFriendUsername = ""
     
@@ -96,7 +96,7 @@ struct ManageFriendsView: View {
                 }
             }
        }
-        .navigationTitle(viewModel.accountViewModel.username)
+        .navigationTitle(accountViewModel.username)
 
         .toast(isPresenting: $viewModel.showRequestSent) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Sent!")
@@ -119,6 +119,6 @@ struct ManageFriendsView: View {
     }
 }
 
-#Preview {
-    ManageFriendsView(accountViewModel: AccountViewModel())
-}
+//#Preview {
+//    ManageFriendsView(accountViewModel: AccountViewModel())
+//}

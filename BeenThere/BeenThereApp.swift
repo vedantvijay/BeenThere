@@ -45,29 +45,66 @@ class AuthViewModel: ObservableObject {
     }
 }
 
+enum AppUIState {
+    case opening
+    case authenticated
+    case notAuthenticated
+    case createUser
+}
+
 @main
 struct BeenThereApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var authViewModel = AuthViewModel()
-    @AppStorage("isAuthenticated") var isAuthenticated = false
+    @StateObject var accountViewModel = AccountViewModel()
+    @AppStorage("appState") var appState = "notAuthenticated"
     @AppStorage("username") var username = ""
     
     var body: some Scene {
         WindowGroup {
-            if isAuthenticated {
-                if username != "" {
+            ZStack {
+                switch appState {
+                case "authenticated":
                     ContentView()
                         .statusBarHidden()
-                } else {
+                case "createUser":
                     CreateUsernameView()
                         .statusBarHidden()
+                case "notAuthenticated":
+                    LoginView()
+                        .statusBarHidden()
+                default:
+                    LoginView()
                 }
-            } else {
-                LoginView()
-                    .statusBarHidden()
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    determineUIState()
+                }
+                if username == "" {
+                    accountViewModel.signOut()
+                }
+                
             }
         }
+        .environmentObject(accountViewModel)
         .environmentObject(authViewModel)
     }
+    
+    func determineUIState() {
+        Auth.auth().addStateDidChangeListener() { auth, user in
+            if authViewModel.isAuthenticated && authViewModel.isSignedIn && user != nil && auth.currentUser != nil {
+                if username != "" {
+                    appState = "authenticated"
+                } else {
+                    appState = "createUser"
+                }
+            } else {
+                accountViewModel.signOut()
+                appState = "notAuthenticated"
+            }
+        }
+    }
 }
+
 

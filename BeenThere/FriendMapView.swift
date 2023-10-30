@@ -10,8 +10,7 @@ import CoreLocation
 import Mapbox
 
 struct FriendMapView: UIViewRepresentable {
-    @ObservedObject var viewModel = FriendMapViewModel.shared
-
+    @EnvironmentObject var viewModel: FriendMapViewModel
     func makeCoordinator() -> FriendMapViewModel {
         return viewModel
     }

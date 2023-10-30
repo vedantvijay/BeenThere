@@ -8,13 +8,17 @@
 import SwiftUI
 import Mapbox
 import CoreLocation
+import FirebaseAuth
 
-struct ContentView: View {    
-    @StateObject var accountViewModel = AccountViewModel()
+struct ContentView: View {
+    @AppStorage("username") var username = ""
+    @AppStorage("appState") var appState = "opening"
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var accountViewModel: AccountViewModel
     @StateObject private var mapViewModel = MapViewModel()
     @Environment(\.colorScheme) var colorScheme
+    @StateObject private var locationManagerDelegate = LocationManagerDelegate()
 
-    @AppStorage("chunksCount") var chunksCount: Int = 0
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @State private var showSettingsAlert: Bool = false
@@ -32,9 +36,6 @@ struct ContentView: View {
         }
     }
     
-    @StateObject private var locationManagerDelegate = LocationManagerDelegate()
-
-    
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
@@ -45,7 +46,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            AccountView(viewModel: accountViewModel)
+            AccountView()
                 .tabItem {
                     Image(systemName: "person.fill")
                 }
@@ -80,7 +81,7 @@ struct ContentView: View {
             }
             .tag(2)
 
-            LeaderboardView(viewModel: accountViewModel)
+            LeaderboardView()
                 .tabItem {
                     Image(systemName: "chart.bar.fill")
                 }
@@ -110,7 +111,7 @@ struct ContentView: View {
             }
         }
     }
-
+    
     private func requestLocationAccess() {
         locationManagerDelegate.requestLocationAccess()
     }
