@@ -258,17 +258,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     }
 
     
-    func beginBackgroundUpdateTask() {
-        backgroundTask = UIApplication.shared.beginBackgroundTask {
-            self.endBackgroundUpdateTask()
-        }
-    }
-    
-    func endBackgroundUpdateTask() {
-        UIApplication.shared.endBackgroundTask(backgroundTask)
-        backgroundTask = .invalid
-    }
-    
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         addSquaresToMap(locations: locations)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
