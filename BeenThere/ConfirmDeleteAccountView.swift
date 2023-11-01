@@ -19,18 +19,21 @@ struct ConfirmDeleteAccountView: View {
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        VStack {
-            Form {
-                Section {
-                    Button("Delete Account", role: .destructive) {
-                        showDeleteAccount.toggle()
-                    }
-                    .disabled(minutesSinceLastLogin > 3)
+        VStack(alignment: .center) {
+            if minutesSinceLastLogin < 3 {
+                Button("Delete Account", role: .destructive) {
+                    showDeleteAccount.toggle()
+                }
+                .disabled(minutesSinceLastLogin > 3)
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .padding()
+            }
+                    
                     if minutesSinceLastLogin > 3 {
                         Text("Please reauthenticate with the button below to delete your account.")
+                            .padding()
                     }
-                }
-            }
             if minutesSinceLastLogin > 3 {
                 if colorScheme == .dark {
                     SignInWithAppleButton(.continue) { request in
@@ -86,12 +89,13 @@ struct ConfirmDeleteAccountView: View {
                     .signInWithAppleButtonStyle(.black)
                 }
             }
+            Spacer()
         }
         .onDisappear {
             dismiss()
         }
         .navigationTitle("Delete Account")
-        .background(Color(uiColor: UIColor.systemGroupedBackground))
+//        .background(Color(uiColor: UIColor.systemGroupedBackground))
         .onReceive(timer) { _ in
             if let minutes = accountViewModel.minutesSinceLastLogin {
                 minutesSinceLastLogin = minutes
