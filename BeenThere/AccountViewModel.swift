@@ -34,8 +34,6 @@ class AccountViewModel: ObservableObject {
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
     
-    
-    
     var minutesSinceLastLogin: Int? {
         guard let user = Auth.auth().currentUser else {
             return nil

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FriendView: View {
+    @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: FriendMapViewModel
 
@@ -49,7 +50,9 @@ struct FriendView: View {
                 }
                 .navigationTitle(username)
         }
-            
+        .onDisappear {
+            dismiss()
+        }
     }
 }
 

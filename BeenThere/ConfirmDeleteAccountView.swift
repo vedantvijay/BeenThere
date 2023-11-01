@@ -87,6 +87,9 @@ struct ConfirmDeleteAccountView: View {
                 }
             }
         }
+        .onDisappear {
+            dismiss()
+        }
         .navigationTitle("Delete Account")
         .background(Color(uiColor: UIColor.systemGroupedBackground))
         .onReceive(timer) { _ in

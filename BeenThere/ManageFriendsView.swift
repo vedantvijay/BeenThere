@@ -9,6 +9,7 @@ import SwiftUI
 import AlertToast
 
 struct ManageFriendsView: View {
+    @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ManageFriendsViewModel()
     @EnvironmentObject var accountViewModel: AccountViewModel
     
@@ -97,7 +98,9 @@ struct ManageFriendsView: View {
             }
        }
         .navigationTitle(accountViewModel.username)
-
+        .onDisappear {
+            dismiss()
+        }
         .toast(isPresenting: $viewModel.showRequestSent) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Sent!")
         }

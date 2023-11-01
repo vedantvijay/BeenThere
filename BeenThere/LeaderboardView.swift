@@ -54,6 +54,12 @@ struct LeaderboardView: View {
                                 .foregroundColor(.gray)
                         }
                     } else if leaderboardScope == "global" {
+//                        Section {
+//                            NavigationLink("Shared Map") {
+//                                SharedMapView()
+//                            }
+//                        }
+//                        
                         ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                             let person = viewModel.sortedUsersByLocationCount()[index]
                             if let personName = person["username"] as? String,
