@@ -1,8 +1,8 @@
 //
-//  FriendMapViewModel.swift
+//  SharedMapViewModel.swift
 //  BeenThere
 //
-//  Created by Jared Jones on 10/24/23.
+//  Created by Jared Jones on 11/1/23.
 //
 
 import Foundation
@@ -12,10 +12,9 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
 
-class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
+class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     var lastAddedSquareLayerIdentifier: String?
 
-    @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!

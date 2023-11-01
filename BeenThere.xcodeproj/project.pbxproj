@@ -17,6 +17,9 @@
 		C011083A2AE4921500406837 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C01108392AE4921500406837 /* FirebaseFirestore */; };
 		C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */; };
 		C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C085316C2AF1E6F900EAA434 /* SharedMapView.swift */; };
+		C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531702AF2923300EAA434 /* CustomTabView.swift */; };
+		C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */; };
+		C08531752AF2C27700EAA434 /* SharedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531742AF2C27700EAA434 /* SharedView.swift */; };
 		C0949EFE2AE5B59A006EE5D2 /* MissingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949EFD2AE5B59A006EE5D2 /* MissingInfoView.swift */; };
 		C0949F002AE5BC22006EE5D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */; };
 		C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */; };
@@ -45,6 +48,9 @@
 		C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeenThere.entitlements; sourceTree = "<group>"; };
 		C085316C2AF1E6F900EAA434 /* SharedMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapView.swift; sourceTree = "<group>"; };
+		C08531702AF2923300EAA434 /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
+		C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapViewModel.swift; sourceTree = "<group>"; };
+		C08531742AF2C27700EAA434 /* SharedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedView.swift; sourceTree = "<group>"; };
 		C0949EFD2AE5B59A006EE5D2 /* MissingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingInfoView.swift; sourceTree = "<group>"; };
 		C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsViewModel.swift; sourceTree = "<group>"; };
@@ -123,9 +129,12 @@
 				C01108332AE4884D00406837 /* LoginView.swift */,
 				C0D2A90D2AE5A16C006326C1 /* CreateUsernameView.swift */,
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
+				C08531702AF2923300EAA434 /* CustomTabView.swift */,
 				C0D2A9072AE585CB006326C1 /* AccountView.swift */,
 				C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */,
+				C08531742AF2C27700EAA434 /* SharedView.swift */,
 				C085316C2AF1E6F900EAA434 /* SharedMapView.swift */,
+				C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */,
 				C09C698C2AE88382008A3148 /* FriendView.swift */,
 				C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */,
 				C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */,
@@ -249,10 +258,13 @@
 				C09C698D2AE88382008A3148 /* FriendView.swift in Sources */,
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
+				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
+				C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
+				C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */,
 				C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* AccountView.swift in Sources */,
 				C0949EFE2AE5B59A006EE5D2 /* MissingInfoView.swift in Sources */,
@@ -397,7 +409,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -417,9 +429,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -433,7 +448,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -453,9 +468,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

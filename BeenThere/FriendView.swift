@@ -17,39 +17,44 @@ struct FriendView: View {
     let friend: [String: Any]
     
     var body: some View {
-        VStack {
-            FriendMapView()
-                .ignoresSafeArea()
-                .onAppear {
-                    if let friendUsername = friend["username"] {
-                        username = friendUsername as! String
-                    }
-                    viewModel.updateMapStyleURL()
-                    if let locationDictionaries = friend["locations"] as? [[String: Any]] {
-                        let locations: [Location] = locationDictionaries.compactMap { locationDict in
-                            do {
-                                let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
-                                let location = try JSONDecoder().decode(Location.self, from: jsonData)
-                                return location
-                            } catch {
-                                print("Error decoding location: \(error)")
-                                return nil
+        ZStack(alignment: .top) {
+                FriendMapView()
+                    .ignoresSafeArea()
+                    .onAppear {
+                        if let friendUsername = friend["username"] {
+                            username = friendUsername as! String
+                        }
+                        viewModel.updateMapStyleURL()
+                        if let locationDictionaries = friend["locations"] as? [[String: Any]] {
+                            let locations: [Location] = locationDictionaries.compactMap { locationDict in
+                                do {
+                                    let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
+                                    let location = try JSONDecoder().decode(Location.self, from: jsonData)
+                                    return location
+                                } catch {
+                                    print("Error decoding location: \(error)")
+                                    return nil
+                                }
                             }
+
+                            // Now, `locations` is an array of `Location` instances
+                            viewModel.locations = locations
+                            viewModel.adjustMapViewToLocations()
+                            print("LOG: \(locations)")
+                            print("LOG: \(viewModel.locations)")
                         }
 
-                        // Now, `locations` is an array of `Location` instances
-                        viewModel.locations = locations
-                        viewModel.adjustMapViewToLocations()
-                        print("LOG: \(locations)")
-                        print("LOG: \(viewModel.locations)")
                     }
-
-                }
-                .onChange(of: colorScheme) {
-                    viewModel.updateMapStyleURL()
-                }
-                .navigationTitle(username)
-        }
+                    .onChange(of: colorScheme) {
+                        viewModel.updateMapStyleURL()
+                    }
+                Text(username)
+                .font(.largeTitle)
+                .fontWeight(.black)
+            }
+            
+            
+        
         .onDisappear {
             dismiss()
         }

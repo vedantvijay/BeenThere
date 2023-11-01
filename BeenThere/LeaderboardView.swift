@@ -10,6 +10,7 @@ import SwiftUI
 struct LeaderboardView: View {
     @StateObject var viewModel = AccountViewModel()
     @StateObject var friendMapViewModel = FriendMapViewModel()
+    @StateObject var sharedMapViewModel = SharedMapViewModel()
     @State private var leaderboardScope = "friends"
     let scopeOptions = ["friends", "global"]
     
@@ -54,12 +55,12 @@ struct LeaderboardView: View {
                                 .foregroundColor(.gray)
                         }
                     } else if leaderboardScope == "global" {
-//                        Section {
-//                            NavigationLink("Shared Map") {
-//                                SharedMapView()
-//                            }
-//                        }
-//                        
+                        Section {
+                            NavigationLink("Shared Map") {
+                                SharedView()
+                            }
+                        }
+                        
                         ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                             let person = viewModel.sortedUsersByLocationCount()[index]
                             if let personName = person["username"] as? String,
@@ -89,8 +90,12 @@ struct LeaderboardView: View {
                 }
                 
             }
+            .navigationTitle("Leaderboards")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .environmentObject(friendMapViewModel)
+        .environmentObject(sharedMapViewModel)
+        .environmentObject(viewModel)
     }
 }
 //

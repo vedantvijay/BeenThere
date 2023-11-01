@@ -18,6 +18,8 @@ struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
     @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
+    @State private var isKeyboardVisible = false
+
 
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
@@ -35,58 +37,74 @@ struct ContentView: View {
             return true
         }
     }
-    
-    init() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemMaterial)
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-    }
 
     var body: some View {
-        TabView(selection: $selection) {
-            AccountView()
-                .tabItem {
-                    Image(systemName: "person.fill")
-                }
-                .tag(1)
-            ZStack {
-                MapView(viewModel: mapViewModel)
-                    .ignoresSafeArea()
-                    .onAppear {
-                        mapViewModel.adjustMapViewToLocations()
-                        let status = locationManagerDelegate.authorizationStatus
-                        print("Authorization Status: \(status.rawValue)")
-                        print("LOG: \(status)")
-                    }
-                    .onChange(of: $mapViewModel.locations.count) {
-                        mapViewModel.adjustMapViewToLocations()
-                    }
-                if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                    VStack {
-                        Button("Update Location Settings") {
-                            showSettingsAlert = true
+        ZStack(alignment: .bottom) {
+            switch selection {
+            case 1:
+                AccountView()
+            case 2:
+                ZStack {
+                    MapView(viewModel: mapViewModel)
+                        .ignoresSafeArea()
+                        .onAppear {
+                            mapViewModel.adjustMapViewToLocations()
+                            let status = locationManagerDelegate.authorizationStatus
+                            print("Authorization Status: \(status.rawValue)")
+                            print("LOG: \(status)")
                         }
-                        .fontWeight(.black)
-                        .buttonStyle(.bordered)
-                        .tint(.orange)
-                        .padding()
-                        Spacer()
+                        .onChange(of: $mapViewModel.locations.count) {
+                            mapViewModel.adjustMapViewToLocations()
+                        }
+                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+                        VStack {
+                            Button("Update Location Settings") {
+                                showSettingsAlert = true
+                            }
+                            .fontWeight(.black)
+                            .buttonStyle(.bordered)
+                            .tint(.orange)
+                            .padding()
+                            Spacer()
+                        }
+                    }
+                }
+            case 3:
+                LeaderboardView()
+            default:
+                ZStack {
+                    MapView(viewModel: mapViewModel)
+                        .ignoresSafeArea()
+                        .onAppear {
+                            mapViewModel.adjustMapViewToLocations()
+                            let status = locationManagerDelegate.authorizationStatus
+                            print("Authorization Status: \(status.rawValue)")
+                            print("LOG: \(status)")
+                        }
+                        .onChange(of: $mapViewModel.locations.count) {
+                            mapViewModel.adjustMapViewToLocations()
+                        }
+                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+                        VStack {
+                            Button("Update Location Settings") {
+                                showSettingsAlert = true
+                            }
+                            .fontWeight(.black)
+                            .buttonStyle(.bordered)
+                            .tint(.orange)
+                            .padding()
+                            Spacer()
+                        }
                     }
                 }
             }
-            .tabItem {
-                Image(systemName: "map.fill")
+            if !isKeyboardVisible {
+                CustomTabView(selection: $selection)
+                    .background(.ultraThinMaterial)
             }
-            .tag(2)
 
-            LeaderboardView()
-                .tabItem {
-                    Image(systemName: "chart.bar.fill")
-                }
-                .tag(3)
         }
+//        .background(.ultraThinMaterial)
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),
@@ -103,7 +121,16 @@ struct ContentView: View {
         .onAppear {
             mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
+            let notificationCenter = NotificationCenter.default
+            notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = true
+            }
+            notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = false
+            }
         }
+
+
         .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
             if let location = mapViewModel.tappedLocation {
                 Link("Open in Google Maps", destination: googleMapsURL(for: location))
@@ -120,8 +147,10 @@ struct ContentView: View {
         URL(string: "comgooglemaps://?q=\(location.latitude),\(location.longitude)&center=\(location.latitude),\(location.longitude)&zoom=14")!
     }
     private func appleMapsURL(for location: CLLocationCoordinate2D) -> URL {
-        URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&z=14")!
+        URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&q=\(location.latitude),\(location.longitude)")!
     }
+
+
 
     func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {

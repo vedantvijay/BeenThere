@@ -22,9 +22,10 @@ struct CreateUsernameView: View {
     @FocusState private var isUsernameFieldFocused: Bool
     
     var isUsernameValid: Bool {
-        let regex = "^[a-z]{5,}$"
-        return newUsername.range(of: regex, options: .regularExpression) != nil
+        let regex = "^[a-z]{5,14}$" // Modified to enforce a maximum of 14 characters
+        return newUsername.range(of: regex, options: .regularExpression) != nil && newUsername.count < 15
     }
+
     
     let imageNames = ["background1", "background2"]
     
@@ -51,7 +52,8 @@ struct CreateUsernameView: View {
                     }
                 }
                 .textFieldStyle(.roundedBorder)
-                .padding(.horizontal)
+                .padding()
+                .padding(.top)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .focused($isUsernameFieldFocused)
@@ -161,8 +163,11 @@ struct CreateUsernameView: View {
     }
     
     var invalidUsernameReason: String {
-        if newUsername.count <= 4 {
-            return "Username must be longer than 4 characters."
+        if newUsername.count <= 3 {
+            return "Username must be longer than 3 characters."
+        }
+        if newUsername.count >= 15 {
+            return "Username must be shorter than 15 characters"
         }
         if newUsername.range(of: "[A-Z]", options: .regularExpression) != nil {
             return "Username must not contain uppercase characters."
@@ -176,3 +181,5 @@ struct CreateUsernameView: View {
         return ""
     }
 }
+
+

@@ -29,8 +29,7 @@ struct ManageFriendsView: View {
                        print(accountViewModel.sentFriendRequests)
                    }
                    .buttonStyle(.bordered)
-                   .tint(.green)
-                   .disabled(newFriendUsername.count < 3 || newFriendUsername.contains(" "))
+                   .disabled(newFriendUsername.count < 3 || newFriendUsername.count > 10 || newFriendUsername.contains(" "))
                }
                .onTapGesture {
                    newFriendUsername = ""

@@ -22,7 +22,14 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     @Published var tappedLocation: CLLocationCoordinate2D?
     var lastAddedSquareLayerIdentifier: String?
 
-    @Published var showTappedLocation: Bool = false
+    @Published var showTappedLocation: Bool = false {
+        didSet {
+            if !showTappedLocation {
+                tappedAnnotation = nil
+            }
+        }
+    }
+
     @Published var tappedAnnotation: MGLPointAnnotation?
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var db = Firestore.firestore()
@@ -310,23 +317,28 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         }
     }
 
+//    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
+//        if annotation is MGLPointAnnotation {
+//            let identifier = "dotAnnotation"
+//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+//
+//            if annotationView == nil {
+//                annotationView = MGLAnnotationView(reuseIdentifier: identifier)
+//                annotationView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+//                annotationView?.backgroundColor = UIColor.red
+//                annotationView?.layer.cornerRadius = 10
+//            }
+//
+//            return annotationView
+//        }
+//
+//        return nil
+//    }
+    
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
-        if annotation is MGLPointAnnotation {
-            let identifier = "dotAnnotation"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-            if annotationView == nil {
-                annotationView = MGLAnnotationView(reuseIdentifier: identifier)
-                annotationView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-                annotationView?.backgroundColor = UIColor.red
-                annotationView?.layer.cornerRadius = 10
-            }
-
-            return annotationView
-        }
-
         return nil
     }
+
     
     func calculateAreaOfChunk(lowLat: Double, highLat: Double, lowLong: Double, highLong: Double) -> Double {
         // Earth's circumference in kilometers by default
@@ -414,7 +426,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     }
 }
 
-struct Location: Codable {
+struct Location: Codable, Hashable {
     var lowLatitude: Double
     var highLatitude: Double
     var lowLongitude: Double
