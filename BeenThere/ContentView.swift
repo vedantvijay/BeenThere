@@ -14,7 +14,9 @@ struct ContentView: View {
     @AppStorage("username") var username = ""
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @StateObject var accountViewModel = AccountViewModel()
+    @StateObject var friendMapViewModel = FriendMapViewModel()
+    @StateObject var sharedMapViewModel = SharedMapViewModel()
     @StateObject private var mapViewModel = MapViewModel()
     @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
@@ -71,6 +73,8 @@ struct ContentView: View {
                 }
             case 3:
                 LeaderboardView()
+                    .environmentObject(friendMapViewModel)
+                    .environmentObject(sharedMapViewModel)
             default:
                 ZStack {
                     MapView(viewModel: mapViewModel)

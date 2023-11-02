@@ -16,68 +16,78 @@ struct LoginView: View {
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
 
-    let imageNames = ["background1", "background2"]
-    
-    let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
+    let imageNames = ["background1", "background2", "background3", "background4", "background5", "background6", "background7", "background8", "background9", "background10"]
+
+    let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
 
     private var db = Firestore.firestore()
 
     var body: some View {
-        VStack {
-            Text("Been There")
-                .font(.largeTitle)
-                .fontWeight(.black)
-                .foregroundColor(.white)
-            
-            SignInWithAppleButton { request in
-                request.requestedScopes = []
-            } onCompletion: { result in
-                switch result {
-                case .success(let authResults):
-                    if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                        let credential = OAuthProvider.credential(withProviderID: "apple.com",
-                                                                  idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
-                                                                  rawNonce: nil)
-                        
-                        Auth.auth().signIn(with: credential) { (authResult, error) in
-                            if let error = error {
-                                print("Firebase Auth Error: \(error.localizedDescription)")
-                                return
-                            }
-                            print("Successfully signed in with Apple!")
-                            // Create a user document by default
-                            if let user = authResult?.user {
-                                self.createUserDocument(user: user, appleIDCredential: appleIDCredential)
-                            }
-                        }
-                    }
-                case .failure(let error):
-                    print("Authentication failed: \(error)")
-                }
-            }
-            .signInWithAppleButtonStyle(.white)
-            .frame(width: 225, height: 50)
-            .padding()
-            .padding(.horizontal)
-            
-        }
-        .background(
-            ZStack {
-                Image(imageNames[currentImageIndex])
-                    .scaledToFill()
-                    .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+        ZStack {
+            // Background
+            ForEach(imageNames.indices, id: \.self) { index in
+                           Image(imageNames[index])
+                               .resizable()
+                               .scaledToFill()
+                               .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                               .clipped()
+                               .opacity(currentImageIndex == index ? 1 : 0)
+                               .animation(.easeIn(duration: 2), value: currentImageIndex)  // Only animate opacity changes
+                               .ignoresSafeArea()
+                       }
                 
                 // Vignette Effect
+//            LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(1)]), startPoint: .top, endPoint: .bottom)
                 RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
                                center: .center,
-                               startRadius: 0,
-                               endRadius: UIScreen.main.bounds.height*0.6)
+                               startRadius: UIScreen.main.bounds.height*0,
+                               endRadius: UIScreen.main.bounds.height*0.55)
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                
+                Text("Been There")
+                    .shadow(color: .black, radius: 3, x: 1, y: 2)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .foregroundColor(.white)
+                SignInWithAppleButton { request in
+                    request.requestedScopes = []
+                } onCompletion: { result in
+                    switch result {
+                    case .success(let authResults):
+                        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+                            let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                                      idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
+                                                                      rawNonce: nil)
+                            
+                            Auth.auth().signIn(with: credential) { (authResult, error) in
+                                if let error = error {
+                                    print("Firebase Auth Error: \(error.localizedDescription)")
+                                    return
+                                }
+                                print("Successfully signed in with Apple!")
+                                // Create a user document by default
+                                if let user = authResult?.user {
+                                    self.createUserDocument(user: user, appleIDCredential: appleIDCredential)
+                                }
+                            }
+                        }
+                    case .failure(let error):
+                        print("Authentication failed: \(error)")
+                    }
+                }
+                .shadow(color: .black, radius: 3, x: 1, y: 2)
+                .signInWithAppleButtonStyle(.white)
+                .frame(width: 225, height: 50)
+                .padding()
+                .padding(.bottom, 100)
             }
-            .ignoresSafeArea()
-        )
+        }
         .onReceive(timer) { _ in
             withAnimation(.easeInOut(duration: 2)) {
-                currentImageIndex = (currentImageIndex + 1) % imageNames.count
+                currentImageIndex = Int.random(in: 0..<imageNames.count)
             }
         }
         .onDisappear {

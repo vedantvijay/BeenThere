@@ -89,7 +89,6 @@ struct ConfirmDeleteAccountView: View {
                     .signInWithAppleButtonStyle(.black)
                 }
             }
-            Spacer()
         }
         .onDisappear {
             dismiss()

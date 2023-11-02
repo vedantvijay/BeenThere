@@ -13,7 +13,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
-    static let shared = MapViewModel()
+//    static let shared = MapViewModel()
     
     @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
@@ -60,7 +60,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.distanceFilter = 500
+        locationManager.distanceFilter = 250
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
@@ -317,23 +317,6 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         }
     }
 
-//    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
-//        if annotation is MGLPointAnnotation {
-//            let identifier = "dotAnnotation"
-//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-//
-//            if annotationView == nil {
-//                annotationView = MGLAnnotationView(reuseIdentifier: identifier)
-//                annotationView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-//                annotationView?.backgroundColor = UIColor.red
-//                annotationView?.layer.cornerRadius = 10
-//            }
-//
-//            return annotationView
-//        }
-//
-//        return nil
-//    }
     
     func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
         return nil

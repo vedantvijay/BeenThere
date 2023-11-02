@@ -10,7 +10,7 @@ import Mapbox
 import CoreLocation
 
 struct MapView: UIViewRepresentable {
-    @ObservedObject var viewModel = MapViewModel.shared
+    @ObservedObject var viewModel = MapViewModel()
 
     func makeCoordinator() -> MapViewModel {
         return viewModel
@@ -23,7 +23,7 @@ struct MapView: UIViewRepresentable {
         viewModel.mapView.logoViewPosition = .topLeft
         viewModel.mapView.setUserTrackingMode(.none, animated: true, completionHandler: nil)
         let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
-        longPress.minimumPressDuration = 1.0
+//        longPress.minimumPressDuration = 1.0
         viewModel.mapView.addGestureRecognizer(longPress)
         
         // Disable autoresizing mask translation

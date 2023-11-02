@@ -18,7 +18,7 @@ struct CustomTabView: View {
             }) {
                 Image(systemName: selection == 1 ? "person.fill" : "person")
                     .resizable()
-                    .frame(width: 24, height: 24)
+                    .frame(width: 35, height: 35)
                     .padding()
                     .foregroundColor(selection == 1 ? colorScheme == .light ? .black : .white : .secondary)
             }
@@ -26,7 +26,8 @@ struct CustomTabView: View {
             
             ZStack {
                 Circle()
-                    .foregroundColor(colorScheme == .light ? .white : .black)
+                    .foregroundStyle(.ultraThinMaterial)
+//                    .foregroundColor(colorScheme == .light ? .white : .black)
                     .frame(width: 67, height: 67)
 //                    .shadow(radius: 3)
                 
@@ -46,7 +47,7 @@ struct CustomTabView: View {
             }) {
                 Image(systemName: selection == 3 ? "chart.bar.fill" : "chart.bar")
                     .resizable()
-                    .frame(width: 24, height: 24)
+                    .frame(width: 35, height: 35)
                     .padding()
                     .foregroundColor(selection == 3 ? colorScheme == .light ? .black : .white : .secondary)
             }

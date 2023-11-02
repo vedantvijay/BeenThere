@@ -25,80 +25,105 @@ struct CreateUsernameView: View {
         let regex = "^[a-z]{4,15}$" // Modified to enforce a maximum of 15 characters
         return newUsername.range(of: regex, options: .regularExpression) != nil && newUsername.count < 16
     }
+    
+    let imageNames = ["background1", "background2", "background3", "background4", "background5", "background6", "background7", "background8", "background9", "background10"]
 
     
-    let imageNames = ["background1", "background2"]
-    
-    let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        VStack {
-            TextField("Username", text: $newUsername)
-                .onChange(of: newUsername) {
-                    checkAndSetUsername()
-                }
-                .onChange(of: username) {
-                    if username != "" {
-                        appState = "authenticated"
-                    }
-                }
-                .onAppear {
-                    if username != "" {
-                        appState = "authenticated"
-                    }
-                    if !authViewModel.isAuthenticated || !authViewModel.isSignedIn || Auth.auth().currentUser == nil {
-                        accountViewModel.signOut()
-                        appState = "notAuthenticated"
-                    }
-                }
-                .textFieldStyle(.roundedBorder)
-                .padding()
-                .padding(.top)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .focused($isUsernameFieldFocused)
-            
-            if invalidUsernameReason != "" {
-                Text(invalidUsernameReason)
-                    .foregroundStyle(.white)
-            } else if isUsernameTaken {
-                Text("Username is already taken")
-                    .foregroundStyle(.white)
+        ZStack {
+            // Background
+            ForEach(imageNames.indices, id: \.self) { index in
+                           Image(imageNames[index])
+                               .resizable()
+                               .scaledToFill()
+                               .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                               .clipped()
+                               .opacity(currentImageIndex == index ? 1 : 0)
+                               .animation(.easeIn(duration: 2), value: currentImageIndex)  // Only animate opacity changes
+                               .ignoresSafeArea()
+                               .blur(radius: 2)
+//                               .brightness(-0.1)
             }
-            if isCheckingUsername {
-                ProgressView()
-            } else {
-                Button("Create Username") {
-                    if authViewModel.isAuthenticated && authViewModel.isSignedIn {
-                        appState = "authenticated"
-                        setUsernameInFirestore()
-                    }
-                }
-                .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
-                .buttonStyle(.bordered)
-                .tint(.green)
-            }
-            Spacer()
-        }
-        .padding()
-        .preferredColorScheme(.dark)
-        .background(
-            ZStack {
-                Image(imageNames[currentImageIndex])
-                    .scaledToFill()
-                    .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                 
                 // Vignette Effect
+//            LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(1)]), startPoint: .top, endPoint: .bottom)
                 RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
                                center: .center,
-                               startRadius: 0,
-                               endRadius: UIScreen.main.bounds.height*0.6)
-            }
+                               startRadius: UIScreen.main.bounds.height*0,
+                               endRadius: UIScreen.main.bounds.height*0.55)
                 .ignoresSafeArea()
-        )
+            
+            VStack {
+                Spacer()
+                TextField("Username", text: $newUsername)
+                    .shadow(color: .black, radius: 1, x: 0.5, y: 1)
+                    .fontWeight(.black)
+                    .onChange(of: newUsername) {
+                        checkAndSetUsername()
+                    }
+                    .onChange(of: username) {
+                        if username != "" {
+                            appState = "authenticated"
+                        }
+                    }
+                    .onAppear {
+                        if username != "" {
+                            appState = "authenticated"
+                        }
+                        if !authViewModel.isAuthenticated || !authViewModel.isSignedIn || Auth.auth().currentUser == nil {
+                            accountViewModel.signOut()
+                            appState = "notAuthenticated"
+                        }
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .focused($isUsernameFieldFocused)
+                
+                if invalidUsernameReason != "" {
+                    Text(invalidUsernameReason)
+                        .foregroundStyle(.white)
+                        .shadow(color: .black, radius: 1, x: 0.5, y: 1)
+                        .fontWeight(.black)
+
+                } else if isUsernameTaken {
+                    Text("Username is already taken")
+                        .foregroundStyle(.white)
+                        .shadow(color: .black, radius: 1, x: 0.5, y: 1)
+                        .fontWeight(.black)
+                }
+                if isCheckingUsername {
+                    ProgressView()
+                        .shadow(radius: 1, x: 0.5, y: 1)
+
+                } else {
+                    if !(!isUsernameValid || isCheckingUsername || isUsernameTaken) {
+                        Button("Create Username") {
+                            if authViewModel.isAuthenticated && authViewModel.isSignedIn {
+                                appState = "authenticated"
+                                setUsernameInFirestore()
+                            }
+                        }
+                        .shadow(color: .black, radius: 1, x: 0.5, y: 1)
+                        .fontWeight(.black)
+                        .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
+                        .buttonStyle(.bordered)
+                        .tint(.green)
+                    }
+                    
+                }
+                Spacer()
+            }
+            .padding()
+
+        }
+        .preferredColorScheme(.light)
         .onReceive(timer) { _ in
             withAnimation(.easeInOut(duration: 2)) {
-                currentImageIndex = (currentImageIndex + 1) % imageNames.count
+                currentImageIndex = Int.random(in: 0..<imageNames.count)
             }
         }
         .onDisappear {
@@ -175,7 +200,7 @@ struct CreateUsernameView: View {
         if newUsername.contains(" ") || newUsername.contains("\n") {
             return "Username must not contain spaces or newlines."
         }
-        if newUsername.range(of: "^[a-z]{5,}$", options: .regularExpression) == nil {
+        if newUsername.range(of: "^[a-z]{4,15}$", options: .regularExpression) == nil {
             return "Invalid username format."
         }
         return ""

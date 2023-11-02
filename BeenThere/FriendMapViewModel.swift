@@ -22,7 +22,6 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var showTappedLocation: Bool = false
     @Published var tappedAnnotation: MGLPointAnnotation?
-    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var db = Firestore.firestore()
     private var locationsListener: ListenerRegistration?
     @Published var locations: [Location] = [] {
@@ -50,10 +49,8 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         super.init()
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.distanceFilter = 500
+        locationManager.distanceFilter = 250
         locationManager.startUpdatingLocation()
-        locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         mapView.delegate = self

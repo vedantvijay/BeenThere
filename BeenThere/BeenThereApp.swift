@@ -65,8 +65,10 @@ struct BeenThereApp: App {
             ZStack {
                 switch appState {
                 case "authenticated":
-                    ContentView()
+                    CreateUsernameView()
                         .statusBarHidden()
+//                    ContentView()
+//                        .statusBarHidden()
                 case "createUser":
                     CreateUsernameView()
                         .statusBarHidden()
@@ -75,6 +77,7 @@ struct BeenThereApp: App {
                         .statusBarHidden()
                 default:
                     LoginView()
+                        .statusBarHidden()
                 }
             }
             .onAppear {
