@@ -18,7 +18,7 @@ struct CustomTabView: View {
             }) {
                 Image(systemName: selection == 1 ? "person.fill" : "person")
                     .resizable()
-                    .frame(width: 35, height: 35)
+                    .frame(width: 25, height: 25)
                     .padding()
                     .foregroundColor(selection == 1 ? colorScheme == .light ? .black : .white : .secondary)
             }
@@ -47,7 +47,7 @@ struct CustomTabView: View {
             }) {
                 Image(systemName: selection == 3 ? "chart.bar.fill" : "chart.bar")
                     .resizable()
-                    .frame(width: 35, height: 35)
+                    .frame(width: 25, height: 25)
                     .padding()
                     .foregroundColor(selection == 3 ? colorScheme == .light ? .black : .white : .secondary)
             }
