@@ -75,6 +75,8 @@ struct ContentView: View {
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
+                //                .padding(.bottom, 100)
+                //                .background(Color(uiColor: UIColor.systemGroupedBackground))
             default:
                 ZStack {
                     MapView(viewModel: mapViewModel)

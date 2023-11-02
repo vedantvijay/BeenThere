@@ -100,8 +100,6 @@ struct LeaderboardView: View {
 
                     }
                 }
-                
-                
             }
             .navigationTitle("Leaderboards")
             .navigationBarTitleDisplayMode(.inline)
