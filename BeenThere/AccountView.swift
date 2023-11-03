@@ -26,6 +26,9 @@ struct AccountView: View {
         NavigationStack {
             Form {
                 Section {
+                    NavigationLink("Change Username") {
+                        ChangeUsernameView()
+                    }
                     NavigationLink("Manage Friends") {
                         ManageFriendsView()
                     }

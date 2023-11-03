@@ -39,15 +39,18 @@ struct ManageFriendsView: View {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            if let username = accountViewModel.sentFriendRequests[index]["username"] as? String {
-                                Text(username)
-                                    .foregroundColor(.gray)
-                                Spacer()
-                                Image(systemName: "xmark.circle")
-                                    .foregroundColor(.red)
-                                    .onTapGesture {
-                                        viewModel.cancelFriendRequest(friendUsername: username)
-                                    }
+                            if let uid = accountViewModel.sentFriendRequests[index]["uid"] as? String {
+                                if let username = accountViewModel.usernameForUID[uid] {
+                                    Text(username)
+                                        .foregroundColor(.gray)
+                                    Spacer()
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundColor(.red)
+                                        .onTapGesture {
+                                            viewModel.cancelFriendRequest(friendUID: uid)
+                                        }
+                                }
+                                
                             }
                         }
                     }
@@ -58,21 +61,23 @@ struct ManageFriendsView: View {
                 Section("Received") {
                     ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            if let username = accountViewModel.receivedFriendRequests[index]["username"] as? String {
-                                Text(username)
-                                    .foregroundColor(.gray)
-                                Spacer()
-                                Image(systemName: "xmark.circle")
-                                    .foregroundColor(.red)
-                                    .onTapGesture {
-                                        viewModel.rejectFriendRequest(friendUsername: username)
-                                    }
-                                Image(systemName: "checkmark.circle")
-                                    .foregroundColor(.green)
-                                    .onTapGesture {
-                                        viewModel.acceptFriendRequest(friendUsername: username)
-                                    }
-                                    .padding(.horizontal)
+                            if let uid = accountViewModel.receivedFriendRequests[index]["uid"] as? String {
+                                if let username = accountViewModel.usernameForUID[uid] {
+                                    Text(username)
+                                        .foregroundColor(.gray)
+                                    Spacer()
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundColor(.red)
+                                        .onTapGesture {
+                                            viewModel.rejectFriendRequest(friendUID: uid)
+                                        }
+                                    Image(systemName: "checkmark.circle")
+                                        .foregroundColor(.green)
+                                        .onTapGesture {
+                                            viewModel.acceptFriendRequest(friendUID: uid)
+                                        }
+                                        .padding(.horizontal)
+                                }
                             }
                         }
                     }
@@ -82,14 +87,16 @@ struct ManageFriendsView: View {
                 Section("Friends") {
                     ForEach(accountViewModel.friends.indices, id: \.self) { index in
                         HStack {
-                            if let username = accountViewModel.friends[index]["username"] as? String {
-                                Text(username)
-                                Spacer()
-                                Text("unfriend")
-                                    .foregroundColor(.blue)
-                                    .onTapGesture {
-                                        viewModel.unfriend(friendUsername: username)
-                                    }
+                            if let uid = accountViewModel.friends[index]["uid"] as? String {
+                                if let username = accountViewModel.friends[index]["username"] as? String {
+                                    Text(username)
+                                    Spacer()
+                                    Text("unfriend")
+                                        .foregroundColor(.blue)
+                                        .onTapGesture {
+                                            viewModel.unfriend(friendUID: uid)
+                                        }
+                                }
                             }
                         }
                     }
@@ -97,6 +104,9 @@ struct ManageFriendsView: View {
             }
        }
         .navigationTitle(accountViewModel.username)
+        .onAppear {
+            accountViewModel.updateUsernames()
+        }
         .onDisappear {
             dismiss()
         }

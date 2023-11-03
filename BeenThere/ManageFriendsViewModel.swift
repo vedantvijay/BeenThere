@@ -21,69 +21,67 @@ class ManageFriendsViewModel: ObservableObject {
     
     @Published var showRequestAccepted = false
     
-    func acceptFriendRequest(friendUsername: String) {
+    func acceptFriendRequest(friendUID: String) {
         let db = Firestore.firestore()
         
-        // Step 1: Fetch friend's UID based on username and remove the friend request from the other user's sentFriendRequests and add to their friends list
-        let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername.lowercased())
-        friendRef.getDocuments { (querySnapshot, err) in
+        // Step 1: Access friend's document directly with UID and update their sentFriendRequests and friends list
+        let friendRef = db.collection("users").document(friendUID)
+        friendRef.getDocument { (documentSnapshot, err) in
             if let err = err {
                 print("Error fetching friend's document:", err.localizedDescription)
                 self.showRequestError = true
                 return
             }
 
-            guard let document = querySnapshot?.documents.first,
-                  var sentFriendRequests = document.data()["sentFriendRequests"] as? [[String: Any]] else {
-                print("Error getting sentFriendRequests for friend.")
+            guard let document = documentSnapshot,
+                  var sentFriendRequests = document.data()?["sentFriendRequests"] as? [[String: Any]],
+                  var friendFriends = document.data()?["friends"] as? [[String: Any]] else {
+                print("Error getting data for friend.")
                 self.showRequestError = true
                 return
             }
             
-            let friendUID = document.documentID
-            var friendFriends = document.data()["friends"] as? [[String: Any]] ?? [] // Default to empty array if nil
-
-            // Remove from sent requests
+            // Remove the current user's UID from the friend's sentFriendRequests
             sentFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
-            document.reference.updateData(["sentFriendRequests": sentFriendRequests])
-
-            // Add to friend's friends list
+            friendRef.updateData(["sentFriendRequests": sentFriendRequests])
+            
+            // Add the current user to the friend's friends list
             let newFriendForThem = ["uid": self.accountViewModel.uid, "username": self.accountViewModel.username.lowercased()]
             friendFriends.append(newFriendForThem)
-            document.reference.updateData(["friends": friendFriends])
+            friendRef.updateData(["friends": friendFriends])
             self.showRequestAccepted = true
 
-            // Step 2: Now, use the fetched UID to remove the friend request from the current user's receivedFriendRequests and add to their friends
+            // Step 2: Access the current user's document and update their receivedFriendRequests and friends list
             let selfRef = db.collection("users").document(self.accountViewModel.uid)
-            selfRef.getDocument { snapshot, error in
+            selfRef.getDocument { (selfSnapshot, error) in
                 if let error = error {
                     print("Error fetching user's document:", error.localizedDescription)
                     self.showRequestError = true
                     return
                 }
 
-                guard var receivedFriendRequests = snapshot?.data()?["receivedFriendRequests"] as? [[String: Any]] else {
-                    print("Error getting receivedFriendRequests.")
+                guard var receivedFriendRequests = selfSnapshot?.data()?["receivedFriendRequests"] as? [[String: Any]],
+                      var currentFriends = selfSnapshot?.data()?["friends"] as? [[String: Any]] else {
+                    print("Error getting data for current user.")
                     self.showRequestError = true
                     return
                 }
-
-                var currentFriends = snapshot?.data()?["friends"] as? [[String: Any]] ?? [] // Default to empty array if nil
-
-                // Remove from received requests
-                receivedFriendRequests.removeAll { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() }
+                
+                // Remove the friend's UID from the current user's receivedFriendRequests
+                receivedFriendRequests.removeAll { ($0["uid"] as? String) == friendUID }
                 selfRef.updateData(["receivedFriendRequests": receivedFriendRequests])
-
-                // Add to current user's friends
-                let newFriend = ["uid": friendUID, "username": friendUsername.lowercased()]
-                currentFriends.append(newFriend)
+                
+                // Add the friend to the current user's friends list
+                let newFriendForSelf = ["uid": friendUID] // Assuming friendUsername is still needed here for some reason.
+                currentFriends.append(newFriendForSelf)
                 selfRef.updateData(["friends": currentFriends])
             }
         }
     }
 
 
-    func unfriend(friendUsername: String) {
+
+    func unfriend(friendUID: String) {
         let db = Firestore.firestore()
         
         // Step 1: Remove the friend from the current user's friends array
@@ -101,36 +99,34 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
             
-            friends.removeAll { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() }
+            friends.removeAll { ($0["uid"] as? String)?.lowercased() == friendUID.lowercased() }
             selfRef.updateData(["friends": friends])
         }
         
         // Step 2: Remove the current user from the friend's friends array
-        let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername.lowercased())
-        friendRef.getDocuments { (querySnapshot, err) in
+        let friendRef = db.collection("users").document(friendUID)
+        friendRef.getDocument { (documentSnapshot, err) in
             if let err = err {
                 print("Error fetching friend's document:", err.localizedDescription)
                 self.showRequestError = true
                 return
             }
             
-            guard let document = querySnapshot?.documents.first else {
-                print("No document found for friend.")
-                self.showRequestError = true
-                return
-            }
-            
-            guard var friendsOfFriend = document.data()["friends"] as? [[String: Any]] else {
+            guard let friendData = documentSnapshot?.data(), let friendsOfFriend = friendData["friends"] as? [[String: Any]] else {
                 print("Error getting friends array for friend.")
                 self.showRequestError = true
                 return
             }
             
-            friendsOfFriend.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
-            document.reference.updateData(["friends": friendsOfFriend])
+            var updatedFriendsOfFriend = friendsOfFriend
+            updatedFriendsOfFriend.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
+            
+            // Only update if there was a change.
+            if updatedFriendsOfFriend.count != friendsOfFriend.count {
+                friendRef.updateData(["friends": updatedFriendsOfFriend])
+            }
         }
     }
-
 
 
     func sendFriendRequest(friendUsername: String) {
@@ -148,7 +144,7 @@ class ManageFriendsViewModel: ObservableObject {
             print("LOG: starting send process")
             let db = Firestore.firestore()
             
-            let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername.lowercased())
+            let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername)
             friendRef.getDocuments { (querySnapshot, err) in
                 
                 if let err = err {
@@ -166,8 +162,7 @@ class ManageFriendsViewModel: ObservableObject {
                 var receivedFriendRequests = document.data()["receivedFriendRequests"] as? [[String: Any]] ?? []
 
                 let newFriendRequest = [
-                    "uid": self.accountViewModel.uid,
-                    "username": self.accountViewModel.username
+                    "uid": self.accountViewModel.uid
                 ]
                 
                 if !receivedFriendRequests.contains(where: { ($0["uid"] as? String) == self.accountViewModel.uid }) {
@@ -198,8 +193,7 @@ class ManageFriendsViewModel: ObservableObject {
                     var sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
                     
                     let newSentRequest = [
-                        "uid": friendUID,
-                        "username": friendUsername.lowercased()
+                        "uid": friendUID
                     ]
                     
                     if !sentFriendRequests.contains(where: { ($0["uid"] as? String) == friendUID }) {
@@ -220,7 +214,7 @@ class ManageFriendsViewModel: ObservableObject {
         }
     }
 
-    func cancelFriendRequest(friendUsername: String) {
+    func cancelFriendRequest(friendUID: String) {
         let db = Firestore.firestore()
 
         // Step 1: Remove the friend request from the current user's sentFriendRequests
@@ -238,42 +232,37 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            sentFriendRequests.removeAll { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() }
+            sentFriendRequests.removeAll { ($0["uid"] as? String)?.lowercased() == friendUID.lowercased() }
             selfRef.updateData(["sentFriendRequests": sentFriendRequests])
             self.showRequestCancelled = true
         }
 
         // Step 2: Remove the friend request from the target friend's receivedFriendRequests
-        let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername.lowercased())
-        friendRef.getDocuments { (querySnapshot, err) in
+        let friendRef = db.collection("users").document(friendUID)
+        friendRef.getDocument { documentSnapshot, err in
             if let err = err {
                 print("Error fetching friend's document:", err.localizedDescription)
                 self.showRequestError = true
                 return
             }
 
-            guard let document = querySnapshot?.documents.first else {
-                print("No document found for friend.")
-                self.showRequestError = true
-                return
-            }
-
-            guard var receivedFriendRequests = document.data()["receivedFriendRequests"] as? [[String: Any]] else {
+            guard var receivedFriendRequests = documentSnapshot?.data()?["receivedFriendRequests"] as? [[String: Any]] else {
                 print("Error getting receivedFriendRequests for friend.")
                 self.showRequestError = true
                 return
             }
 
             receivedFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
-            document.reference.updateData(["receivedFriendRequests": receivedFriendRequests])
+            friendRef.updateData(["receivedFriendRequests": receivedFriendRequests])
             self.showRequestCancelled = true
         }
     }
+
     
-    func rejectFriendRequest(friendUsername: String) {
+    func rejectFriendRequest(friendUID: String) {
         let db = Firestore.firestore()
 
-        // Step 1: Remove the friend request from the current user's sentFriendRequests
+        // Step 1: Remove the friend request from the current user's receivedFriendRequests
         let selfRef = db.collection("users").document(self.accountViewModel.uid)
         selfRef.getDocument { snapshot, error in
             if let error = error {
@@ -288,34 +277,31 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            receivedFriendRequests.removeAll { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() }
+            // Remove the friend request by UID
+            receivedFriendRequests.removeAll { ($0["uid"] as? String) == friendUID }
             selfRef.updateData(["receivedFriendRequests": receivedFriendRequests])
         }
 
-        // Step 2: Remove the friend request from the target friend's receivedFriendRequests
-        let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername.lowercased())
-        friendRef.getDocuments { (querySnapshot, err) in
+        // Step 2: Remove the friend request from the target friend's sentFriendRequests
+        let friendRef = db.collection("users").document(friendUID)
+        friendRef.getDocument { documentSnapshot, err in
             if let err = err {
                 print("Error fetching friend's document:", err.localizedDescription)
                 self.showRequestError = true
                 return
             }
 
-            guard let document = querySnapshot?.documents.first else {
-                print("No document found for friend.")
+            guard var sentFriendRequests = documentSnapshot?.data()?["sentFriendRequests"] as? [[String: Any]] else {
+                print("Error getting sentFriendRequests.")
                 self.showRequestError = true
                 return
             }
 
-            guard var sentFriendRequests = document.data()["sentFriendRequests"] as? [[String: Any]] else {
-                print("Error getting sentFriendRequests for friend.")
-                self.showRequestError = true
-                return
-            }
-
+            // Remove from sent requests by current user's UID
             sentFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
-            document.reference.updateData(["sentFriendRequests": sentFriendRequests])
+            friendRef.updateData(["sentFriendRequests": sentFriendRequests])
             self.showRequestRejected = true
         }
     }
+
 }

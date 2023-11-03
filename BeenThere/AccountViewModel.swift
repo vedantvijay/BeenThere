@@ -14,14 +14,16 @@ class AccountViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
     
+    @Published var usernameForUID: [String: String] = [:] // UID to Username mapping
+    @Published var isFetchingUsernames = false
     @Published var users: [[String: Any]] = []
     @Published var uid = ""
     @Published var newUsername = ""
     @AppStorage("username") var username = ""
-    @Published var friends: [[String: Any]] = []
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
+    @Published var friends: [[String: Any]] = []
     @Published var sentFriendRequests: [[String: Any]] = []
     @Published var receivedFriendRequests: [[String: Any]] = []
     
@@ -30,7 +32,7 @@ class AccountViewModel: ObservableObject {
     private var db = Firestore.firestore()
     
     var isUsernameValid: Bool {
-        let regex = "^[a-z]{5,}$"
+        let regex = "^[a-zA-Z]{4,15}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
     
@@ -57,7 +59,7 @@ class AccountViewModel: ObservableObject {
         if newUsername.contains(" ") || newUsername.contains("\n") {
             return "Username must not contain spaces or newlines."
         }
-        if newUsername.range(of: "^[a-z]{5,}$", options: .regularExpression) == nil {
+        if newUsername.range(of: "^[a-zA-Z]{4,15}$", options: .regularExpression) == nil {
             return "Invalid username format."
         }
         return ""
@@ -74,6 +76,40 @@ class AccountViewModel: ObservableObject {
             listener.remove()
         }
     }
+    
+    
+    func fetchUsernamesForUIDs(uids: [String]) {
+            isFetchingUsernames = true
+            
+            let dispatchGroup = DispatchGroup()
+            
+            for uid in uids {
+                dispatchGroup.enter()
+                let userRef = db.collection("users").document(uid)
+                userRef.getDocument { (document, error) in
+                    if let document = document, document.exists {
+                        let username = document.data()?["username"] as? String ?? "Unknown"
+                        DispatchQueue.main.async {
+                            self.usernameForUID[uid] = username
+                        }
+                    } else {
+                        print("Document does not exist")
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                self.isFetchingUsernames = false
+            }
+        }
+        
+        // Call this function when the view appears or the friend requests arrays are updated
+        func updateUsernames() {
+            let uids = (self.sentFriendRequests + self.receivedFriendRequests)
+                .compactMap { $0["uid"] as? String }
+            fetchUsernamesForUIDs(uids: uids)
+        }
     
     func sortedUsersByLocationCount() -> [[String: Any]] {
         return users.sorted { userA, userB in

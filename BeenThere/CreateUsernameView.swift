@@ -22,7 +22,7 @@ struct CreateUsernameView: View {
     @FocusState private var isUsernameFieldFocused: Bool
     
     var isUsernameValid: Bool {
-        let regex = "^[a-z]{4,15}$" // Modified to enforce a maximum of 15 characters
+        let regex = "^[a-zA-Z]{4,15}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil && newUsername.count < 16
     }
     
@@ -147,7 +147,8 @@ struct CreateUsernameView: View {
         let userRef = Firestore.firestore().collection("users").document(userID)
 
         userRef.updateData([
-            "username": newUsername
+            "username": newUsername,
+            "lowercaseUsername": newUsername.lowercased()
         ]) { error in
             if let error = error {
                 print("Error updating username: \(error)")
@@ -158,22 +159,28 @@ struct CreateUsernameView: View {
     }
     
     func isUsernameTaken(username: String, completion: @escaping (Bool) -> Void) {
-        Firestore.firestore().collection("users").whereField("username", isEqualTo: newUsername).getDocuments { (snapshot, error) in
+        let lowercasedUsername = username.lowercased()
+
+        Firestore.firestore().collection("users").whereField("lowercaseUsername", isEqualTo: lowercasedUsername).getDocuments { (snapshot, error) in
             if let error = error {
                 print("Error checking for username: \(error)")
                 completion(false)
                 return
             }
-            
+
             if let snapshot = snapshot, !snapshot.isEmpty {
+                // The username matches the lowercase version (case-insensitive match).
                 print("Username taken")
                 completion(true)
             } else {
+                // No matches were found, the username is available.
                 print("Username available")
                 completion(false)
             }
         }
     }
+
+
     
     func checkAndSetUsername() {
         if isUsernameValid {
@@ -194,13 +201,10 @@ struct CreateUsernameView: View {
         if newUsername.count > 15 {
             return "Username must be shorter than 16 characters"
         }
-        if newUsername.range(of: "[A-Z]", options: .regularExpression) != nil {
-            return "Username must not contain uppercase characters."
-        }
         if newUsername.contains(" ") || newUsername.contains("\n") {
             return "Username must not contain spaces or newlines."
         }
-        if newUsername.range(of: "^[a-z]{4,15}$", options: .regularExpression) == nil {
+        if newUsername.range(of: "^[a-zA-Z]{4,15}$", options: .regularExpression) == nil {
             return "Invalid username format."
         }
         return ""
