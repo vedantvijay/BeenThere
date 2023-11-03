@@ -23,12 +23,14 @@ struct ManageFriendsView: View {
                        .autocapitalization(.none)
                        .disableAutocorrection(true)
                        .foregroundColor(.gray)
+                       .fontWeight(.black)
                    Button("Add") {
                        viewModel.sendFriendRequest(friendUsername: newFriendUsername)
                        newFriendUsername = ""
                        print(accountViewModel.sentFriendRequests)
                    }
                    .buttonStyle(.bordered)
+                   .fontWeight(.black)
                    .disabled(newFriendUsername.count < 4 || newFriendUsername.count > 15 || newFriendUsername.contains(" "))
                }
                .onTapGesture {
@@ -43,12 +45,15 @@ struct ManageFriendsView: View {
                                 if let username = accountViewModel.usernameForUID[uid] {
                                     Text(username)
                                         .foregroundColor(.gray)
+                                        .fontWeight(.black)
+
                                     Spacer()
-                                    Image(systemName: "xmark.circle")
-                                        .foregroundColor(.red)
-                                        .onTapGesture {
-                                            viewModel.cancelFriendRequest(friendUID: uid)
-                                        }
+                                    Button("Cancel") {
+                                        viewModel.cancelFriendRequest(friendUID: uid)
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.red)
+                                    
                                 }
                                 
                             }
@@ -65,18 +70,20 @@ struct ManageFriendsView: View {
                                 if let username = accountViewModel.usernameForUID[uid] {
                                     Text(username)
                                         .foregroundColor(.gray)
+                                        .fontWeight(.black)
+
                                     Spacer()
-                                    Image(systemName: "xmark.circle")
-                                        .foregroundColor(.red)
-                                        .onTapGesture {
-                                            viewModel.rejectFriendRequest(friendUID: uid)
-                                        }
-                                    Image(systemName: "checkmark.circle")
-                                        .foregroundColor(.green)
-                                        .onTapGesture {
-                                            viewModel.acceptFriendRequest(friendUID: uid)
-                                        }
-                                        .padding(.horizontal)
+                                    
+                                    Button("Accept") {
+                                        viewModel.acceptFriendRequest(friendUID: uid)
+                                    }
+                                    .tint(.green)
+                                    .buttonStyle(.bordered)
+                                    Button("Reject") {
+                                        viewModel.rejectFriendRequest(friendUID: uid)
+                                    }
+                                    .tint(.red)
+                                    .buttonStyle(.bordered)
                                 }
                             }
                         }
@@ -90,12 +97,13 @@ struct ManageFriendsView: View {
                             if let uid = accountViewModel.friends[index]["uid"] as? String {
                                 if let username = accountViewModel.friends[index]["username"] as? String {
                                     Text(username)
+                                        .fontWeight(.black)
                                     Spacer()
-                                    Text("unfriend")
-                                        .foregroundColor(.blue)
-                                        .onTapGesture {
-                                            viewModel.unfriend(friendUID: uid)
-                                        }
+                                    Button("Unfriend") {
+                                        viewModel.unfriend(friendUID: uid)
+                                    }
+                                    .tint(.red)
+                                    .buttonStyle(.bordered)
                                 }
                             }
                         }
@@ -117,7 +125,7 @@ struct ManageFriendsView: View {
             AlertToast(displayMode: .alert, type: .complete(.orange), title: "Friend Request Already Sent")
         }
         .toast(isPresenting: $viewModel.showRequestError) {
-            AlertToast(displayMode: .alert, type: .error(.red), title: "Something Went Wrong")
+            AlertToast(displayMode: .alert, type: .error(.red), title: "Please Try Again", subTitle: "Double check the username is correct")
         }
         .toast(isPresenting: $viewModel.showRequestRejected) {
             AlertToast(displayMode: .alert, type: .error(.red), title: "Friend Request Rejected")

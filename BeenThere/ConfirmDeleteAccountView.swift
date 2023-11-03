@@ -32,6 +32,7 @@ struct ConfirmDeleteAccountView: View {
                     
                     if minutesSinceLastLogin > 3 {
                         Text("Please reauthenticate with the button below to delete your account.")
+                            .fontWeight(.black)
                             .padding()
                     }
             if minutesSinceLastLogin > 3 {

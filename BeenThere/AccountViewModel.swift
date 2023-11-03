@@ -9,17 +9,19 @@ import Foundation
 import Firebase
 import AuthenticationServices
 import SwiftUI
+import UserNotifications
 
 class AccountViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
-    
+    @Published var usernameChanged = false
     @Published var usernameForUID: [String: String] = [:] // UID to Username mapping
     @Published var isFetchingUsernames = false
     @Published var users: [[String: Any]] = []
     @Published var uid = ""
     @Published var newUsername = ""
     @AppStorage("username") var username = ""
+    @AppStorage("lowercaseUsername") var lowercaseUsername = ""
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
@@ -342,6 +344,23 @@ class AccountViewModel: ObservableObject {
             }
         }
     }
+    
+    func showFriendRequestNotification(from username: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "New Friend Request"
+        content.body = "\(username) has sent you a friend request."
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error: \(error)")
+            }
+        }
+    }
+
 
     
     func setUpFirestoreListener() {
@@ -357,6 +376,7 @@ class AccountViewModel: ObservableObject {
             }
             
             self?.username = data["username"] as? String ?? ""
+            self?.lowercaseUsername = data["lowercaseUsername"] as? String ?? ""
             self?.friends = data["friends"] as? [[String: Any]] ?? []
             self?.uid = userID
             self?.sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
@@ -372,6 +392,14 @@ class AccountViewModel: ObservableObject {
                     } catch {
                         print("Error decoding location: \(error)")
                         return nil
+                    }
+                }
+            }
+            
+            if let newRequests = data["receivedFriendRequests"] as? [[String: Any]], !newRequests.isEmpty {
+                for request in newRequests {
+                    if let username = request["uid"] as? String {
+                        self?.showFriendRequestNotification(from: username)
                     }
                 }
             }

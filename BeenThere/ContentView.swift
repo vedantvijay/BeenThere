@@ -9,6 +9,7 @@ import SwiftUI
 import Mapbox
 import CoreLocation
 import FirebaseAuth
+import UserNotifications
 
 struct ContentView: View {
     @AppStorage("username") var username = ""
@@ -128,6 +129,7 @@ struct ContentView: View {
             mapViewModel.updateMapStyleURL()
         }
         .onAppear {
+            requestNotificationPermission()
             mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
             let notificationCenter = NotificationCenter.default
@@ -157,7 +159,15 @@ struct ContentView: View {
         URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&q=\(location.latitude),\(location.longitude)")!
     }
 
-
+    func requestNotificationPermission() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Error: \(error)")
+            }
+            // Enable or disable features based on the authorization.
+        }
+    }
 
     func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {

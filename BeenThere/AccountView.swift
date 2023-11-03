@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 import AuthenticationServices
+import AlertToast
 
 struct AccountView: View {
     @EnvironmentObject var viewModel: AccountViewModel
@@ -26,11 +27,13 @@ struct AccountView: View {
         NavigationStack {
             Form {
                 Section {
-                    NavigationLink("Change Username") {
-                        ChangeUsernameView()
-                    }
                     NavigationLink("Manage Friends") {
                         ManageFriendsView()
+                    }
+                }
+                Section {
+                    NavigationLink("Change Username") {
+                        ChangeUsernameView()
                     }
                 }
                 Section {
@@ -46,6 +49,9 @@ struct AccountView: View {
             }
             .navigationTitle("Account")
             .navigationBarTitleDisplayMode(.inline)
+            .toast(isPresenting: $viewModel.usernameChanged) {
+                AlertToast(displayMode: .alert, type: .complete(.green), title: "Username changed")
+            }
         }
     }
 }

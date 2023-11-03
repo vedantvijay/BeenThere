@@ -11,7 +11,6 @@ import SwiftUI
 
 class ManageFriendsViewModel: ObservableObject {
     @ObservedObject var accountViewModel = AccountViewModel()
-    
     @Published var showRequestSent = false
     @Published var showRequestAlreadySent = false
     @Published var showRequestError = false
@@ -46,7 +45,7 @@ class ManageFriendsViewModel: ObservableObject {
             friendRef.updateData(["sentFriendRequests": sentFriendRequests])
             
             // Add the current user to the friend's friends list
-            let newFriendForThem = ["uid": self.accountViewModel.uid, "username": self.accountViewModel.username.lowercased()]
+            let newFriendForThem = ["uid": self.accountViewModel.uid, "username": self.accountViewModel.username]
             friendFriends.append(newFriendForThem)
             friendRef.updateData(["friends": friendFriends])
             self.showRequestAccepted = true
@@ -99,7 +98,7 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
             
-            friends.removeAll { ($0["uid"] as? String)?.lowercased() == friendUID.lowercased() }
+            friends.removeAll { ($0["uid"] as? String) == friendUID }
             selfRef.updateData(["friends": friends])
         }
         
@@ -133,18 +132,22 @@ class ManageFriendsViewModel: ObservableObject {
         print("LOG: sending friend request")
         print("LOG: \(friendUsername)")
         
-        let sentUsernames = accountViewModel.sentFriendRequests.compactMap { $0["username"] as? String }.map { $0.lowercased() }
-        let receivedUsernames = accountViewModel.receivedFriendRequests.compactMap { $0["username"] as? String }.map { $0.lowercased() }
+        // Use the lowercased version of the friendUsername for all checks and queries
+        let friendUsernameLowercased = friendUsername.lowercased()
         
-        if !accountViewModel.friends.contains(where: { ($0["username"] as? String)?.lowercased() == friendUsername.lowercased() })
-            && !(accountViewModel.username == friendUsername.lowercased())
-            && !sentUsernames.contains(friendUsername.lowercased())
-            && !receivedUsernames.contains(friendUsername.lowercased()) {
+        let sentUsernames = accountViewModel.sentFriendRequests.compactMap { $0["lowercaseUsername"] as? String }
+        let receivedUsernames = accountViewModel.receivedFriendRequests.compactMap { $0["lowercaseUsername"] as? String }
+        
+        if !accountViewModel.friends.contains(where: { ($0["lowercaseUsername"] as? String) == friendUsernameLowercased })
+            && !(accountViewModel.lowercaseUsername == friendUsernameLowercased)
+            && !sentUsernames.contains(friendUsernameLowercased)
+            && !receivedUsernames.contains(friendUsernameLowercased) {
 
             print("LOG: starting send process")
             let db = Firestore.firestore()
             
-            let friendRef = db.collection("users").whereField("username", isEqualTo: friendUsername)
+            // Query for the friend using the lowercaseUsername field
+            let friendRef = db.collection("users").whereField("lowercaseUsername", isEqualTo: friendUsernameLowercased)
             friendRef.getDocuments { (querySnapshot, err) in
                 
                 if let err = err {
@@ -213,6 +216,7 @@ class ManageFriendsViewModel: ObservableObject {
             self.showRequestError = true
         }
     }
+
 
     func cancelFriendRequest(friendUID: String) {
         let db = Firestore.firestore()
@@ -305,3 +309,4 @@ class ManageFriendsViewModel: ObservableObject {
     }
 
 }
+

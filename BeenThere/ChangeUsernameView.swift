@@ -10,11 +10,28 @@ import FirebaseAuth
 import Firebase
 
 struct ChangeUsernameView: View {
+    @Environment(\.dismiss) var dismiss
     @State private var newUsername = ""
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var viewModel: AccountViewModel
     @FocusState private var isUsernameFieldFocused: Bool
+    private let debouncer = Debouncer()
+    @State private var lastCheckInitiationTime: Date? = nil
+    private let debounceInterval = 0.5 // or whatever value you've determined is appropriate
+
+    var isChangeButtonDisabled: Bool {
+            // Check if enough time has passed since the last initiated check.
+            if let lastCheckTime = lastCheckInitiationTime {
+                if -lastCheckTime.timeIntervalSinceNow < debounceInterval {
+                    // Not enough time has passed, disable the button.
+                    return true
+                }
+            }
+            // Otherwise, use the existing conditions.
+            return !isUsernameValid || isCheckingUsername || isUsernameTaken
+        }
     
     var isUsernameValid: Bool {
         let regex = "^[a-zA-Z]{4,15}$"
@@ -23,51 +40,44 @@ struct ChangeUsernameView: View {
     
     var body: some View {
         Form {
-            TextField("Username", text: $newUsername)
-                .shadow(color: .black, radius: 1, x: 0.5, y: 1)
+            TextField("New Username", text: $newUsername)
                 .fontWeight(.black)
                 .onChange(of: newUsername) {
                     checkAndSetUsername()
                 }
-                .textFieldStyle(.roundedBorder)
-                .padding()
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .focused($isUsernameFieldFocused)
-            
+                .onAppear {
+                    isUsernameFieldFocused = true
+                }
             if invalidUsernameReason != "" {
                 Text(invalidUsernameReason)
-                    .foregroundStyle(.white)
-                    .shadow(color: .black, radius: 1, x: 0.5, y: 1)
                     .fontWeight(.black)
 
             } else if isUsernameTaken {
                 Text("Username is already taken")
-                    .foregroundStyle(.white)
-                    .shadow(color: .black, radius: 1, x: 0.5, y: 1)
                     .fontWeight(.black)
             }
             if isCheckingUsername {
-                ProgressView()
-                    .shadow(radius: 1, x: 0.5, y: 1)
+//                ProgressView()
 
             } else {
                 if !(!isUsernameValid || isCheckingUsername || isUsernameTaken) {
-                    Button("Create Username") {
+                    Button("Change Username") {
                         if authViewModel.isAuthenticated && authViewModel.isSignedIn {
                             setUsernameInFirestore()
                         }
                     }
-                    .shadow(color: .black, radius: 1, x: 0.5, y: 1)
                     .fontWeight(.black)
-                    .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
+                    .disabled(isChangeButtonDisabled)
                     .buttonStyle(.bordered)
                     .tint(.green)
                 }
                 
             }
-
         }
+        .navigationTitle("Change Username")
     }
     
     
@@ -87,6 +97,8 @@ struct ChangeUsernameView: View {
                 print("Error updating username: \(error)")
             } else {
                 print("Username successfully updated")
+                viewModel.usernameChanged = true
+                dismiss()
             }
         }
     }
@@ -130,16 +142,21 @@ struct ChangeUsernameView: View {
 
     
     func checkAndSetUsername() {
-        if isUsernameValid {
-            isCheckingUsername = true
-        }
-        isUsernameTaken(username: newUsername) { taken in
-            DispatchQueue.main.async {
-                self.isUsernameTaken = taken
-                self.isCheckingUsername = false
+            guard isUsernameValid else { return }
+            
+            lastCheckInitiationTime = Date() // Set the last check time to now.
+            
+            debouncer.debounce(interval: debounceInterval) {
+                // Now inside the debounce closure, we start the check
+                self.isCheckingUsername = true
+                isUsernameTaken(username: self.newUsername) { taken in
+                    DispatchQueue.main.async {
+                        self.isUsernameTaken = taken
+                        self.isCheckingUsername = false
+                    }
+                }
             }
         }
-    }
     
     var invalidUsernameReason: String {
         if newUsername.count <= 3 {
@@ -160,4 +177,15 @@ struct ChangeUsernameView: View {
 
 #Preview {
     ChangeUsernameView()
+}
+
+class Debouncer {
+    private var timer: Timer?
+    
+    func debounce(interval: TimeInterval, action: @escaping (() -> Void)) {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { _ in
+            action()
+        }
+    }
 }

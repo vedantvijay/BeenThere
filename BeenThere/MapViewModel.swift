@@ -60,7 +60,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.distanceFilter = 250
+        locationManager.distanceFilter = 100
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
