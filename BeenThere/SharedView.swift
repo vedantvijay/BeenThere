@@ -49,6 +49,7 @@ struct SharedView: View {
                 Text("Shared Map")
                 .font(.largeTitle)
                 .fontWeight(.black)
+//                .shadow(color: colorScheme == .light ? .secondary : .white, radius: 1)
             }
             
             

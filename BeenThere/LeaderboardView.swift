@@ -77,8 +77,9 @@ struct LeaderboardView: View {
                                             Text(personName)
                                                 .fontWeight(personName == viewModel.username ? .black : .regular)
                                         } else {
-                                            Text("UnknownUser")
-                                                .blur(radius: 5)
+                                            Text(personName)
+//                                            Text("UnknownUser")
+//                                                .blur(radius: 5)
                                         }
                                         Spacer()
                                         Text("\(personLocations.count)")

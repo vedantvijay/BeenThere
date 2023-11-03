@@ -168,11 +168,13 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     func addSquaresToMap(locations: [Location]) {
         var squaresToKeep = Set<String>() // This will hold the squares that are still valid after this update.
 
+        let adjustmentValue: CLLocationDegrees = 0.000001 // Tiny adjustment value
+        
         for square in locations {
-            let lowLat = square.lowLatitude
-            let highLat = square.highLatitude
-            let lowLong = square.lowLongitude
-            let highLong = square.highLongitude
+            let lowLat = square.lowLatitude + adjustmentValue
+            let highLat = square.highLatitude - adjustmentValue
+            let lowLong = square.lowLongitude + adjustmentValue
+            let highLong = square.highLongitude - adjustmentValue
 
             let bottomLeft = CLLocationCoordinate2D(latitude: lowLat, longitude: lowLong)
             let bottomRight = CLLocationCoordinate2D(latitude: lowLat, longitude: highLong)
@@ -384,7 +386,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         
         // Interpolate line width based on zoom level
         layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
-                                       [10: 1, 15: 2, 20: 3])
+                                       [0: 0, 4: 0.25, 6: 0.5, 10: 1, 11: 1])
         
         // Interpolate line opacity based on zoom level. This will make the lines fade out as you zoom out.
         layer.lineOpacity = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",

@@ -41,7 +41,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack {
             switch selection {
             case 1:
                 AccountView()
@@ -67,6 +67,7 @@ struct ContentView: View {
                             .buttonStyle(.bordered)
                             .tint(.orange)
                             .padding()
+                            .padding(.top, 50)
                             Spacer()
                         }
                     }
@@ -99,6 +100,7 @@ struct ContentView: View {
                             .buttonStyle(.bordered)
                             .tint(.orange)
                             .padding()
+                            .padding(.top, 50)
                             Spacer()
                         }
                     }
@@ -106,11 +108,12 @@ struct ContentView: View {
             }
             if !isKeyboardVisible {
                 CustomTabView(selection: $selection)
-                    .background(.ultraThinMaterial)
+                    .padding(.bottom, 10)
             }
 
         }
-//        .background(.ultraThinMaterial)
+        .ignoresSafeArea()
+        .background(Material.bar)
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),
@@ -135,8 +138,6 @@ struct ContentView: View {
                 isKeyboardVisible = false
             }
         }
-
-
         .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
             if let location = mapViewModel.tappedLocation {
                 Link("Open in Google Maps", destination: googleMapsURL(for: location))

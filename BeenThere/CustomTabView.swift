@@ -12,7 +12,7 @@ struct CustomTabView: View {
     @Binding var selection: Int
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .center) {
             Button(action: {
                 selection = 1
             }) {
@@ -20,27 +20,27 @@ struct CustomTabView: View {
                     .resizable()
                     .frame(width: 25, height: 25)
                     .padding()
-                    .foregroundColor(selection == 1 ? colorScheme == .light ? .black : .white : .secondary)
+                    .foregroundColor(selection == 1 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .offset(y: -10)
+
             }
             .frame(maxWidth: .infinity)
             
             ZStack {
                 Circle()
-                    .foregroundStyle(.ultraThinMaterial)
-//                    .foregroundColor(colorScheme == .light ? .white : .black)
-                    .frame(width: 67, height: 67)
-//                    .shadow(radius: 3)
-                
+                    .frame(width: 66, height: 66)
+                    .foregroundStyle(Material.bar)
+//                    .shadow(color: colorScheme == .light ? .black : .white, radius: 3)
                 Button(action: {
                     selection = 2
                 }) {
                     Image(systemName: selection == 2 ? "safari.fill" : "safari")
                         .resizable()
                         .frame(width: 70, height: 70)
-                        .foregroundColor(selection == 2 ? colorScheme == .light ? .black : .white : .secondary)
+                        .foregroundColor(selection == 2 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
                 }
             }
-            .offset(y: -20) // Adjust this to move up or down
+            .offset(y: -30) // Adjust this to move up or down
             
             Button(action: {
                 selection = 3
@@ -49,10 +49,12 @@ struct CustomTabView: View {
                     .resizable()
                     .frame(width: 25, height: 25)
                     .padding()
-                    .foregroundColor(selection == 3 ? colorScheme == .light ? .black : .white : .secondary)
+                    .foregroundColor(selection == 3 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .offset(y: -10)
             }
             .frame(maxWidth: .infinity)
         }
+        
     }
 }
 
