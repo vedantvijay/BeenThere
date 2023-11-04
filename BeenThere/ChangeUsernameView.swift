@@ -19,6 +19,7 @@ struct ChangeUsernameView: View {
     @FocusState private var isUsernameFieldFocused: Bool
     private let debouncer = Debouncer()
     @State private var lastCheckInitiationTime: Date? = nil
+    @AppStorage("username") var currentUsername = ""  // This should be set to the user's current username initially
     private let debounceInterval = 0.5 // or whatever value you've determined is appropriate
 
     var isChangeButtonDisabled: Bool {
@@ -106,7 +107,13 @@ struct ChangeUsernameView: View {
     func isUsernameTaken(username: String, completion: @escaping (Bool) -> Void) {
         let lowercasedUsername = username.lowercased()
         
-        Firestore.firestore().collection("users").whereField("username", isEqualTo: username).getDocuments { (snapshot, error) in
+        // Avoid checking if the new username is the same as the current username with just different casing.
+        guard lowercasedUsername != currentUsername.lowercased() else {
+            completion(false)
+            return
+        }
+
+        Firestore.firestore().collection("users").whereField("lowercaseUsername", isEqualTo: lowercasedUsername).getDocuments { (snapshot, error) in
             if let error = error {
                 print("Error checking for username: \(error)")
                 completion(false)
@@ -114,31 +121,24 @@ struct ChangeUsernameView: View {
             }
             
             if let snapshot = snapshot, !snapshot.isEmpty {
-                // The username matches as it is stored (case-sensitive match).
-                print("Username taken")
-                completion(true)
-            } else {
-                // Proceed to check the lowercase version if the case-sensitive check did not find a match.
-                Firestore.firestore().collection("users").whereField("lowercaseUsername", isEqualTo: lowercasedUsername).getDocuments { (snapshot, error) in
-                    if let error = error {
-                        print("Error checking for username: \(error)")
-                        completion(false)
-                        return
-                    }
-                    
-                    if let snapshot = snapshot, !snapshot.isEmpty {
-                        // The username matches the lowercase version (case-insensitive match).
-                        print("Username taken")
-                        completion(true)
-                    } else {
-                        // If we reach this point, it means no matches were found in both checks.
-                        print("Username available")
-                        completion(false)
-                    }
+                // The username matches the lowercase version (case-insensitive match).
+                // Now we need to make sure that the document found is not the current user's document
+                if snapshot.documents.first?.documentID != Auth.auth().currentUser?.uid {
+                    print("Username taken")
+                    completion(true)
+                } else {
+                    // If the document is the current user's, the username is not taken.
+                    print("Username available")
+                    completion(false)
                 }
+            } else {
+                // If we reach this point, it means no matches were found.
+                print("Username available")
+                completion(false)
             }
         }
     }
+
 
     
     func checkAndSetUsername() {
