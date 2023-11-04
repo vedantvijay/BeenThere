@@ -9,7 +9,6 @@ import SwiftUI
 import Mapbox
 import CoreLocation
 import FirebaseAuth
-import UserNotifications
 
 struct ContentView: View {
     @AppStorage("username") var username = ""
@@ -129,7 +128,6 @@ struct ContentView: View {
             mapViewModel.updateMapStyleURL()
         }
         .onAppear {
-            requestNotificationPermission()
             mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
             let notificationCenter = NotificationCenter.default

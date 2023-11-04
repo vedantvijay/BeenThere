@@ -43,7 +43,7 @@ struct ManageFriendsView: View {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            if let uid = accountViewModel.sentFriendRequests[index]["uid"] as? String {
+                            if let uid = accountViewModel.sentFriendRequests[index] as? String {
                                 if let username = accountViewModel.usernameForUID[uid] {
                                     Text(username)
                                         .foregroundColor(.gray)
@@ -71,7 +71,7 @@ struct ManageFriendsView: View {
                     } else {
                         ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
                             HStack {
-                                if let uid = accountViewModel.receivedFriendRequests[index]["uid"] as? String {
+                                if let uid = accountViewModel.receivedFriendRequests[index] as? String {
                                     if let username = accountViewModel.usernameForUID[uid] {
                                         Text(username)
                                             .foregroundColor(.gray)

@@ -9,7 +9,6 @@ import Foundation
 import Firebase
 import AuthenticationServices
 import SwiftUI
-import UserNotifications
 
 class AccountViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
@@ -26,8 +25,8 @@ class AccountViewModel: ObservableObject {
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
     @Published var friends: [[String: Any]] = []
-    @Published var sentFriendRequests: [[String: Any]] = []
-    @Published var receivedFriendRequests: [[String: Any]] = []
+    @Published var sentFriendRequests: [String] = []
+    @Published var receivedFriendRequests: [String] = []
     
     private var accountListener: ListenerRegistration?
     var listeners: [ListenerRegistration] = []
@@ -109,7 +108,6 @@ class AccountViewModel: ObservableObject {
         // Call this function when the view appears or the friend requests arrays are updated
         func updateUsernames() {
             let uids = (self.sentFriendRequests + self.receivedFriendRequests)
-                .compactMap { $0["uid"] as? String }
             fetchUsernamesForUIDs(uids: uids)
         }
     
@@ -343,21 +341,21 @@ class AccountViewModel: ObservableObject {
         }
     }
     
-    func showFriendRequestNotification(from username: String) {
-        let content = UNMutableNotificationContent()
-        content.title = "New Friend Request"
-        content.body = "\(username) has sent you a friend request."
-        content.sound = .default
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error: \(error)")
-            }
-        }
-    }
+//    func showFriendRequestNotification(from username: String) {
+//        let content = UNMutableNotificationContent()
+//        content.title = "New Friend Request"
+//        content.body = "\(username) has sent you a friend request."
+//        content.sound = .default
+//        
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+//        
+//        UNUserNotificationCenter.current().add(request) { error in
+//            if let error = error {
+//                print("Error: \(error)")
+//            }
+//        }
+//    }
 
 
     
@@ -377,8 +375,8 @@ class AccountViewModel: ObservableObject {
             self?.lowercaseUsername = data["lowercaseUsername"] as? String ?? ""
             self?.friends = data["friends"] as? [[String: Any]] ?? []
             self?.uid = userID
-            self?.sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
-            self?.receivedFriendRequests = data["receivedFriendRequests"] as? [[String: Any]] ?? []
+            self?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
+            self?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
             self?.fetchFriendsData()
 
             if let locationData = data["locations"] as? [[String: Any]] {
@@ -394,13 +392,13 @@ class AccountViewModel: ObservableObject {
                 }
             }
             
-            if let newRequests = data["receivedFriendRequests"] as? [[String: Any]], !newRequests.isEmpty {
-                for request in newRequests {
-                    if let username = request["uid"] as? String {
-                        self?.showFriendRequestNotification(from: username)
-                    }
-                }
-            }
+//            if let newRequests = data["receivedFriendRequests"] as? [[String: Any]], !newRequests.isEmpty {
+//                for request in newRequests {
+//                    if let username = request["uid"] as? String {
+//                        self?.showFriendRequestNotification(from: username)
+//                    }
+//                }
+//            }
 
         }
         listenForGlobalLeaderboardUpdates()

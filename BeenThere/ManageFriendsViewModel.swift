@@ -33,7 +33,7 @@ class ManageFriendsViewModel: ObservableObject {
             }
 
             guard let document = documentSnapshot,
-                  var sentFriendRequests = document.data()?["sentFriendRequests"] as? [[String: Any]],
+                  var sentFriendRequests = document.data()?["sentFriendRequests"] as? [String],
                   var friendFriends = document.data()?["friends"] as? [[String: Any]] else {
                 print("Error getting data for friend.")
                 self.showRequestError = true
@@ -41,11 +41,11 @@ class ManageFriendsViewModel: ObservableObject {
             }
             
             // Remove the current user's UID from the friend's sentFriendRequests
-            sentFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
+            sentFriendRequests.removeAll { $0 == self.accountViewModel.uid }
             friendRef.updateData(["sentFriendRequests": sentFriendRequests])
             
             // Add the current user to the friend's friends list
-            let newFriendForThem = ["uid": self.accountViewModel.uid, "username": self.accountViewModel.username]
+            let newFriendForThem = ["uid": self.accountViewModel.uid]
             friendFriends.append(newFriendForThem)
             friendRef.updateData(["friends": friendFriends])
             self.showRequestAccepted = true
@@ -59,7 +59,7 @@ class ManageFriendsViewModel: ObservableObject {
                     return
                 }
 
-                guard var receivedFriendRequests = selfSnapshot?.data()?["receivedFriendRequests"] as? [[String: Any]],
+                guard var receivedFriendRequests = selfSnapshot?.data()?["receivedFriendRequests"] as? [String],
                       var currentFriends = selfSnapshot?.data()?["friends"] as? [[String: Any]] else {
                     print("Error getting data for current user.")
                     self.showRequestError = true
@@ -67,7 +67,7 @@ class ManageFriendsViewModel: ObservableObject {
                 }
                 
                 // Remove the friend's UID from the current user's receivedFriendRequests
-                receivedFriendRequests.removeAll { ($0["uid"] as? String) == friendUID }
+                receivedFriendRequests.removeAll { $0 == friendUID }
                 selfRef.updateData(["receivedFriendRequests": receivedFriendRequests])
                 
                 // Add the friend to the current user's friends list
@@ -135,8 +135,8 @@ class ManageFriendsViewModel: ObservableObject {
         // Use the lowercased version of the friendUsername for all checks and queries
         let friendUsernameLowercased = friendUsername.lowercased()
         
-        let sentUsernames = accountViewModel.sentFriendRequests.compactMap { $0["lowercaseUsername"] as? String }
-        let receivedUsernames = accountViewModel.receivedFriendRequests.compactMap { $0["lowercaseUsername"] as? String }
+        let sentUsernames = accountViewModel.sentFriendRequests
+        let receivedUsernames = accountViewModel.receivedFriendRequests
         
         if !accountViewModel.friends.contains(where: { ($0["lowercaseUsername"] as? String) == friendUsernameLowercased })
             && !(accountViewModel.lowercaseUsername == friendUsernameLowercased)
@@ -162,14 +162,14 @@ class ManageFriendsViewModel: ObservableObject {
                 }
                 
                 let friendUID = document.documentID
-                var receivedFriendRequests = document.data()["receivedFriendRequests"] as? [[String: Any]] ?? []
+                var receivedFriendRequests = document.data()["receivedFriendRequests"] as? [String] ?? []
 
-                let newFriendRequest = [
-                    "uid": self.accountViewModel.uid
-                ]
+//                let newFriendRequest = [
+//                    self.accountViewModel.uid
+//                ]
                 
-                if !receivedFriendRequests.contains(where: { ($0["uid"] as? String) == self.accountViewModel.uid }) {
-                    receivedFriendRequests.append(newFriendRequest)
+                if !receivedFriendRequests.contains(where: { ($0) == self.accountViewModel.uid }) {
+                    receivedFriendRequests.append(self.accountViewModel.uid)
                     document.reference.updateData([
                         "receivedFriendRequests": receivedFriendRequests
                     ])
@@ -195,14 +195,14 @@ class ManageFriendsViewModel: ObservableObject {
                         return
                     }
                     
-                    var sentFriendRequests = data["sentFriendRequests"] as? [[String: Any]] ?? []
+                    var sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
                     
-                    let newSentRequest = [
-                        "uid": friendUID
-                    ]
+//                    let newSentRequest = [
+//                        "uid": friendUID
+//                    ]
                     
-                    if !sentFriendRequests.contains(where: { ($0["uid"] as? String) == friendUID }) {
-                        sentFriendRequests.append(newSentRequest)
+                    if !sentFriendRequests.contains(where: { ($0) == friendUID }) {
+                        sentFriendRequests.append(friendUID)
                         selfRef.updateData([
                             "sentFriendRequests": sentFriendRequests
                         ])
@@ -232,13 +232,13 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            guard var sentFriendRequests = snapshot?.data()?["sentFriendRequests"] as? [[String: Any]] else {
+            guard var sentFriendRequests = snapshot?.data()?["sentFriendRequests"] as? [String] else {
                 print("Error getting sentFriendRequests.")
                 self.showRequestError = true
                 return
             }
 
-            sentFriendRequests.removeAll { ($0["uid"] as? String)?.lowercased() == friendUID.lowercased() }
+            sentFriendRequests.removeAll { $0 == friendUID }
             selfRef.updateData(["sentFriendRequests": sentFriendRequests])
             self.showRequestCancelled = true
         }
@@ -252,13 +252,13 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            guard var receivedFriendRequests = documentSnapshot?.data()?["receivedFriendRequests"] as? [[String: Any]] else {
+            guard var receivedFriendRequests = documentSnapshot?.data()?["receivedFriendRequests"] as? [String] else {
                 print("Error getting receivedFriendRequests for friend.")
                 self.showRequestError = true
                 return
             }
 
-            receivedFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
+            receivedFriendRequests.removeAll { $0 == self.accountViewModel.uid }
             friendRef.updateData(["receivedFriendRequests": receivedFriendRequests])
             self.showRequestCancelled = true
         }
@@ -277,14 +277,14 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            guard var receivedFriendRequests = snapshot?.data()?["receivedFriendRequests"] as? [[String: Any]] else {
+            guard var receivedFriendRequests = snapshot?.data()?["receivedFriendRequests"] as? [String] else {
                 print("Error getting receivedFriendRequests.")
                 self.showRequestError = true
                 return
             }
 
             // Remove the friend request by UID
-            receivedFriendRequests.removeAll { ($0["uid"] as? String) == friendUID }
+            receivedFriendRequests.removeAll { $0 == friendUID }
             selfRef.updateData(["receivedFriendRequests": receivedFriendRequests])
         }
 
@@ -297,14 +297,14 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            guard var sentFriendRequests = documentSnapshot?.data()?["sentFriendRequests"] as? [[String: Any]] else {
+            guard var sentFriendRequests = documentSnapshot?.data()?["sentFriendRequests"] as? [String] else {
                 print("Error getting sentFriendRequests.")
                 self.showRequestError = true
                 return
             }
 
             // Remove from sent requests by current user's UID
-            sentFriendRequests.removeAll { ($0["uid"] as? String) == self.accountViewModel.uid }
+            sentFriendRequests.removeAll { $0 == self.accountViewModel.uid }
             friendRef.updateData(["sentFriendRequests": sentFriendRequests])
             self.showRequestRejected = true
         }
