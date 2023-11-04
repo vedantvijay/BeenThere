@@ -52,7 +52,9 @@ struct SharedView: View {
 //                .shadow(color: colorScheme == .light ? .secondary : .white, radius: 1)
             }
             
-            
+//        .onAppear {
+//            viewModel.initializeMapLocation()
+//        }
         
         .onDisappear {
             dismiss()

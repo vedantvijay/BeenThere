@@ -24,10 +24,12 @@ struct ManageFriendsView: View {
                        .disableAutocorrection(true)
                        .foregroundColor(.gray)
                        .fontWeight(.black)
+                       .onChange(of: accountViewModel.receivedFriendRequests.count) {
+                           print("LOG: Changed")
+                       }
                    Button("Add") {
                        viewModel.sendFriendRequest(friendUsername: newFriendUsername)
                        newFriendUsername = ""
-                       print(accountViewModel.sentFriendRequests)
                    }
                    .buttonStyle(.bordered)
                    .fontWeight(.black)
@@ -64,30 +66,35 @@ struct ManageFriendsView: View {
 
             if !accountViewModel.receivedFriendRequests.isEmpty {
                 Section("Received") {
-                    ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
-                        HStack {
-                            if let uid = accountViewModel.receivedFriendRequests[index]["uid"] as? String {
-                                if let username = accountViewModel.usernameForUID[uid] {
-                                    Text(username)
-                                        .foregroundColor(.gray)
-                                        .fontWeight(.black)
+                    if accountViewModel.isFetchingUsernames {
+                        Text("Loading...")
+                    } else {
+                        ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
+                            HStack {
+                                if let uid = accountViewModel.receivedFriendRequests[index]["uid"] as? String {
+                                    if let username = accountViewModel.usernameForUID[uid] {
+                                        Text(username)
+                                            .foregroundColor(.gray)
+                                            .fontWeight(.black)
 
-                                    Spacer()
-                                    
-                                    Button("Accept") {
-                                        viewModel.acceptFriendRequest(friendUID: uid)
+                                        Spacer()
+                                        
+                                        Button("Accept") {
+                                            viewModel.acceptFriendRequest(friendUID: uid)
+                                        }
+                                        .tint(.green)
+                                        .buttonStyle(.bordered)
+                                        Button("Reject") {
+                                            viewModel.rejectFriendRequest(friendUID: uid)
+                                        }
+                                        .tint(.red)
+                                        .buttonStyle(.bordered)
                                     }
-                                    .tint(.green)
-                                    .buttonStyle(.bordered)
-                                    Button("Reject") {
-                                        viewModel.rejectFriendRequest(friendUID: uid)
-                                    }
-                                    .tint(.red)
-                                    .buttonStyle(.bordered)
                                 }
                             }
                         }
                     }
+                    
                 }
             }
             if !accountViewModel.friends.isEmpty {
@@ -113,6 +120,15 @@ struct ManageFriendsView: View {
        }
         .navigationTitle(accountViewModel.username)
         .onAppear {
+            accountViewModel.updateUsernames()
+        }
+        .onChange(of: accountViewModel.receivedFriendRequests.count) {
+            accountViewModel.updateUsernames()
+        }
+        .onChange(of: accountViewModel.sentFriendRequests.count) {
+            accountViewModel.updateUsernames()
+        }
+        .onChange(of: accountViewModel.friends.count) {
             accountViewModel.updateUsernames()
         }
         .onDisappear {

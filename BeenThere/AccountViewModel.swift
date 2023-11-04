@@ -15,7 +15,7 @@ class AccountViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
     @Published var usernameChanged = false
-    @Published var usernameForUID: [String: String] = [:] // UID to Username mapping
+    @Published var usernameForUID: [String: String] = [:]
     @Published var isFetchingUsernames = false
     @Published var users: [[String: Any]] = []
     @Published var uid = ""
@@ -141,8 +141,6 @@ class AccountViewModel: ObservableObject {
                 if let uid = user["uid"] as? String {
                     userData["uid"] = uid
                 }
-                print("LOG: Fetched global leaderboard data: \(data)")
-
                 return userData
             }
 

@@ -20,7 +20,8 @@ struct SharedMapView: UIViewRepresentable {
         viewModel.mapView.showsUserLocation = true
         viewModel.mapView.attributionButtonPosition = .topRight
         viewModel.mapView.logoViewPosition = .topLeft
-        viewModel.adjustMapViewToLocations()
+//        viewModel.adjustMapViewToLocations()
+        viewModel.centerMapOnLocation(location: viewModel.currentLocation ?? CLLocation(latitude: 50, longitude: 50))
         viewModel.mapView.setUserTrackingMode(.none, animated: true, completionHandler: nil)
         
         // Disable autoresizing mask translation

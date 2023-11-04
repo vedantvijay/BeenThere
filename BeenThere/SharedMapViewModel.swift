@@ -52,6 +52,7 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        currentLocation = locationManager.location
         mapView.delegate = self
     }
     deinit {
@@ -283,4 +284,12 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
                lhs.ne.latitude == rhs.ne.latitude &&
                lhs.ne.longitude == rhs.ne.longitude
     }
+    
+    // Helper method to center the map on a given location
+    func centerMapOnLocation(location: CLLocation) {
+        let coordinate = location.coordinate
+        let zoomLevel = 1.5 // Adjust the zoom level as needed
+        mapView.setCenter(coordinate, zoomLevel: zoomLevel, animated: true)
+    }
+
 }

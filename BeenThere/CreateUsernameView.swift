@@ -18,13 +18,27 @@ struct CreateUsernameView: View {
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
     @State private var currentImageIndex: Int = 0
-    
+    private let debouncer = Debouncer()
+    @State private var lastCheckInitiationTime: Date? = nil
+    private let debounceInterval = 0.5 // or whatever value you've determined is appropriate
     @FocusState private var isUsernameFieldFocused: Bool
     
     var isUsernameValid: Bool {
         let regex = "^[a-zA-Z]{4,15}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil && newUsername.count < 16
     }
+    
+    var isChangeButtonDisabled: Bool {
+            // Check if enough time has passed since the last initiated check.
+            if let lastCheckTime = lastCheckInitiationTime {
+                if -lastCheckTime.timeIntervalSinceNow < debounceInterval {
+                    // Not enough time has passed, disable the button.
+                    return true
+                }
+            }
+            // Otherwise, use the existing conditions.
+            return !isUsernameValid || isCheckingUsername || isUsernameTaken
+        }
     
     let imageNames = ["background1", "background2", "background3", "background4", "background5", "background6", "background7", "background8", "background9", "background10"]
 
@@ -109,7 +123,7 @@ struct CreateUsernameView: View {
                         }
                         .shadow(color: .black, radius: 1, x: 0.5, y: 1)
                         .fontWeight(.black)
-                        .disabled(!isUsernameValid || isCheckingUsername || isUsernameTaken)
+                        .disabled(isChangeButtonDisabled)
                         .buttonStyle(.bordered)
                         .tint(.green)
                     }
@@ -183,16 +197,21 @@ struct CreateUsernameView: View {
 
     
     func checkAndSetUsername() {
-        if isUsernameValid {
-            isCheckingUsername = true
-        }
-        isUsernameTaken(username: newUsername) { taken in
-            DispatchQueue.main.async {
-                self.isUsernameTaken = taken
-                self.isCheckingUsername = false
+            guard isUsernameValid else { return }
+            
+            lastCheckInitiationTime = Date() // Set the last check time to now.
+            
+            debouncer.debounce(interval: debounceInterval) {
+                // Now inside the debounce closure, we start the check
+                self.isCheckingUsername = true
+                isUsernameTaken(username: self.newUsername) { taken in
+                    DispatchQueue.main.async {
+                        self.isUsernameTaken = taken
+                        self.isCheckingUsername = false
+                    }
+                }
             }
         }
-    }
     
     var invalidUsernameReason: String {
         if newUsername.count <= 3 {

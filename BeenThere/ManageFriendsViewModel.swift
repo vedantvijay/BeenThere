@@ -174,6 +174,8 @@ class ManageFriendsViewModel: ObservableObject {
                         "receivedFriendRequests": receivedFriendRequests
                     ])
                     self.showRequestSent = true
+
+                    
                 } else {
                     print("LOG: Friend request already sent to this user.")
                     self.showRequestAlreadySent = true
