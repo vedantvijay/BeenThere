@@ -37,6 +37,13 @@ struct SharedView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
+            if colorScheme == .light {
+                Color.white
+                    .ignoresSafeArea()
+            } else {
+                Color.white.opacity(0.1)
+                    .ignoresSafeArea()
+            }
                 SharedMapView()
                     .ignoresSafeArea()
                     .onAppear {

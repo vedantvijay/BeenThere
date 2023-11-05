@@ -14,8 +14,8 @@ import FirebaseAuth
 
 class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     var lastAddedSquareLayerIdentifier: String?
-    @AppStorage("darkColor") var darkColorString = ""
-    @AppStorage("lightColor") var lightColorString = ""
+//    @AppStorage("darkColor") var darkColorString = ""
+//    @AppStorage("lightColor") var lightColorString = ""
     @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
@@ -104,15 +104,15 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         // Create a line style layer with the source
         // Create a line style layer with the source
         let layer = MGLLineStyleLayer(identifier: "gridLinesLayer", source: source)
-        layer.lineColor = NSExpression(forConstantValue: UIColor.lightGray)
+        layer.lineColor = NSExpression(forConstantValue: UIColor.systemGray)
         
         // Interpolate line width based on zoom level
         layer.lineWidth = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
-                                       [10: 1, 15: 2, 20: 3])
+                                       [0: 0, 5: 0, 6: 0.5, 10: 1, 11: 1])
         
         // Interpolate line opacity based on zoom level. This will make the lines fade out as you zoom out.
         layer.lineOpacity = NSExpression(format: "mgl_interpolate:withCurveType:parameters:stops:($zoomLevel, 'linear', nil, %@)",
-                                         [3: 0.01, 11: 0.25, 13: 0.5, 16: 1])
+                                         [0: 0, 5: 0.1, 13: 0.5, 16: 1])
         
         
         // Add the line style layer to the map style
@@ -134,7 +134,7 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
 
     func updateSquareColors(for colorScheme: ColorScheme) {
         // This function will be called whenever the color scheme changes.
-        let fillColor: UIColor = isDarkModeEnabled ? UIColor.init(rgbaString: darkColorString) : UIColor.init(rgbaString: lightColorString)
+        let fillColor: UIColor = isDarkModeEnabled ? UIColor(red: 0/255, green: 128/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
         updateSquareLayerFillColor(to: fillColor)
     }
     
@@ -175,7 +175,7 @@ class FriendMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
                 mapView.style?.addSource(source)
 
                 let layer = MGLFillStyleLayer(identifier: "square-layer-\(lowLat)-\(lowLong)", source: source)
-                layer.fillColor = NSExpression(forConstantValue: isDarkModeEnabled ? UIColor.init(rgbaString: darkColorString) : UIColor.init(rgbaString: lightColorString))
+                layer.fillColor = NSExpression(forConstantValue: isDarkModeEnabled ? UIColor(red: 0/255, green: 128/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1))
 //                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
 
                 // Find the bottom-most layer and insert your layer below it

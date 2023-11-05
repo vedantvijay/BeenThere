@@ -49,8 +49,10 @@ struct ContentView: View {
                 ZStack {
                     if colorScheme == .light {
                         Color.white
+                            .ignoresSafeArea()
                     } else {
-                        Color.white.opacity(0.05)
+                        Color.white.opacity(0.1)
+                            .ignoresSafeArea()
                     }
                     MapView(viewModel: mapViewModel)
                         .ignoresSafeArea()
@@ -87,8 +89,10 @@ struct ContentView: View {
                 ZStack {
                     if colorScheme == .light {
                         Color.white
+                            .ignoresSafeArea()
                     } else {
-                        Color(UIColor.darkGray)
+                        Color.white.opacity(0.1)
+                            .ignoresSafeArea()
                     }
                     MapView(viewModel: mapViewModel)
                         .ignoresSafeArea()
@@ -136,17 +140,30 @@ struct ContentView: View {
         }
         .onChange(of: colorScheme) {
             if colorScheme == .light {
+                print("LOG: light mode")
                 mapViewModel.isDarkModeEnabled = false
                 friendMapViewModel.isDarkModeEnabled = false
                 sharedMapViewModel.isDarkModeEnabled = false
             } else {
+                print("LOG: dark mode")
                 mapViewModel.isDarkModeEnabled = true
-                sharedMapViewModel.isDarkModeEnabled = false
-                sharedMapViewModel.isDarkModeEnabled = false
+                friendMapViewModel.isDarkModeEnabled = true
+                sharedMapViewModel.isDarkModeEnabled = true
             }
             mapViewModel.updateMapStyleURL()
         }
         .onAppear {
+            if colorScheme == .light {
+                print("LOG: light mode")
+                mapViewModel.isDarkModeEnabled = false
+                friendMapViewModel.isDarkModeEnabled = false
+                sharedMapViewModel.isDarkModeEnabled = false
+            } else {
+                print("LOG: dark mode")
+                mapViewModel.isDarkModeEnabled = true
+                friendMapViewModel.isDarkModeEnabled = true
+                sharedMapViewModel.isDarkModeEnabled = true
+            }
             mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
             let notificationCenter = NotificationCenter.default

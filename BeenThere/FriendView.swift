@@ -18,6 +18,13 @@ struct FriendView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
+            if colorScheme == .light {
+                Color.white
+                    .ignoresSafeArea()
+            } else {
+                Color.white.opacity(0.1)
+                    .ignoresSafeArea()
+            }
                 FriendMapView()
                     .ignoresSafeArea()
                     .onAppear {
