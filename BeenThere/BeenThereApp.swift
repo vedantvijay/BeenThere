@@ -60,6 +60,7 @@ struct BeenThereApp: App {
     @AppStorage("appState") var appState = "notAuthenticated"
     @AppStorage("username") var username = ""
     
+    
     var body: some Scene {
         WindowGroup {
             ZStack {

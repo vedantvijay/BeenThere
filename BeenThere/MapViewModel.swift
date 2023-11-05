@@ -13,14 +13,14 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
-//    static let shared = MapViewModel()
-    
-    @Environment(\.colorScheme) var colorScheme
     private var locationManager = CLLocationManager()
+    @AppStorage("darkColor") var darkColorString = ""
+    @AppStorage("lightColor") var lightColorString = ""
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!
     @Published var tappedLocation: CLLocationCoordinate2D?
     var lastAddedSquareLayerIdentifier: String?
+    @Published var isDarkModeEnabled: Bool = false
 
     @Published var showTappedLocation: Bool = false {
         didSet {
@@ -60,7 +60,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.distanceFilter = 100
+        locationManager.distanceFilter = 5
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
@@ -74,9 +74,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/d60cc1d4-e18c-4dfa-81d6-55214c71c53a/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/9b28e433-df46-4fd8-9614-f7ec74b8d7ba/style.json?key=s9gJbpLafAf5TyI9DyDr")
         } else {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/9175ed1e-70ec-4433-9bc5-b4609df28fcd/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/01ee4bc1-f791-4809-911f-4016ae0ae929/style.json?key=s9gJbpLafAf5TyI9DyDr")
         }
     }
 
@@ -169,7 +169,7 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
         var squaresToKeep = Set<String>() // This will hold the squares that are still valid after this update.
 
         let adjustmentValue: CLLocationDegrees = 0.000001 // Tiny adjustment value
-        
+
         for square in locations {
             let lowLat = square.lowLatitude + adjustmentValue
             let highLat = square.highLatitude - adjustmentValue
@@ -180,9 +180,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             let bottomRight = CLLocationCoordinate2D(latitude: lowLat, longitude: highLong)
             let topLeft = CLLocationCoordinate2D(latitude: highLat, longitude: lowLong)
             let topRight = CLLocationCoordinate2D(latitude: highLat, longitude: highLong)
-                
+
             let shape = MGLPolygon(coordinates: [bottomLeft, bottomRight, topRight, topLeft, bottomLeft], count: 5)
-                
+
             let sourceIdentifier = "square-\(lowLat)-\(lowLong)"
             squaresToKeep.insert(sourceIdentifier) // Mark this square as still valid.
 
@@ -192,10 +192,15 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
                 mapView.style?.addSource(source)
 
                 let layer = MGLFillStyleLayer(identifier: "square-layer-\(lowLat)-\(lowLong)", source: source)
-                layer.fillColor = NSExpression(forConstantValue: UIColor.green)
-                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
-                
-                mapView.style?.addLayer(layer)
+                layer.fillColor = NSExpression(forConstantValue: isDarkModeEnabled ? UIColor(red: 144, green: 238, blue: 144, alpha: 1) : UIColor(red: 144, green: 238, blue: 144, alpha: 1))
+//                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
+
+                // Find the bottom-most layer and insert your layer below it
+                if let bottomLayer = mapView.style?.layers.first {
+                    mapView.style?.insertLayer(layer, below: bottomLayer)
+                } else {
+                    mapView.style?.addLayer(layer)
+                }
                 currentSquares.insert(sourceIdentifier) // Add this square to our set of current squares.
             }
         }
@@ -212,11 +217,9 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
                 }
             }
         }
-        currentSquares = squaresToKeep
-        if let lastSquare = locations.last {
-            lastAddedSquareLayerIdentifier = "square-layer-\(lastSquare.lowLatitude)-\(lastSquare.lowLongitude)"
-        }
+        currentSquares = squaresToKeep // Update our currentSquares to reflect the squares that should be displayed.
     }
+
 
     
     func boundingBox(for locations: [Location]) -> (southWest: CLLocationCoordinate2D, northEast: CLLocationCoordinate2D)? {
@@ -400,6 +403,22 @@ class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMa
             mapView.style?.addLayer(layer)
         }
 
+    }
+    
+    func updateSquareColors(for colorScheme: ColorScheme) {
+        // This function will be called whenever the color scheme changes.
+        let fillColor: UIColor = isDarkModeEnabled ? UIColor(red: 144, green: 238, blue: 144, alpha: 1) : UIColor(red: 144, green: 238, blue: 144, alpha: 1)
+        updateSquareLayerFillColor(to: fillColor)
+    }
+    
+    private func updateSquareLayerFillColor(to color: UIColor) {
+        guard let style = mapView.style else { return }
+        for squareIdentifier in currentSquares {
+            let layerIdentifier = "square-layer-\(squareIdentifier.replacingOccurrences(of: "square-", with: ""))"
+            if let layer = style.layer(withIdentifier: layerIdentifier) as? MGLFillStyleLayer {
+                layer.fillColor = NSExpression(forConstantValue: color)
+            }
+        }
     }
 
 

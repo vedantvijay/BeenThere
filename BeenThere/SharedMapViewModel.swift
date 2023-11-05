@@ -14,7 +14,8 @@ import FirebaseAuth
 
 class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     var lastAddedSquareLayerIdentifier: String?
-
+    @AppStorage("darkColor") var darkColorString = ""
+    @AppStorage("lightColor") var lightColorString = ""
     private var locationManager = CLLocationManager()
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!
@@ -23,6 +24,8 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     @Published var tappedAnnotation: MGLPointAnnotation?
     private var db = Firestore.firestore()
     private var locationsListener: ListenerRegistration?
+    @Published var isDarkModeEnabled: Bool = false
+
     @Published var locations: [Location] = [] {
         didSet {
             addSquaresToMap(locations: locations)
@@ -48,7 +51,7 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         super.init()
         mapView = MGLMapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 250
+        locationManager.distanceFilter = 5
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -130,23 +133,40 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         return mapView.tintColor // default color
     }
 
+    func updateSquareColors(for colorScheme: ColorScheme) {
+        // This function will be called whenever the color scheme changes.
+        let fillColor: UIColor = isDarkModeEnabled ? UIColor.init(rgbaString: darkColorString) : UIColor.init(rgbaString: lightColorString)
+        updateSquareLayerFillColor(to: fillColor)
+    }
+    
+    private func updateSquareLayerFillColor(to color: UIColor) {
+        guard let style = mapView.style else { return }
+        for squareIdentifier in currentSquares {
+            let layerIdentifier = "square-layer-\(squareIdentifier.replacingOccurrences(of: "square-", with: ""))"
+            if let layer = style.layer(withIdentifier: layerIdentifier) as? MGLFillStyleLayer {
+                layer.fillColor = NSExpression(forConstantValue: color)
+            }
+        }
+    }
     
     func addSquaresToMap(locations: [Location]) {
         var squaresToKeep = Set<String>() // This will hold the squares that are still valid after this update.
 
+        let adjustmentValue: CLLocationDegrees = 0.000001 // Tiny adjustment value
+
         for square in locations {
-            let lowLat = square.lowLatitude
-            let highLat = square.highLatitude
-            let lowLong = square.lowLongitude
-            let highLong = square.highLongitude
+            let lowLat = square.lowLatitude + adjustmentValue
+            let highLat = square.highLatitude - adjustmentValue
+            let lowLong = square.lowLongitude + adjustmentValue
+            let highLong = square.highLongitude - adjustmentValue
 
             let bottomLeft = CLLocationCoordinate2D(latitude: lowLat, longitude: lowLong)
             let bottomRight = CLLocationCoordinate2D(latitude: lowLat, longitude: highLong)
             let topLeft = CLLocationCoordinate2D(latitude: highLat, longitude: lowLong)
             let topRight = CLLocationCoordinate2D(latitude: highLat, longitude: highLong)
-                
+
             let shape = MGLPolygon(coordinates: [bottomLeft, bottomRight, topRight, topLeft, bottomLeft], count: 5)
-                
+
             let sourceIdentifier = "square-\(lowLat)-\(lowLong)"
             squaresToKeep.insert(sourceIdentifier) // Mark this square as still valid.
 
@@ -156,10 +176,15 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
                 mapView.style?.addSource(source)
 
                 let layer = MGLFillStyleLayer(identifier: "square-layer-\(lowLat)-\(lowLong)", source: source)
-                layer.fillColor = NSExpression(forConstantValue: UIColor.green)
-                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
-                
-                mapView.style?.addLayer(layer)
+                layer.fillColor = NSExpression(forConstantValue: isDarkModeEnabled ? UIColor.init(rgbaString: darkColorString) : UIColor.init(rgbaString: lightColorString))
+//                layer.fillOpacity = NSExpression(forConstantValue: 0.25)
+
+                // Find the bottom-most layer and insert your layer below it
+                if let bottomLayer = mapView.style?.layers.first {
+                    mapView.style?.insertLayer(layer, below: bottomLayer)
+                } else {
+                    mapView.style?.addLayer(layer)
+                }
                 currentSquares.insert(sourceIdentifier) // Add this square to our set of current squares.
             }
         }
@@ -176,17 +201,14 @@ class SharedMapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
                 }
             }
         }
-        currentSquares = squaresToKeep
-        if let lastSquare = locations.last {
-            lastAddedSquareLayerIdentifier = "square-layer-\(lastSquare.lowLatitude)-\(lastSquare.lowLongitude)"
-        }
+        currentSquares = squaresToKeep // Update our currentSquares to reflect the squares that should be displayed.
     }
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/d60cc1d4-e18c-4dfa-81d6-55214c71c53a/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/9b28e433-df46-4fd8-9614-f7ec74b8d7ba/style.json?key=s9gJbpLafAf5TyI9DyDr")
         } else {
-            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/9175ed1e-70ec-4433-9bc5-b4609df28fcd/style.json?key=s9gJbpLafAf5TyI9DyDr")
+            self.mapView.styleURL = URL(string: "https://api.maptiler.com/maps/01ee4bc1-f791-4809-911f-4016ae0ae929/style.json?key=s9gJbpLafAf5TyI9DyDr")
         }
     }
 

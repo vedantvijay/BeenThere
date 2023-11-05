@@ -18,10 +18,10 @@ struct ContentView: View {
     @StateObject var friendMapViewModel = FriendMapViewModel()
     @StateObject var sharedMapViewModel = SharedMapViewModel()
     @StateObject private var mapViewModel = MapViewModel()
-    @Environment(\.colorScheme) var colorScheme
+//    @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
-
+    @Environment(\.colorScheme) var colorScheme
 
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
@@ -47,6 +47,11 @@ struct ContentView: View {
                 AccountView()
             case 2:
                 ZStack {
+                    if colorScheme == .light {
+                        Color.white
+                    } else {
+                        Color.white.opacity(0.05)
+                    }
                     MapView(viewModel: mapViewModel)
                         .ignoresSafeArea()
                         .onAppear {
@@ -80,6 +85,11 @@ struct ContentView: View {
                 //                .background(Color(uiColor: UIColor.systemGroupedBackground))
             default:
                 ZStack {
+                    if colorScheme == .light {
+                        Color.white
+                    } else {
+                        Color(UIColor.darkGray)
+                    }
                     MapView(viewModel: mapViewModel)
                         .ignoresSafeArea()
                         .onAppear {
@@ -125,6 +135,15 @@ struct ContentView: View {
             )
         }
         .onChange(of: colorScheme) {
+            if colorScheme == .light {
+                mapViewModel.isDarkModeEnabled = false
+                friendMapViewModel.isDarkModeEnabled = false
+                sharedMapViewModel.isDarkModeEnabled = false
+            } else {
+                mapViewModel.isDarkModeEnabled = true
+                sharedMapViewModel.isDarkModeEnabled = false
+                sharedMapViewModel.isDarkModeEnabled = false
+            }
             mapViewModel.updateMapStyleURL()
         }
         .onAppear {

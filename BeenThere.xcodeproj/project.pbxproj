@@ -42,6 +42,7 @@
 		C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */; };
 		C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */; };
 		C0D2A90E2AE5A16C006326C1 /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90D2AE5A16C006326C1 /* CreateUsernameView.swift */; };
+		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
 		C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsView.swift; sourceTree = "<group>"; };
 		C0D2A90D2AE5A16C006326C1 /* CreateUsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUsernameView.swift; sourceTree = "<group>"; };
+		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 		C0C808CB2ADD83420070E679 = {
 			isa = PBXGroup;
 			children = (
+				C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */,
 				C0C808D62ADD83420070E679 /* BeenThere */,
 				C0C808D52ADD83420070E679 /* Products */,
 				C0C808FA2ADD8A9F0070E679 /* Frameworks */,
@@ -261,6 +264,7 @@
 				C09C698D2AE88382008A3148 /* FriendView.swift in Sources */,
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
+				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,

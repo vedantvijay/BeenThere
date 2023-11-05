@@ -11,6 +11,7 @@ import CoreLocation
 
 struct MapView: UIViewRepresentable {
     @ObservedObject var viewModel = MapViewModel()
+    @Environment(\.colorScheme) var colorScheme
 
     func makeCoordinator() -> MapViewModel {
         return viewModel
@@ -56,5 +57,8 @@ struct MapView: UIViewRepresentable {
         if let annotation = viewModel.tappedAnnotation {
             uiView.addAnnotation(annotation)
         }
+        
+        viewModel.updateSquareColors(for: colorScheme) // Call ViewModel function to update colors based on color scheme
+
     }
 }
