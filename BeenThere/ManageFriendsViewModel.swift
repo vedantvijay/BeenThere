@@ -32,14 +32,16 @@ class ManageFriendsViewModel: ObservableObject {
                 return
             }
 
-            guard let document = documentSnapshot,
-                  var sentFriendRequests = document.data()?["sentFriendRequests"] as? [String],
-                  var friendFriends = document.data()?["friends"] as? [[String: Any]] else {
-                print("Error getting data for friend.")
+            guard let document = documentSnapshot else {
+                print("Error getting document snapshot for friend.")
                 self.showRequestError = true
                 return
             }
             
+            // Initialize sentFriendRequests and friends as empty arrays if they don't exist
+            var sentFriendRequests = document.data()?["sentFriendRequests"] as? [String] ?? []
+            var friendFriends = document.data()?["friends"] as? [[String: Any]] ?? []
+
             // Remove the current user's UID from the friend's sentFriendRequests
             sentFriendRequests.removeAll { $0 == self.accountViewModel.uid }
             friendRef.updateData(["sentFriendRequests": sentFriendRequests])
@@ -59,24 +61,28 @@ class ManageFriendsViewModel: ObservableObject {
                     return
                 }
 
-                guard var receivedFriendRequests = selfSnapshot?.data()?["receivedFriendRequests"] as? [String],
-                      var currentFriends = selfSnapshot?.data()?["friends"] as? [[String: Any]] else {
-                    print("Error getting data for current user.")
+                guard let selfDocument = selfSnapshot else {
+                    print("Error getting document snapshot for current user.")
                     self.showRequestError = true
                     return
                 }
+                
+                // Initialize receivedFriendRequests and friends as empty arrays if they don't exist
+                var receivedFriendRequests = selfDocument.data()?["receivedFriendRequests"] as? [String] ?? []
+                var currentFriends = selfDocument.data()?["friends"] as? [[String: Any]] ?? []
                 
                 // Remove the friend's UID from the current user's receivedFriendRequests
                 receivedFriendRequests.removeAll { $0 == friendUID }
                 selfRef.updateData(["receivedFriendRequests": receivedFriendRequests])
                 
                 // Add the friend to the current user's friends list
-                let newFriendForSelf = ["uid": friendUID] // Assuming friendUsername is still needed here for some reason.
+                let newFriendForSelf = ["uid": friendUID]
                 currentFriends.append(newFriendForSelf)
                 selfRef.updateData(["friends": currentFriends])
             }
         }
     }
+
 
 
 

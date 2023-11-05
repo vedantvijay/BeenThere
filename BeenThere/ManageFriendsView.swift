@@ -32,6 +32,7 @@ struct ManageFriendsView: View {
                        newFriendUsername = ""
                    }
                    .buttonStyle(.bordered)
+                   .tint(.green)
                    .fontWeight(.black)
                    .disabled(newFriendUsername.count < 4 || newFriendUsername.count > 15 || newFriendUsername.contains(" "))
                }
@@ -43,22 +44,22 @@ struct ManageFriendsView: View {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
-                            if let uid = accountViewModel.sentFriendRequests[index] as? String {
-                                if let username = accountViewModel.usernameForUID[uid] {
-                                    Text(username)
-                                        .foregroundColor(.gray)
-                                        .fontWeight(.black)
-
-                                    Spacer()
-                                    Button("Cancel") {
-                                        viewModel.cancelFriendRequest(friendUID: uid)
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.red)
-                                    
+                            let uid = accountViewModel.sentFriendRequests[index]
+                            if let username = accountViewModel.usernameForUID[uid] {
+                                Text(username)
+                                    .foregroundColor(.gray)
+                                    .fontWeight(.black)
+                                
+                                Spacer()
+                                Button("Cancel") {
+                                    viewModel.cancelFriendRequest(friendUID: uid)
                                 }
+                                .buttonStyle(.bordered)
+                                .tint(.red)
                                 
                             }
+                            
+                            
                         }
                     }
                 }
@@ -71,26 +72,26 @@ struct ManageFriendsView: View {
                     } else {
                         ForEach(accountViewModel.receivedFriendRequests.indices, id: \.self) { index in
                             HStack {
-                                if let uid = accountViewModel.receivedFriendRequests[index] as? String {
-                                    if let username = accountViewModel.usernameForUID[uid] {
-                                        Text(username)
-                                            .foregroundColor(.gray)
-                                            .fontWeight(.black)
-
-                                        Spacer()
-                                        
-                                        Button("Accept") {
-                                            viewModel.acceptFriendRequest(friendUID: uid)
-                                        }
-                                        .tint(.green)
-                                        .buttonStyle(.bordered)
-                                        Button("Reject") {
-                                            viewModel.rejectFriendRequest(friendUID: uid)
-                                        }
-                                        .tint(.red)
-                                        .buttonStyle(.bordered)
+                                let uid = accountViewModel.receivedFriendRequests[index]
+                                if let username = accountViewModel.usernameForUID[uid] {
+                                    Text(username)
+                                        .foregroundColor(.gray)
+                                        .fontWeight(.black)
+                                    
+                                    Spacer()
+                                    
+                                    Button("Accept") {
+                                        viewModel.acceptFriendRequest(friendUID: uid)
                                     }
+                                    .tint(.green)
+                                    .buttonStyle(.bordered)
+                                    Button("Reject") {
+                                        viewModel.rejectFriendRequest(friendUID: uid)
+                                    }
+                                    .tint(.red)
+                                    .buttonStyle(.bordered)
                                 }
+                                
                             }
                         }
                     }

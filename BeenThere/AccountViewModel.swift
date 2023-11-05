@@ -33,7 +33,7 @@ class AccountViewModel: ObservableObject {
     private var db = Firestore.firestore()
     
     var isUsernameValid: Bool {
-        let regex = "^[a-zA-Z]{4,15}$"
+        let regex = "^[a-zA-Z0-9]{4,15}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
     
@@ -60,7 +60,7 @@ class AccountViewModel: ObservableObject {
         if newUsername.contains(" ") || newUsername.contains("\n") {
             return "Username must not contain spaces or newlines."
         }
-        if newUsername.range(of: "^[a-zA-Z]{4,15}$", options: .regularExpression) == nil {
+        if newUsername.range(of: "^[a-zA-Z0-9]{4,15}$", options: .regularExpression) == nil {
             return "Invalid username format."
         }
         return ""
