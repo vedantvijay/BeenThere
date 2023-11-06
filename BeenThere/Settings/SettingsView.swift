@@ -10,7 +10,7 @@ import FirebaseAuth
 import AuthenticationServices
 import AlertToast
 
-struct AccountView: View {
+struct SettingsView: View {
     @EnvironmentObject var viewModel: AccountViewModel
     @AppStorage("appState") var appState = "opening"
 

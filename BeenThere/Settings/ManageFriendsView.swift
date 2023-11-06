@@ -11,7 +11,7 @@ import AlertToast
 struct ManageFriendsView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ManageFriendsViewModel()
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @EnvironmentObject var accountViewModel: SettingsViewModel
     
     @State private var newFriendUsername = ""
     

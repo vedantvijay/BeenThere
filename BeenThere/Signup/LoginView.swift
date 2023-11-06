@@ -12,7 +12,7 @@ import FirebaseAuth
 
 struct LoginView: View {
     @AppStorage("appState") var appState = "opening"
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @EnvironmentObject var accountViewModel: SettingsViewModel
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
 

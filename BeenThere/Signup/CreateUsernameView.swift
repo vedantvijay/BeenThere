@@ -2,7 +2,7 @@
 //  CreateUsernameView.swift
 //  BeenThere
 //
-//  Created by Jared Jones on 10/22/23.
+//  Created by Jared Jones on 11/6/23.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ struct CreateUsernameView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var accountViewModel = AccountViewModel()
+    @StateObject var accountViewModel = SettingsViewModel()
     @AppStorage("username") var username = ""
     @State private var newUsername = ""
     @State private var isCheckingUsername = false

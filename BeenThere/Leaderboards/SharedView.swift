@@ -11,7 +11,7 @@ struct SharedView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: SharedMapViewModel
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @EnvironmentObject var accountViewModel: SettingsViewModel
     
     var userLocations: [Location] {
         let tempLocations = accountViewModel.users.flatMap { user -> [Location] in

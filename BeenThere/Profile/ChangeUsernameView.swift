@@ -15,7 +15,7 @@ struct ChangeUsernameView: View {
     @State private var isCheckingUsername = false
     @State private var isUsernameTaken = false
     @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var viewModel: AccountViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     @FocusState private var isUsernameFieldFocused: Bool
     private let debouncer = Debouncer()
     @State private var lastCheckInitiationTime: Date? = nil

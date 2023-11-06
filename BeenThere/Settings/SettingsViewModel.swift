@@ -10,7 +10,7 @@ import Firebase
 import AuthenticationServices
 import SwiftUI
 
-class AccountViewModel: ObservableObject {
+class SettingsViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
     @Published var usernameChanged = false

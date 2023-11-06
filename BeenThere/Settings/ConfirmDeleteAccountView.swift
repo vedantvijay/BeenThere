@@ -12,7 +12,7 @@ import AuthenticationServices
 struct ConfirmDeleteAccountView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @EnvironmentObject var accountViewModel: SettingsViewModel
     @AppStorage("appState") var appState = "opening"
     @State private var showDeleteAccount = false
     @State private var minutesSinceLastLogin: Int = 0

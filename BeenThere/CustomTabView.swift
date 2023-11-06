@@ -7,49 +7,74 @@
 
 import SwiftUI
 
+enum Tab {
+    case settings, feed, map, leaderboards, profile
+}
+
 struct CustomTabView: View {
     @Environment(\.colorScheme) var colorScheme
-    @Binding var selection: Int
+    @Binding var selection: Tab
     
     var body: some View {
         HStack(alignment: .center) {
             Button(action: {
-                selection = 1
+                selection = .settings
             }) {
-                Image(systemName: selection == 1 ? "person.fill" : "person")
+                Image(systemName: selection == .settings ? "gearshape.fill" : "gearshape")
                     .resizable()
                     .frame(width: 25, height: 25)
                     .padding()
-                    .foregroundColor(selection == 1 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .foregroundColor(selection == .settings ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
                     .offset(y: -10)
 
             }
             .frame(maxWidth: .infinity)
-            
+            Button(action: {
+                selection = .feed
+            }) {
+                Image(systemName: selection == .settings ? "rectangle.3.group.bubble.left.fill" : "rectangle.3.group.bubble.left")
+                    .resizable()
+                    .frame(width: 25, height: 25)
+                    .padding()
+                    .foregroundColor(selection == .feed ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .offset(y: -10)
+
+            }
+            .frame(maxWidth: .infinity)
             ZStack {
                 Circle()
                     .frame(width: 66, height: 66)
                     .foregroundStyle(Material.bar)
-//                    .shadow(color: colorScheme == .light ? .black : .white, radius: 3)
                 Button(action: {
-                    selection = 2
+                    selection = .map
                 }) {
-                    Image(systemName: selection == 2 ? "safari.fill" : "safari")
+                    Image(systemName: selection == .map ? "safari.fill" : "safari")
                         .resizable()
                         .frame(width: 70, height: 70)
-                        .foregroundColor(selection == 2 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                        .foregroundColor(selection == .map ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
                 }
             }
             .offset(y: -30) // Adjust this to move up or down
             
             Button(action: {
-                selection = 3
+                selection = .leaderboards
             }) {
-                Image(systemName: selection == 3 ? "chart.bar.fill" : "chart.bar")
+                Image(systemName: selection == .leaderboards ? "chart.bar.fill" : "chart.bar")
                     .resizable()
                     .frame(width: 25, height: 25)
                     .padding()
-                    .foregroundColor(selection == 3 ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .foregroundColor(selection == .leaderboards ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    .offset(y: -10)
+            }
+            .frame(maxWidth: .infinity)
+            Button(action: {
+                selection = .profile
+            }) {
+                Image(systemName: selection == .profile ? "person.fill" : "person")
+                    .resizable()
+                    .frame(width: 25, height: 25)
+                    .padding()
+                    .foregroundColor(selection == .profile ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
                     .offset(y: -10)
             }
             .frame(maxWidth: .infinity)
@@ -59,5 +84,5 @@ struct CustomTabView: View {
 }
 
 #Preview {
-    CustomTabView(selection: .constant(1))
+    CustomTabView(selection: .constant(.map))
 }

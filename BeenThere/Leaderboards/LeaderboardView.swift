@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LeaderboardView: View {
-    @StateObject var viewModel = AccountViewModel()
+    @StateObject var viewModel = SettingsViewModel()
     @EnvironmentObject var friendMapViewModel: FriendMapViewModel
     @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
     @State private var leaderboardScope = "friends"

@@ -14,7 +14,7 @@ struct ContentView: View {
     @AppStorage("username") var username = ""
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var accountViewModel = AccountViewModel()
+    @StateObject var accountViewModel = SettingsViewModel()
     @StateObject var friendMapViewModel = FriendMapViewModel()
     @StateObject var sharedMapViewModel = SharedMapViewModel()
     @StateObject private var mapViewModel = MapViewModel()
@@ -26,7 +26,7 @@ struct ContentView: View {
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @State private var showSettingsAlert: Bool = false
-    @State private var selection = 2
+    @State private var selection = Tab.map
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -43,9 +43,11 @@ struct ContentView: View {
     var body: some View {
         VStack {
             switch selection {
-            case 1:
-                AccountView()
-            case 2:
+            case .settings:
+                SettingsView()
+            case .feed:
+                SettingsView()
+            case .map:
                 ZStack {
                     if colorScheme == .light {
                         Color.white
@@ -79,46 +81,12 @@ struct ContentView: View {
                         }
                     }
                 }
-            case 3:
+            case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
-                //                .padding(.bottom, 100)
-                //                .background(Color(uiColor: UIColor.systemGroupedBackground))
-            default:
-                ZStack {
-                    if colorScheme == .light {
-                        Color.white
-                            .ignoresSafeArea()
-                    } else {
-                        Color.white.opacity(0.1)
-                            .ignoresSafeArea()
-                    }
-                    MapView(viewModel: mapViewModel)
-                        .ignoresSafeArea()
-                        .onAppear {
-                            mapViewModel.adjustMapViewToLocations()
-                            let status = locationManagerDelegate.authorizationStatus
-                            print("Authorization Status: \(status.rawValue)")
-                            print("LOG: \(status)")
-                        }
-                        .onChange(of: $mapViewModel.locations.count) {
-                            mapViewModel.adjustMapViewToLocations()
-                        }
-                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                        VStack {
-                            Button("Update Location Settings") {
-                                showSettingsAlert = true
-                            }
-                            .fontWeight(.black)
-                            .buttonStyle(.bordered)
-                            .tint(.orange)
-                            .padding()
-                            .padding(.top, 50)
-                            Spacer()
-                        }
-                    }
-                }
+            case .profile:
+                ProfileView()
             }
             if !isKeyboardVisible {
                 CustomTabView(selection: $selection)

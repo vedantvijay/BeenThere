@@ -10,7 +10,7 @@ import Firebase
 import SwiftUI
 
 class ManageFriendsViewModel: ObservableObject {
-    @ObservedObject var accountViewModel = AccountViewModel()
+    @ObservedObject var accountViewModel = SettingsViewModel()
     @Published var showRequestSent = false
     @Published var showRequestAlreadySent = false
     @Published var showRequestError = false
