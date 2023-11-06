@@ -1,5 +1,5 @@
 //
-//  ProfileView.swift
+//  FeedView.swift
 //  BeenThere
 //
 //  Created by Jared Jones on 11/6/23.
@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct FeedView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Profile")
+                Text("Feed (coming soon)")
             }
         }
     }
 }
 
 #Preview {
-    ProfileView()
+    FeedView()
 }

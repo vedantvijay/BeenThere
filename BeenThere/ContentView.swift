@@ -46,7 +46,7 @@ struct ContentView: View {
             case .settings:
                 SettingsView()
             case .feed:
-                SettingsView()
+                FeedView()
             case .map:
                 ZStack {
                     if colorScheme == .light {

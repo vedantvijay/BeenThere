@@ -42,6 +42,8 @@
 		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
 		C0F46EE42AF94A5E00C2776A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE22AF94A5E00C2776A /* LoginView.swift */; };
 		C0F46EE52AF94A5E00C2776A /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE32AF94A5E00C2776A /* CreateUsernameView.swift */; };
+		C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE62AF954A000C2776A /* FeedViewModel.swift */; };
+		C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE82AF954B900C2776A /* FeedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +76,8 @@
 		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
 		C0F46EE22AF94A5E00C2776A /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = ../../../LoginView.swift; sourceTree = "<group>"; };
 		C0F46EE32AF94A5E00C2776A /* CreateUsernameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateUsernameView.swift; path = ../../../CreateUsernameView.swift; sourceTree = "<group>"; };
+		C0F46EE62AF954A000C2776A /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
+		C0F46EE82AF954B900C2776A /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +142,8 @@
 		C0245CCF2AF947FC00C7CD4F /* Feed */ = {
 			isa = PBXGroup;
 			children = (
+				C0F46EE62AF954A000C2776A /* FeedViewModel.swift */,
+				C0F46EE82AF954B900C2776A /* FeedView.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -316,10 +322,12 @@
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
 				C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* SettingsViewModel.swift in Sources */,
+				C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
 				C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */,
 				C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */,
+				C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */,
 				C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */,
 				C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */,
 				C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */,
