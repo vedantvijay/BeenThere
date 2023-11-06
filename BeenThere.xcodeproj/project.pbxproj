@@ -25,7 +25,6 @@
 		C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */; };
 		C09C698B2AE8419E008A3148 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C09C698A2AE8419E008A3148 /* AlertToast */; };
 		C09C698D2AE88382008A3148 /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C698C2AE88382008A3148 /* FriendView.swift */; };
-		C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C698E2AE8838A008A3148 /* FriendViewModel.swift */; };
 		C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69902AE883C2008A3148 /* FriendMapView.swift */; };
 		C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69922AE88405008A3148 /* FriendMapViewModel.swift */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
@@ -58,7 +57,6 @@
 		C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsViewModel.swift; sourceTree = "<group>"; };
 		C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDeleteAccountView.swift; sourceTree = "<group>"; };
 		C09C698C2AE88382008A3148 /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
-		C09C698E2AE8838A008A3148 /* FriendViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendViewModel.swift; sourceTree = "<group>"; };
 		C09C69902AE883C2008A3148 /* FriendMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapView.swift; sourceTree = "<group>"; };
 		C09C69922AE88405008A3148 /* FriendMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapViewModel.swift; sourceTree = "<group>"; };
 		C0C808D42ADD83420070E679 /* BeenThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeenThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -165,7 +163,6 @@
 		C044EF092AED8A0E00AEC9E2 /* Trash */ = {
 			isa = PBXGroup;
 			children = (
-				C09C698E2AE8838A008A3148 /* FriendViewModel.swift */,
 			);
 			path = Trash;
 			sourceTree = "<group>";
@@ -325,7 +322,6 @@
 				C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
 				C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */,
-				C09C698F2AE8838A008A3148 /* FriendViewModel.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */,
 				C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */,
 				C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */,

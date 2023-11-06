@@ -11,7 +11,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Profile")
+                Text("Profile (coming soon)")
             }
         }
     }
