@@ -13,17 +13,14 @@
 		C011082E2AE487C000406837 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C011082D2AE487C000406837 /* FirebaseAnalyticsSwift */; };
 		C01108302AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = C011082F2AE487C000406837 /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		C01108322AE487C000406837 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C01108312AE487C000406837 /* FirebaseAppCheck */; };
-		C01108342AE4884D00406837 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01108332AE4884D00406837 /* LoginView.swift */; };
 		C01108362AE4894C00406837 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C01108352AE4894C00406837 /* FirebaseAuth */; };
 		C011083A2AE4921500406837 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C01108392AE4921500406837 /* FirebaseFirestore */; };
 		C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */; };
-		C0245CD22AF948E400C7CD4F /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CD12AF948E400C7CD4F /* CreateUsernameView.swift */; };
 		C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */; };
 		C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C085316C2AF1E6F900EAA434 /* SharedMapView.swift */; };
 		C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531702AF2923300EAA434 /* CustomTabView.swift */; };
 		C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */; };
 		C08531752AF2C27700EAA434 /* SharedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531742AF2C27700EAA434 /* SharedView.swift */; };
-		C0949F002AE5BC22006EE5D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */; };
 		C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */; };
 		C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */; };
 		C09C698B2AE8419E008A3148 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C09C698A2AE8419E008A3148 /* AlertToast */; };
@@ -43,20 +40,19 @@
 		C0D2A90A2AE58EF5006326C1 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9092AE58EF5006326C1 /* SettingsViewModel.swift */; };
 		C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */; };
 		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
+		C0F46EE42AF94A5E00C2776A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE22AF94A5E00C2776A /* LoginView.swift */; };
+		C0F46EE52AF94A5E00C2776A /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE32AF94A5E00C2776A /* CreateUsernameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C001517C2AF53211007DA96F /* ChangeUsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeUsernameView.swift; sourceTree = "<group>"; };
-		C01108332AE4884D00406837 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		C0245CD12AF948E400C7CD4F /* CreateUsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUsernameView.swift; sourceTree = "<group>"; };
 		C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeenThere.entitlements; sourceTree = "<group>"; };
 		C085316C2AF1E6F900EAA434 /* SharedMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapView.swift; sourceTree = "<group>"; };
 		C08531702AF2923300EAA434 /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapViewModel.swift; sourceTree = "<group>"; };
 		C08531742AF2C27700EAA434 /* SharedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedView.swift; sourceTree = "<group>"; };
-		C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsViewModel.swift; sourceTree = "<group>"; };
 		C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDeleteAccountView.swift; sourceTree = "<group>"; };
 		C09C698C2AE88382008A3148 /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
@@ -76,6 +72,8 @@
 		C0D2A9092AE58EF5006326C1 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsView.swift; sourceTree = "<group>"; };
 		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
+		C0F46EE22AF94A5E00C2776A /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = ../../../LoginView.swift; sourceTree = "<group>"; };
+		C0F46EE32AF94A5E00C2776A /* CreateUsernameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateUsernameView.swift; path = ../../../CreateUsernameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,11 +105,13 @@
 			path = "Main Map";
 			sourceTree = "<group>";
 		};
-		C0245CCA2AF944FC00C7CD4F /* Signup */ = {
+		C0245CCA2AF944FC00C7CD4F /* Setup */ = {
 			isa = PBXGroup;
 			children = (
+				C0F46EE32AF94A5E00C2776A /* CreateUsernameView.swift */,
+				C0F46EE22AF94A5E00C2776A /* LoginView.swift */,
 			);
-			path = Signup;
+			path = Setup;
 			sourceTree = "<group>";
 		};
 		C0245CCB2AF9452500C7CD4F /* Settings */ = {
@@ -160,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				C09C698E2AE8838A008A3148 /* FriendViewModel.swift */,
-				C0949EFF2AE5BC22006EE5D2 /* SettingsView.swift */,
 			);
 			path = Trash;
 			sourceTree = "<group>";
@@ -196,9 +195,7 @@
 				C0245CC92AF944DC00C7CD4F /* Main Map */,
 				C0245CD02AF9480F00C7CD4F /* Leaderboards */,
 				C0245CCE2AF947D100C7CD4F /* Profile */,
-				C0245CD12AF948E400C7CD4F /* CreateUsernameView.swift */,
-				C01108332AE4884D00406837 /* LoginView.swift */,
-				C0245CCA2AF944FC00C7CD4F /* Signup */,
+				C0245CCA2AF944FC00C7CD4F /* Setup */,
 				C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */,
 				C0C808DB2ADD83440070E679 /* Assets.xcassets */,
 				C044EF092AED8A0E00AEC9E2 /* Trash */,
@@ -313,6 +310,7 @@
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
+				C0F46EE42AF94A5E00C2776A /* LoginView.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
@@ -325,13 +323,11 @@
 				C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */,
 				C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */,
 				C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */,
-				C01108342AE4884D00406837 /* LoginView.swift in Sources */,
 				C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */,
-				C0245CD22AF948E400C7CD4F /* CreateUsernameView.swift in Sources */,
+				C0F46EE52AF94A5E00C2776A /* CreateUsernameView.swift in Sources */,
 				C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */,
 				C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */,
 				C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */,
-				C0949F002AE5BC22006EE5D2 /* SettingsView.swift in Sources */,
 				C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

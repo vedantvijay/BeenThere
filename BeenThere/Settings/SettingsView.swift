@@ -11,7 +11,7 @@ import AuthenticationServices
 import AlertToast
 
 struct SettingsView: View {
-    @EnvironmentObject var viewModel: AccountViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     @AppStorage("appState") var appState = "opening"
 
     @State private var showDeleteAccount = false
