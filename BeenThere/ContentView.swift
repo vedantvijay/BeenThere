@@ -46,7 +46,11 @@ struct ContentView: View {
             case .settings:
                 SettingsView()
             case .feed:
-                FeedView()
+                ZStack {
+                    Color.brown
+                    TestMapView(viewModel: mapViewModel)
+                }
+//                FeedView()
             case .map:
                 ZStack {
                     if colorScheme == .light {
@@ -56,7 +60,7 @@ struct ContentView: View {
                         Color.white.opacity(0.1)
                             .ignoresSafeArea()
                     }
-                    MapView(viewModel: mapViewModel)
+                    OldMapView(viewModel: mapViewModel)
                         .ignoresSafeArea()
                         .onAppear {
                             mapViewModel.adjustMapViewToLocations()

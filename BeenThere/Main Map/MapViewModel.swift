@@ -14,8 +14,6 @@ import FirebaseAuth
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, MGLMapViewDelegate {
     private var locationManager = CLLocationManager()
-//    @AppStorage("darkColor") var darkColorString = ""
-//    @AppStorage("lightColor") var lightColorString = ""
     @Published var currentLocation: CLLocation?
     @Published var mapView: MGLMapView!
     @Published var tappedLocation: CLLocationCoordinate2D?

@@ -4,5 +4,9 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>MBXAccessToken</key>
+	<string>pk.eyJ1IjoiamFyZWRqb25lcyIsImEiOiJjbG9ubTFlY2Eya3ZtMnRxZWY1MmFjaXJ3In0.OpGzi3aW6fpFmuwVu53TjQ</string>
+	<key>MGLMapBoxAccessToken</key>
+	<string>pk.eyJ1IjoiamFyZWRqb25lcyIsImEiOiJjbG9ubTFlY2Eya3ZtMnRxZWY1MmFjaXJ3In0.OpGzi3aW6fpFmuwVu53TjQ</string>
 </dict>
 </plist>

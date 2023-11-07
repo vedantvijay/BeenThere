@@ -9,7 +9,7 @@ import SwiftUI
 import Mapbox
 import CoreLocation
 
-struct MapView: UIViewRepresentable {
+struct OldMapView: UIViewRepresentable {
     @ObservedObject var viewModel = MapViewModel()
     @Environment(\.colorScheme) var colorScheme
 
