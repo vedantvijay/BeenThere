@@ -18,6 +18,7 @@ struct ContentView: View {
     @StateObject var friendMapViewModel = FriendMapViewModel()
     @StateObject var sharedMapViewModel = SharedMapViewModel()
     @StateObject private var mapViewModel = MapViewModel()
+    @StateObject private var testMapViewModel = TestMapViewModel()
 //    @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
@@ -46,10 +47,8 @@ struct ContentView: View {
             case .settings:
                 SettingsView()
             case .feed:
-                ZStack {
-                    Color.brown
-                    TestMapView(viewModel: mapViewModel)
-                }
+                TestMapView(viewModel: testMapViewModel)
+
 //                FeedView()
             case .map:
                 ZStack {
