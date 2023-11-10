@@ -11,7 +11,7 @@ import CoreLocation
 import FirebaseAuth
 import Firebase
 
-class TestMapViewModel: NSObject, ObservableObject {
+class TestMapViewModel: NSObject, ObservableObject {    
     @Published var mapView: MapView?
     @Published var locations: [Location] = [] {
         didSet {
@@ -26,19 +26,35 @@ class TestMapViewModel: NSObject, ObservableObject {
 
     override init() {
         super.init()
+//        mapView = MapView(frame: .zero)
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.distanceFilter = 5
+        locationManager.startUpdatingLocation()
+        locationManager.startMonitoringSignificantLocationChanges()
         locationManager.delegate = self
-        setUpFirestoreListener()
+        locationManager.requestWhenInUseAuthorization()
+        self.setUpFirestoreListener()
     }
     deinit {
         locationsListener?.remove()
     }
-    
+        
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
-        mapView?.backgroundColor = UIColor.white
+//        mapView?.backgroundColor = UIColor.white
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView?.location.options.puckType = .puck2D()
+    }
+    
+    func updateMapStyleURL() {
+        if UITraitCollection.current.userInterfaceStyle == .dark {
+            self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot6czi600kb01qq4arcfy2g")
+        } else {
+            self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")
+        }
     }
 
     func addSquaresToMap(locations: [Location]) {
@@ -72,13 +88,16 @@ class TestMapViewModel: NSObject, ObservableObject {
                 fillLayer.fillColor = .constant(StyleColor(UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)))
                 fillLayer.fillOpacity = .constant(1)
                 
-                // Find the ID of the first symbol layer to add your layer beneath it
-                if let firstSymbolLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.type == .background })?.id {
-                    try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .below(firstSymbolLayerId))
+                // Find the ID of the land layer to add your layer above it
+                let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
+
+                if let landLayerId = landLayerId {
+                    try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
                 } else {
+                    // If land layer isn't found, add the layer without specifying position
                     try mapView.mapboxMap.style.addLayer(fillLayer)
                 }
-                
+
                 // Update currentSquares with new feature IDs
                 self?.currentSquares = Set(features.compactMap { feature in
                     if case let .string(id) = feature.identifier {
@@ -91,6 +110,7 @@ class TestMapViewModel: NSObject, ObservableObject {
                 print("Failed to add squares to the map: \(error)")
             }
         }
+
         
         // Check if the style is loaded before trying to add sources and layers
         if mapView.mapboxMap.style.isLoaded {
@@ -174,8 +194,71 @@ class TestMapViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    func checkAndAddSquaresIfNeeded() {
+        if !areSquaresAdded() {
+            addSquaresToMap(locations: locations)
+        }
+    }
 
+    private func areSquaresAdded() -> Bool {
+        return locations.count < 1
+    }
+    
+    func boundingBox(for locations: [Location]) -> (southWest: CLLocationCoordinate2D, northEast: CLLocationCoordinate2D)? {
+        guard !locations.isEmpty else { return nil }
 
+        var minLat = locations.first!.lowLatitude
+        var maxLat = locations.first!.highLatitude
+        var minLong = locations.first!.lowLongitude
+        var maxLong = locations.first!.highLongitude
+
+        for location in locations {
+            minLat = min(minLat, location.lowLatitude)
+            maxLat = max(maxLat, location.highLatitude)
+            minLong = min(minLong, location.lowLongitude)
+            maxLong = max(maxLong, location.highLongitude)
+        }
+
+        let southWest = CLLocationCoordinate2D(latitude: minLat, longitude: minLong)
+        let northEast = CLLocationCoordinate2D(latitude: maxLat, longitude: maxLong)
+
+        return (southWest, northEast)
+    }
+
+    func adjustMapViewToFitSquares() {
+        guard let mapView = mapView else { return }
+
+        mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
+            guard let boundingBox = self.boundingBox(for: self.locations) else { return }
+            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
+            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: 0, pitch: nil)
+            mapView.mapboxMap.setCamera(to: cameraOptions)
+        }
+    }
+    
+    func checkBeenThere(location: CLLocation) {
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
+
+        // Adjustments for 0.25 degree increments
+        let increment: Double = 0.25
+        
+        let lowLatitude = floor(latitude / increment) * increment
+        let highLatitude = lowLatitude + increment
+        let lowLongitude = floor(longitude / increment) * increment
+        let highLongitude = lowLongitude + increment
+
+        let result = locations.filter {
+                $0.lowLatitude <= latitude && $0.highLatitude > latitude &&
+                $0.lowLongitude <= longitude && $0.highLongitude > longitude
+            }
+
+        if result.isEmpty {
+            self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
+        }
+    }
+    
 }
 
 extension TestMapViewModel: CLLocationManagerDelegate {
@@ -183,5 +266,9 @@ extension TestMapViewModel: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("LOG: Test")
+        if let newLocation = locations.last {
+            checkBeenThere(location: newLocation)
+        }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import MapboxMaps
 
 struct TestMapView: UIViewRepresentable {
-    @ObservedObject var viewModel = TestMapViewModel()
+    @StateObject var viewModel = TestMapViewModel()
     @Environment(\.colorScheme) var colorScheme
 
     func makeCoordinator() -> TestMapViewModel {
@@ -18,11 +18,15 @@ struct TestMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> MapView {
         // Make sure the viewModel creates and configures the map view
-        viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clon7r77w009b01qjcmyqctc3")!)
+        viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")!)
         return viewModel.mapView!
     }
 
     
     func updateUIView(_ uiView: MapView, context: Context) {
+        viewModel.checkAndAddSquaresIfNeeded()
+        viewModel.adjustMapViewToFitSquares()
     }
+
+
 }

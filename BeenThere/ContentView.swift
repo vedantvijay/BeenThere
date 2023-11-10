@@ -47,43 +47,46 @@ struct ContentView: View {
             case .settings:
                 SettingsView()
             case .feed:
-                TestMapView(viewModel: testMapViewModel)
-
-//                FeedView()
+               
+                FeedView()
             case .map:
-                ZStack {
-                    if colorScheme == .light {
-                        Color.white
-                            .ignoresSafeArea()
-                    } else {
-                        Color.white.opacity(0.1)
-                            .ignoresSafeArea()
+                TestMapView(viewModel: testMapViewModel)
+                    .onChange(of: testMapViewModel.locations) {
+                        testMapViewModel.adjustMapViewToFitSquares()
                     }
-                    OldMapView(viewModel: mapViewModel)
-                        .ignoresSafeArea()
-                        .onAppear {
-                            mapViewModel.adjustMapViewToLocations()
-                            let status = locationManagerDelegate.authorizationStatus
-                            print("Authorization Status: \(status.rawValue)")
-                            print("LOG: \(status)")
-                        }
-                        .onChange(of: $mapViewModel.locations.count) {
-                            mapViewModel.adjustMapViewToLocations()
-                        }
-                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-                        VStack {
-                            Button("Update Location Settings") {
-                                showSettingsAlert = true
-                            }
-                            .fontWeight(.black)
-                            .buttonStyle(.bordered)
-                            .tint(.orange)
-                            .padding()
-                            .padding(.top, 50)
-                            Spacer()
-                        }
-                    }
-                }
+//                ZStack {
+//                    if colorScheme == .light {
+//                        Color.white
+//                            .ignoresSafeArea()
+//                    } else {
+//                        Color.white.opacity(0.1)
+//                            .ignoresSafeArea()
+//                    }
+//                    OldMapView(viewModel: mapViewModel)
+//                        .ignoresSafeArea()
+//                        .onAppear {
+//                            mapViewModel.adjustMapViewToLocations()
+//                            let status = locationManagerDelegate.authorizationStatus
+//                            print("Authorization Status: \(status.rawValue)")
+//                            print("LOG: \(status)")
+//                        }
+//                        .onChange(of: $mapViewModel.locations.count) {
+//                            mapViewModel.adjustMapViewToLocations()
+//                        }
+//                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
+//                        VStack {
+//                            Button("Update Location Settings") {
+//                                showSettingsAlert = true
+//                            }
+//                            .fontWeight(.black)
+//                            .buttonStyle(.bordered)
+//                            .tint(.orange)
+//                            .padding()
+//                            .padding(.top, 50)
+//                            Spacer()
+//                        }
+//                    }
+//                }
             case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
@@ -122,6 +125,7 @@ struct ContentView: View {
                 sharedMapViewModel.isDarkModeEnabled = true
             }
             mapViewModel.updateMapStyleURL()
+            testMapViewModel.updateMapStyleURL()
         }
         .onAppear {
             if colorScheme == .light {
@@ -135,6 +139,7 @@ struct ContentView: View {
                 friendMapViewModel.isDarkModeEnabled = true
                 sharedMapViewModel.isDarkModeEnabled = true
             }
+            testMapViewModel.updateMapStyleURL()
             mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
             let notificationCenter = NotificationCenter.default
