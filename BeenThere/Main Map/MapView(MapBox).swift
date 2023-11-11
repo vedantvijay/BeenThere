@@ -19,14 +19,22 @@ struct TestMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MapView {
         // Make sure the viewModel creates and configures the map view
         viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")!)
+        
         return viewModel.mapView!
     }
 
     
     func updateUIView(_ uiView: MapView, context: Context) {
+        viewModel.updateMapStyleURL()
         viewModel.checkAndAddSquaresIfNeeded()
-//        viewModel.adjustMapViewToFitSquares()
     }
 
 
+}
+
+
+struct CameraState {
+    var latitude: Double
+    var longitude: Double
+    var zoom: Double
 }

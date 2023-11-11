@@ -10,12 +10,25 @@ import MapboxMaps
 import CoreLocation
 import FirebaseAuth
 import Firebase
+import SwiftUI
 
 class TestMapViewModel: NSObject, ObservableObject {    
     @Published var mapView: MapView?
+    @Published var annotationManager: PointAnnotationManager?
+    var retryCount = 0
+    @Published var tappedLocation: CLLocationCoordinate2D?
+    
     @Published var locations: [Location] = [] {
         didSet {
             addSquaresToMap(locations: locations)
+        }
+    }
+    @Published var showTappedLocation: Bool = false {
+        didSet {
+            if !showTappedLocation {
+                tappedLocation = nil
+                annotationManager?.annotations.removeAll()
+            }
         }
     }
     var locationManager = CLLocationManager()
@@ -26,7 +39,6 @@ class TestMapViewModel: NSObject, ObservableObject {
 
     override init() {
         super.init()
-        mapView = MapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.distanceFilter = 5
@@ -40,6 +52,7 @@ class TestMapViewModel: NSObject, ObservableObject {
         locationsListener?.remove()
     }
         
+    
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
@@ -47,6 +60,10 @@ class TestMapViewModel: NSObject, ObservableObject {
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D()
+        self.annotationManager = mapView?.annotations.makePointAnnotationManager()
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        mapView?.addGestureRecognizer(longPressGestureRecognizer)
+
     }
     
     func updateMapStyleURL() {
@@ -57,6 +74,29 @@ class TestMapViewModel: NSObject, ObservableObject {
         }
     }
 
+
+    
+    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let point = gesture.location(in: gesture.view)
+            if let mapView = gesture.view as? MapView {
+                let coordinate = mapView.mapboxMap.coordinate(for: point)
+
+                // Create a new annotation
+                var annotation = PointAnnotation(coordinate: coordinate)
+                annotation.image = PointAnnotation.Image.init(image: UIImage(systemName: "pin")!, name: "pin")
+                // Add annotation to the map
+                annotationManager?.annotations = [annotation]
+                tappedLocation = coordinate
+                showTappedLocation = true
+
+                // Center the map on the annotation
+                let cameraOptions = CameraOptions(center: coordinate, zoom: mapView.cameraState.zoom)
+                mapView.mapboxMap.setCamera(to: cameraOptions)
+            }
+        }
+    }
+    
     func addSquaresToMap(locations: [Location]) {
         guard let mapView = mapView else { return }
 
@@ -110,6 +150,13 @@ class TestMapViewModel: NSObject, ObservableObject {
                 print("Failed to add squares to the map: \(error)")
             }
             self?.adjustMapViewToFitSquares()
+//            // After adding layers, check if camera state should be restored
+//            if let self = self, let savedState = self.savedCameraState {
+//                let cameraOptions = CameraOptions(center: CLLocationCoordinate2D(latitude: savedState.latitude, longitude: savedState.longitude), zoom: savedState.zoom, bearing: 0)
+//                mapView.mapboxMap.setCamera(to: cameraOptions) // Directly set camera without animation
+//            } else {
+//                self?.adjustMapViewToFitSquares()
+//            }
         }
 
         
@@ -237,10 +284,17 @@ class TestMapViewModel: NSObject, ObservableObject {
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
         // Animate the camera movement to the new position using fly
-        mapView.camera.fly(to: cameraOptions, duration: 1.5)
+        mapView.camera.fly(to: cameraOptions, duration: 0.5)
+
+//        mapView.camera.fly(to: cameraOptions, duration: 1.5)
+        while retryCount < 1 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.adjustMapViewToFitSquares()
+            }
+            retryCount += 1
+        }
+        
     }
-
-
 
     
     func checkBeenThere(location: CLLocation) {
@@ -264,7 +318,6 @@ class TestMapViewModel: NSObject, ObservableObject {
             self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
         }
     }
-    
 }
 
 extension TestMapViewModel: CLLocationManagerDelegate {

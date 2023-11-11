@@ -17,7 +17,7 @@ struct ContentView: View {
     @StateObject var accountViewModel = SettingsViewModel()
     @StateObject var friendMapViewModel = FriendMapViewModel()
     @StateObject var sharedMapViewModel = SharedMapViewModel()
-    @StateObject private var mapViewModel = MapViewModel()
+//    @StateObject private var mapViewModel = MapViewModel()
     @StateObject private var testMapViewModel = TestMapViewModel()
 //    @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
@@ -51,9 +51,9 @@ struct ContentView: View {
                 FeedView()
             case .map:
                 TestMapView(viewModel: testMapViewModel)
-//                    .onChange(of: testMapViewModel.locations) {
-//                        testMapViewModel.adjustMapViewToFitSquares()
-//                    }
+                    .onAppear {
+                        testMapViewModel.adjustMapViewToFitSquares()
+                    }
 //                ZStack {
 //                    if colorScheme == .light {
 //                        Color.white
@@ -115,32 +115,33 @@ struct ContentView: View {
         .onChange(of: colorScheme) {
             if colorScheme == .light {
                 print("LOG: light mode")
-                mapViewModel.isDarkModeEnabled = false
+//                mapViewModel.isDarkModeEnabled = false
                 friendMapViewModel.isDarkModeEnabled = false
                 sharedMapViewModel.isDarkModeEnabled = false
             } else {
                 print("LOG: dark mode")
-                mapViewModel.isDarkModeEnabled = true
+//                mapViewModel.isDarkModeEnabled = true
                 friendMapViewModel.isDarkModeEnabled = true
                 sharedMapViewModel.isDarkModeEnabled = true
             }
-            mapViewModel.updateMapStyleURL()
+//            mapViewModel.updateMapStyleURL()
             testMapViewModel.updateMapStyleURL()
         }
+       
         .onAppear {
             if colorScheme == .light {
                 print("LOG: light mode")
-                mapViewModel.isDarkModeEnabled = false
+//                mapViewModel.isDarkModeEnabled = false
                 friendMapViewModel.isDarkModeEnabled = false
                 sharedMapViewModel.isDarkModeEnabled = false
             } else {
                 print("LOG: dark mode")
-                mapViewModel.isDarkModeEnabled = true
+//                mapViewModel.isDarkModeEnabled = true
                 friendMapViewModel.isDarkModeEnabled = true
                 sharedMapViewModel.isDarkModeEnabled = true
             }
             testMapViewModel.updateMapStyleURL()
-            mapViewModel.updateMapStyleURL()
+//            mapViewModel.updateMapStyleURL()
             accountViewModel.ensureUserHasUIDAttribute()
             let notificationCenter = NotificationCenter.default
             notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
@@ -150,8 +151,8 @@ struct ContentView: View {
                 isKeyboardVisible = false
             }
         }
-        .confirmationDialog("Navigate", isPresented: $mapViewModel.showTappedLocation) {
-            if let location = mapViewModel.tappedLocation {
+        .confirmationDialog("Navigate", isPresented: $testMapViewModel.showTappedLocation) {
+            if let location = testMapViewModel.tappedLocation {
                 Link("Open in Google Maps", destination: googleMapsURL(for: location))
                 Link("Open in Apple Maps", destination: appleMapsURL(for: location))
             }
