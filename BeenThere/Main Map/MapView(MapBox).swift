@@ -25,7 +25,7 @@ struct TestMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: MapView, context: Context) {
         viewModel.checkAndAddSquaresIfNeeded()
-        viewModel.adjustMapViewToFitSquares()
+//        viewModel.adjustMapViewToFitSquares()
     }
 
 

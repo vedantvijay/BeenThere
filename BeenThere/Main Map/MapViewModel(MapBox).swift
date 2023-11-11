@@ -26,7 +26,7 @@ class TestMapViewModel: NSObject, ObservableObject {
 
     override init() {
         super.init()
-//        mapView = MapView(frame: .zero)
+        mapView = MapView(frame: .zero)
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.distanceFilter = 5
@@ -105,10 +105,11 @@ class TestMapViewModel: NSObject, ObservableObject {
                     }
                     return nil
                 })
-                
+
             } catch {
                 print("Failed to add squares to the map: \(error)")
             }
+            self?.adjustMapViewToFitSquares()
         }
 
         
@@ -229,13 +230,18 @@ class TestMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares() {
         guard let mapView = mapView else { return }
 
-        mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
-            guard let boundingBox = self.boundingBox(for: self.locations) else { return }
-            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
-            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: 0, pitch: nil)
-            mapView.mapboxMap.setCamera(to: cameraOptions)
-        }
+        guard let boundingBox = self.boundingBox(for: self.locations) else { return }
+        let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
+
+        // Get camera options to fit the bounding box
+        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+
+        // Animate the camera movement to the new position using fly
+        mapView.camera.fly(to: cameraOptions, duration: 1.5)
     }
+
+
+
     
     func checkBeenThere(location: CLLocation) {
         let latitude = location.coordinate.latitude

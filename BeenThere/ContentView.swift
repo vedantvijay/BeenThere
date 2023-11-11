@@ -51,9 +51,9 @@ struct ContentView: View {
                 FeedView()
             case .map:
                 TestMapView(viewModel: testMapViewModel)
-                    .onChange(of: testMapViewModel.locations) {
-                        testMapViewModel.adjustMapViewToFitSquares()
-                    }
+//                    .onChange(of: testMapViewModel.locations) {
+//                        testMapViewModel.adjustMapViewToFitSquares()
+//                    }
 //                ZStack {
 //                    if colorScheme == .light {
 //                        Color.white
