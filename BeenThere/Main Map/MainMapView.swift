@@ -21,17 +21,9 @@ struct MainMapView: UIViewRepresentable {
         return viewModel.mapView!
     }
 
-    
     func updateUIView(_ uiView: MapView, context: Context) {
         viewModel.updateMapStyleURL()
         viewModel.addGridlinesToMap()
         viewModel.checkAndAddSquaresIfNeeded()
     }
-}
-
-
-struct CameraState {
-    var latitude: Double
-    var longitude: Double
-    var zoom: Double
 }

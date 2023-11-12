@@ -88,7 +88,7 @@ struct LeaderboardView: View {
                             .onAppear {
                                 // Scroll to the user's position
                                 if let userIndex = viewModel.sortedUsersByLocationCount().firstIndex(where: { $0["username"] as? String == viewModel.username }) {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                         withAnimation {
                                             proxy.scrollTo(userIndex, anchor: .center)
                                         }
