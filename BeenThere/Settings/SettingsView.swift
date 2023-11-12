@@ -31,6 +31,9 @@ struct SettingsView: View {
                     NavigationLink("Manage Friends") {
                         ManageFriendsView()
                     }
+                    NavigationLink("Change Username") {
+                        ChangeUsernameView()
+                    }
                 }
                 Section {
                     Button("Sign Out") {

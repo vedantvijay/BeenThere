@@ -15,10 +15,8 @@ import SwiftUI
 class TemplateMapViewModel: NSObject, ObservableObject {
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
-    var retryCount = 0
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var isDarkModeEnabled: Bool = false
-
     @Published var locations: [Location] = [] {
         didSet {
             checkAndAddSquaresIfNeeded()
@@ -32,6 +30,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             }
         }
     }
+    var retryCount = 0
+    var lastCameraCenter: CLLocationCoordinate2D?
+    var lastCameraZoom: CGFloat?
+    var lastCameraBearing: CLLocationDirection?
+    var lastCameraPitch: CGFloat?
     var locationManager = CLLocationManager()
     var currentSquares = Set<String>()
     var db = Firestore.firestore()
@@ -46,19 +49,30 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.requestWhenInUseAuthorization()
+        locationManager.delegate = self
     }
     deinit {
         locationsListener?.remove()
     }
         
-    
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
-        mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
+        mapView?.mapboxMap.onEvery(event: .cameraChanged) { [weak self] _ in
+            guard let cameraState = self?.mapView?.cameraState else { return }
+            self?.lastCameraCenter = cameraState.center
+            self?.lastCameraZoom = cameraState.zoom
+            self?.lastCameraBearing = cameraState.bearing
+            self?.lastCameraPitch = cameraState.pitch
+        }
+        if let center = lastCameraCenter, let zoom = lastCameraZoom, let bearing = lastCameraBearing, let pitch = lastCameraPitch {
+            let lastState = CameraOptions(center: center, zoom: zoom, bearing: bearing, pitch: pitch)
+            mapView?.camera.ease(to: lastState, duration: 0.5)
+        } else {
+            mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
+        }
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView?.location.options.puckType = .puck2D()
-        mapView?.location.options.puckBearingEnabled = true
+        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         addGridlinesToMap()
     }
@@ -184,14 +198,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
-
-        while retryCount < 1 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.adjustMapViewToFitSquares()
-            }
-            retryCount += 1
-        }
         
+        self.lastCameraCenter = cameraOptions.center
+        self.lastCameraZoom = cameraOptions.zoom
+        self.lastCameraBearing = cameraOptions.bearing
+        self.lastCameraPitch = cameraOptions.pitch
     }
     
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
@@ -278,5 +289,79 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    func checkBeenThere(location: CLLocation) {
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
 
+        // Adjustments for 0.25 degree increments
+        let increment: Double = 0.25
+        
+        let lowLatitude = floor(latitude / increment) * increment
+        let highLatitude = lowLatitude + increment
+        let lowLongitude = floor(longitude / increment) * increment
+        let highLongitude = lowLongitude + increment
+
+        let result = locations.filter {
+                $0.lowLatitude <= latitude && $0.highLatitude > latitude &&
+                $0.lowLongitude <= longitude && $0.highLongitude > longitude
+            }
+
+        if result.isEmpty {
+            self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
+        }
+    }
+
+    func saveLocationToFirestore(lowLat: Double, highLat: Double, lowLong: Double, highLong: Double) {
+        let locationData: [String: Any] = [
+            "lowLatitude": lowLat,
+            "highLatitude": highLat,
+            "lowLongitude": lowLong,
+            "highLongitude": highLong
+        ]
+        
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found")
+            return
+        }
+
+        let userDocumentRef = db.collection("users").document(userID)
+        
+        userDocumentRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                userDocumentRef.updateData([
+                    "locations": FieldValue.arrayUnion([locationData])
+                ]) { error in
+                    if let error = error {
+                        print("Error adding location: \(error)")
+                    } else {
+                        print("Location successfully updated!")
+                    }
+                }
+            } else {
+                userDocumentRef.setData([
+                    "locations": [locationData]
+                ]) { error in
+                    if let error = error {
+                        print("Error creating document with location: \(error)")
+                    } else {
+                        print("Document successfully created with location!")
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+extension TemplateMapViewModel: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("LOG: Test")
+        if let newLocation = locations.last {
+            checkBeenThere(location: newLocation)
+        }
+    }
 }
