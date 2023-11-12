@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Mapbox
 import CoreLocation
 import FirebaseAuth
 

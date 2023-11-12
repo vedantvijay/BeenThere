@@ -58,6 +58,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D()
+        mapView?.location.options.puckBearingEnabled = true
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         addGridlinesToMap()
     }

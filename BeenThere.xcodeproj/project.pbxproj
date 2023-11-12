@@ -67,7 +67,6 @@
 		C0CA22292AF9CA2900F5667A /* MapboxMobileEvents.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C0CA21E02AF9C9D900F5667A /* MapboxMobileEvents.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C0CA222A2AF9CA2A00F5667A /* Turf.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0CA21DE2AF9C9D800F5667A /* Turf.xcframework */; };
 		C0CA222B2AF9CA2A00F5667A /* Turf.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C0CA21DE2AF9C9D800F5667A /* Turf.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C0CA222E2AF9CA5500F5667A /* Mapbox in Frameworks */ = {isa = PBXBuildFile; productRef = C0CA222D2AF9CA5500F5667A /* Mapbox */; };
 		C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9072AE585CB006326C1 /* SettingsView.swift */; };
 		C0D2A90A2AE58EF5006326C1 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9092AE58EF5006326C1 /* SettingsViewModel.swift */; };
 		C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */; };
@@ -161,7 +160,6 @@
 				C0CA21E92AF9C9EA00F5667A /* AlertToast in Frameworks */,
 				C0CA22122AF9CA1A00F5667A /* FirebaseInstallations in Frameworks */,
 				C0CA22162AF9CA1A00F5667A /* FirebaseMessaging in Frameworks */,
-				C0CA222E2AF9CA5500F5667A /* Mapbox in Frameworks */,
 				C0CA22202AF9CA1A00F5667A /* FirebaseStorageCombine-Community in Frameworks */,
 				C0CA22062AF9CA1A00F5667A /* FirebaseFirestoreCombine-Community in Frameworks */,
 				C0CA22102AF9CA1A00F5667A /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
@@ -360,7 +358,6 @@
 				C0CA221B2AF9CA1A00F5667A /* FirebaseRemoteConfigSwift */,
 				C0CA221D2AF9CA1A00F5667A /* FirebaseStorage */,
 				C0CA221F2AF9CA1A00F5667A /* FirebaseStorageCombine-Community */,
-				C0CA222D2AF9CA5500F5667A /* Mapbox */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -393,7 +390,6 @@
 			packageReferences = (
 				C0CA21E72AF9C9EA00F5667A /* XCRemoteSwiftPackageReference "AlertToast" */,
 				C0CA21EA2AF9CA1A00F5667A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				C0CA222C2AF9CA5500F5667A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -581,7 +577,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -620,7 +616,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -690,14 +686,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 10.17.0;
-			};
-		};
-		C0CA222C2AF9CA5500F5667A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.13.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -842,11 +830,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C0CA21EA2AF9CA1A00F5667A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
-		};
-		C0CA222D2AF9CA5500F5667A /* Mapbox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C0CA222C2AF9CA5500F5667A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = Mapbox;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
