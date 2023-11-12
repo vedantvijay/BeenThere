@@ -21,7 +21,7 @@ class MainMapViewModel: NSObject, ObservableObject {
 
     @Published var locations: [Location] = [] {
         didSet {
-            addSquaresToMap(locations: locations)
+            checkAndAddSquaresIfNeeded()
         }
     }
     @Published var showTappedLocation: Bool = false {
@@ -57,13 +57,10 @@ class MainMapViewModel: NSObject, ObservableObject {
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
-//        mapView?.backgroundColor = UIColor.white
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D()
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
-//        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-//        mapView?.addGestureRecognizer(longPressGestureRecognizer)
         addGridlinesToMap()
     }
     
@@ -74,29 +71,6 @@ class MainMapViewModel: NSObject, ObservableObject {
             self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")
         }
     }
-
-
-    
-//    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-//        if gesture.state == .began {
-//            let point = gesture.location(in: gesture.view)
-//            if let mapView = gesture.view as? MapView {
-//                let coordinate = mapView.mapboxMap.coordinate(for: point)
-//
-//                // Create a new annotation
-//                var annotation = PointAnnotation(coordinate: coordinate)
-//                annotation.image = PointAnnotation.Image.init(image: UIImage(systemName: "pin")!, name: "pin")
-//                // Add annotation to the map
-//                annotationManager?.annotations = [annotation]
-//                tappedLocation = coordinate
-//                showTappedLocation = true
-//
-//                // Center the map on the annotation
-//                let cameraOptions = CameraOptions(center: coordinate, zoom: mapView.cameraState.zoom)
-//                mapView.mapboxMap.setCamera(to: cameraOptions)
-//            }
-//        }
-//    }
     
     func addSquaresToMap(locations: [Location]) {
         guard let mapView = mapView else { return }
@@ -129,17 +103,14 @@ class MainMapViewModel: NSObject, ObservableObject {
                 fillLayer.fillColor = .constant(StyleColor(self!.isDarkModeEnabled ? UIColor(red: 1/255, green: 50/255, blue: 32/255, alpha: 1) : UIColor(red: 213/255, green: 255/255, blue: 196/255, alpha: 1)))
                 fillLayer.fillOpacity = .constant(1)
                 
-                // Find the ID of the land layer to add your layer above it
                 let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
 
                 if let landLayerId = landLayerId {
                     try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
                 } else {
-                    // If land layer isn't found, add the layer without specifying position
                     try mapView.mapboxMap.style.addLayer(fillLayer)
                 }
 
-                // Update currentSquares with new feature IDs
                 self?.currentSquares = Set(features.compactMap { feature in
                     if case let .string(id) = feature.identifier {
                         return id
@@ -274,14 +245,6 @@ class MainMapViewModel: NSObject, ObservableObject {
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
-
-        while retryCount < 1 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.adjustMapViewToFitSquares()
-            }
-            retryCount += 1
-        }
-        
     }
 
     
@@ -310,13 +273,11 @@ class MainMapViewModel: NSObject, ObservableObject {
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
         var gridlines = [LineString]()
 
-        // Define your map bounds, adjust these values according to your requirement
         let minLat = -90.0
         let maxLat = 90.0
         let minLong = -180.0
         let maxLong = 180.0
 
-        // Generate latitude lines
         for lat in stride(from: minLat, through: maxLat, by: inset) {
             let line = LineString([
                 CLLocationCoordinate2D(latitude: lat, longitude: minLong),
@@ -325,7 +286,6 @@ class MainMapViewModel: NSObject, ObservableObject {
             gridlines.append(line)
         }
 
-        // Generate longitude lines
         for long in stride(from: minLong, through: maxLong, by: inset) {
             let line = LineString([
                 CLLocationCoordinate2D(latitude: minLat, longitude: long),
@@ -353,7 +313,6 @@ class MainMapViewModel: NSObject, ObservableObject {
             lineLayer.lineColor = .constant(StyleColor(self.isDarkModeEnabled ? .white : .black))
             lineLayer.lineWidth = .constant(1)
 
-            // Define a zoom-dependent expression for line opacity
             let opacityExpression = Exp(.interpolate) {
                 Exp(.linear)
                 Exp(.zoom)
@@ -367,11 +326,9 @@ class MainMapViewModel: NSObject, ObservableObject {
             lineLayer.lineOpacity = .expression(opacityExpression)
 
             do {
-                // Find the "road-simple" layer to add your layer above it
                 if mapView.mapboxMap.style.layerExists(withId: "road-simple") {
                     try mapView.mapboxMap.style.addLayer(lineLayer, layerPosition: .above("road-simple"))
                 } else {
-                    // If "road-simple" layer isn't found, add the layer without specifying position
                     try mapView.mapboxMap.style.addLayer(lineLayer)
                 }
             } catch {
