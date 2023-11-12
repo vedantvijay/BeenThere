@@ -51,42 +51,6 @@ struct ContentView: View {
                 FeedView()
             case .map:
                 MainMapView(viewModel: mainMapViewModel)
-//                    .onAppear {
-//                        testMapViewModel.adjustMapViewToFitSquares()
-//                    }
-//                ZStack {
-//                    if colorScheme == .light {
-//                        Color.white
-//                            .ignoresSafeArea()
-//                    } else {
-//                        Color.white.opacity(0.1)
-//                            .ignoresSafeArea()
-//                    }
-//                    OldMapView(viewModel: mapViewModel)
-//                        .ignoresSafeArea()
-//                        .onAppear {
-//                            mapViewModel.adjustMapViewToLocations()
-//                            let status = locationManagerDelegate.authorizationStatus
-//                            print("Authorization Status: \(status.rawValue)")
-//                            print("LOG: \(status)")
-//                        }
-//                        .onChange(of: $mapViewModel.locations.count) {
-//                            mapViewModel.adjustMapViewToLocations()
-//                        }
-//                    if locationManagerDelegate.authorizationStatus != .authorizedAlways {
-//                        VStack {
-//                            Button("Update Location Settings") {
-//                                showSettingsAlert = true
-//                            }
-//                            .fontWeight(.black)
-//                            .buttonStyle(.bordered)
-//                            .tint(.orange)
-//                            .padding()
-//                            .padding(.top, 50)
-//                            Spacer()
-//                        }
-//                    }
-//                }
             case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
