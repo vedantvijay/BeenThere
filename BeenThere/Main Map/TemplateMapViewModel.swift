@@ -21,7 +21,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 
     @Published var locations: [Location] = [] {
         didSet {
-            addSquaresToMap(locations: locations)
+            checkAndAddSquaresIfNeeded()
         }
     }
     @Published var showTappedLocation: Bool = false {
@@ -34,8 +34,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     var locationManager = CLLocationManager()
     var currentSquares = Set<String>()
-    private var db = Firestore.firestore()
-    private var locationsListener: ListenerRegistration?
+    var db = Firestore.firestore()
+    var locationsListener: ListenerRegistration?
     
 
     override init() {
@@ -55,13 +55,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
-//        mapView?.backgroundColor = UIColor.white
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D()
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
-//        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-//        mapView?.addGestureRecognizer(longPressGestureRecognizer)
         addGridlinesToMap()
     }
     
@@ -72,7 +69,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")
         }
     }
-
+    
     func addSquaresToMap(locations: [Location]) {
         guard let mapView = mapView else { return }
 
@@ -101,20 +98,28 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 
                 var fillLayer = FillLayer(id: "square-fill-layer")
                 fillLayer.source = "square-source"
-                fillLayer.fillColor = .constant(StyleColor(self!.isDarkModeEnabled ? UIColor(red: 1/255, green: 50/255, blue: 32/255, alpha: 1) : UIColor(red: 213/255, green: 255/255, blue: 196/255, alpha: 1)))
+
+                let fillColorExpression = Exp(.interpolate) {
+                    Exp(.linear)
+                    Exp(.zoom)
+                    0
+                    UIColor.green
+                    1
+                    UIColor.green
+                    6
+                    self!.isDarkModeEnabled ? UIColor(red: 1/255, green: 50/255, blue: 32/255, alpha: 1) : UIColor(red: 213/255, green: 255/255, blue: 196/255, alpha: 1)
+                }
+                fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
                 
-                // Find the ID of the land layer to add your layer above it
                 let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
 
                 if let landLayerId = landLayerId {
                     try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
                 } else {
-                    // If land layer isn't found, add the layer without specifying position
                     try mapView.mapboxMap.style.addLayer(fillLayer)
                 }
 
-                // Update currentSquares with new feature IDs
                 self?.currentSquares = Set(features.compactMap { feature in
                     if case let .string(id) = feature.identifier {
                         return id
@@ -191,13 +196,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
         var gridlines = [LineString]()
 
-        // Define your map bounds, adjust these values according to your requirement
         let minLat = -90.0
         let maxLat = 90.0
         let minLong = -180.0
         let maxLong = 180.0
 
-        // Generate latitude lines
         for lat in stride(from: minLat, through: maxLat, by: inset) {
             let line = LineString([
                 CLLocationCoordinate2D(latitude: lat, longitude: minLong),
@@ -206,7 +209,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             gridlines.append(line)
         }
 
-        // Generate longitude lines
         for long in stride(from: minLong, through: maxLong, by: inset) {
             let line = LineString([
                 CLLocationCoordinate2D(latitude: minLat, longitude: long),
@@ -234,7 +236,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             lineLayer.lineColor = .constant(StyleColor(self.isDarkModeEnabled ? .white : .black))
             lineLayer.lineWidth = .constant(1)
 
-            // Define a zoom-dependent expression for line opacity
             let opacityExpression = Exp(.interpolate) {
                 Exp(.linear)
                 Exp(.zoom)
@@ -248,11 +249,9 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             lineLayer.lineOpacity = .expression(opacityExpression)
 
             do {
-                // Find the "road-simple" layer to add your layer above it
                 if mapView.mapboxMap.style.layerExists(withId: "road-simple") {
                     try mapView.mapboxMap.style.addLayer(lineLayer, layerPosition: .above("road-simple"))
                 } else {
-                    // If "road-simple" layer isn't found, add the layer without specifying position
                     try mapView.mapboxMap.style.addLayer(lineLayer)
                 }
             } catch {
