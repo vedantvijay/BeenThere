@@ -28,6 +28,11 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
+                    NavigationLink("Manage Friends") {
+                        ManageFriendsView()
+                    }
+                }
+                Section {
                     Button("Sign Out") {
                         viewModel.signOut()
                         dismiss()

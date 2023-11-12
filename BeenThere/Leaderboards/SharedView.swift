@@ -36,36 +36,19 @@ struct SharedView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top) {
-            if colorScheme == .light {
-                Color.white
-                    .ignoresSafeArea()
-            } else {
-                Color.white.opacity(0.1)
-                    .ignoresSafeArea()
+        SharedMapView()
+            .ignoresSafeArea()
+            .onAppear {
+                viewModel.updateMapStyleURL()
+                viewModel.locations = userLocations
             }
-                SharedMapView()
-                    .ignoresSafeArea()
-                    .onAppear {
-                        viewModel.updateMapStyleURL()
-                        viewModel.locations = userLocations
-                    }
-                    .onChange(of: colorScheme) {
-                        viewModel.updateMapStyleURL()
-                    }
-                Text("Shared Map")
-                .font(.largeTitle)
-                .fontWeight(.black)
-//                .shadow(color: colorScheme == .light ? .secondary : .white, radius: 1)
+            .onChange(of: colorScheme) {
+                viewModel.updateMapStyleURL()
             }
-            
-//        .onAppear {
-//            viewModel.initializeMapLocation()
-//        }
-        
-        .onDisappear {
-            dismiss()
-        }
+            .navigationTitle("Shared Map")
+            .onDisappear {
+                dismiss()
+            }
     }
 }
 

@@ -187,7 +187,6 @@ class SettingsViewModel: ObservableObject {
                     print("Failed to fetch data for friend: \(friendUID)")
                     return
                 }
-                print("Fetched data for friend \(friendUID): \(data)")
                 
                 // Manually add the UID to the document data
                 data["uid"] = friendUID

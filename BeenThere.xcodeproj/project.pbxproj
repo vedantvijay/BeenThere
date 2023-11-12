@@ -73,8 +73,8 @@
 		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
 		C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE62AF954A000C2776A /* FeedViewModel.swift */; };
 		C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE82AF954B900C2776A /* FeedView.swift */; };
-		C0F46EEB2AF9BD2700C2776A /* MapView(MapBox).swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEA2AF9BD2700C2776A /* MapView(MapBox).swift */; };
-		C0F46EED2AF9BD3400C2776A /* MapViewModel(MapBox).swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEC2AF9BD3400C2776A /* MapViewModel(MapBox).swift */; };
+		C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */; };
+		C0F46EED2AF9BD3400C2776A /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEC2AF9BD3400C2776A /* MainMapViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -131,8 +131,8 @@
 		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
 		C0F46EE62AF954A000C2776A /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		C0F46EE82AF954B900C2776A /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
-		C0F46EEA2AF9BD2700C2776A /* MapView(MapBox).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView(MapBox).swift"; sourceTree = "<group>"; };
-		C0F46EEC2AF9BD3400C2776A /* MapViewModel(MapBox).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapViewModel(MapBox).swift"; sourceTree = "<group>"; };
+		C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
+		C0F46EEC2AF9BD3400C2776A /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,10 +183,8 @@
 		C0245CC92AF944DC00C7CD4F /* Main Map */ = {
 			isa = PBXGroup;
 			children = (
-				C0C808E62ADD855C0070E679 /* MapView.swift */,
-				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
-				C0F46EEA2AF9BD2700C2776A /* MapView(MapBox).swift */,
-				C0F46EEC2AF9BD3400C2776A /* MapViewModel(MapBox).swift */,
+				C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */,
+				C0F46EEC2AF9BD3400C2776A /* MainMapViewModel.swift */,
 			);
 			path = "Main Map";
 			sourceTree = "<group>";
@@ -233,12 +231,12 @@
 		C0245CD02AF9480F00C7CD4F /* Leaderboards */ = {
 			isa = PBXGroup;
 			children = (
+				C09C698C2AE88382008A3148 /* FriendView.swift */,
+				C09C69902AE883C2008A3148 /* FriendMapView.swift */,
 				C09C69922AE88405008A3148 /* FriendMapViewModel.swift */,
 				C08531742AF2C27700EAA434 /* SharedView.swift */,
 				C085316C2AF1E6F900EAA434 /* SharedMapView.swift */,
 				C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */,
-				C09C698C2AE88382008A3148 /* FriendView.swift */,
-				C09C69902AE883C2008A3148 /* FriendMapView.swift */,
 				C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */,
 			);
 			path = Leaderboards;
@@ -247,6 +245,8 @@
 		C044EF092AED8A0E00AEC9E2 /* Trash */ = {
 			isa = PBXGroup;
 			children = (
+				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
+				C0C808E62ADD855C0070E679 /* MapView.swift */,
 			);
 			path = Trash;
 			sourceTree = "<group>";
@@ -423,7 +423,7 @@
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
-				C0F46EEB2AF9BD2700C2776A /* MapView(MapBox).swift in Sources */,
+				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
@@ -444,7 +444,7 @@
 				C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */,
 				C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */,
 				C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */,
-				C0F46EED2AF9BD3400C2776A /* MapViewModel(MapBox).swift in Sources */,
+				C0F46EED2AF9BD3400C2776A /* MainMapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

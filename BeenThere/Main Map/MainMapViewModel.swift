@@ -12,12 +12,13 @@ import FirebaseAuth
 import Firebase
 import SwiftUI
 
-class TestMapViewModel: NSObject, ObservableObject {    
+class MainMapViewModel: NSObject, ObservableObject {
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
     var retryCount = 0
     @Published var tappedLocation: CLLocationCoordinate2D?
-    
+    @Published var isDarkModeEnabled: Bool = false
+
     @Published var locations: [Location] = [] {
         didSet {
             addSquaresToMap(locations: locations)
@@ -61,9 +62,9 @@ class TestMapViewModel: NSObject, ObservableObject {
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D()
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        mapView?.addGestureRecognizer(longPressGestureRecognizer)
-
+//        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+//        mapView?.addGestureRecognizer(longPressGestureRecognizer)
+        addGridlinesToMap()
     }
     
     func updateMapStyleURL() {
@@ -76,26 +77,26 @@ class TestMapViewModel: NSObject, ObservableObject {
 
 
     
-    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        if gesture.state == .began {
-            let point = gesture.location(in: gesture.view)
-            if let mapView = gesture.view as? MapView {
-                let coordinate = mapView.mapboxMap.coordinate(for: point)
-
-                // Create a new annotation
-                var annotation = PointAnnotation(coordinate: coordinate)
-                annotation.image = PointAnnotation.Image.init(image: UIImage(systemName: "pin")!, name: "pin")
-                // Add annotation to the map
-                annotationManager?.annotations = [annotation]
-                tappedLocation = coordinate
-                showTappedLocation = true
-
-                // Center the map on the annotation
-                let cameraOptions = CameraOptions(center: coordinate, zoom: mapView.cameraState.zoom)
-                mapView.mapboxMap.setCamera(to: cameraOptions)
-            }
-        }
-    }
+//    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+//        if gesture.state == .began {
+//            let point = gesture.location(in: gesture.view)
+//            if let mapView = gesture.view as? MapView {
+//                let coordinate = mapView.mapboxMap.coordinate(for: point)
+//
+//                // Create a new annotation
+//                var annotation = PointAnnotation(coordinate: coordinate)
+//                annotation.image = PointAnnotation.Image.init(image: UIImage(systemName: "pin")!, name: "pin")
+//                // Add annotation to the map
+//                annotationManager?.annotations = [annotation]
+//                tappedLocation = coordinate
+//                showTappedLocation = true
+//
+//                // Center the map on the annotation
+//                let cameraOptions = CameraOptions(center: coordinate, zoom: mapView.cameraState.zoom)
+//                mapView.mapboxMap.setCamera(to: cameraOptions)
+//            }
+//        }
+//    }
     
     func addSquaresToMap(locations: [Location]) {
         guard let mapView = mapView else { return }
@@ -125,7 +126,7 @@ class TestMapViewModel: NSObject, ObservableObject {
                 
                 var fillLayer = FillLayer(id: "square-fill-layer")
                 fillLayer.source = "square-source"
-                fillLayer.fillColor = .constant(StyleColor(UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)))
+                fillLayer.fillColor = .constant(StyleColor(self!.isDarkModeEnabled ? UIColor(red: 1/255, green: 50/255, blue: 32/255, alpha: 1) : UIColor(red: 213/255, green: 255/255, blue: 196/255, alpha: 1)))
                 fillLayer.fillOpacity = .constant(1)
                 
                 // Find the ID of the land layer to add your layer above it
@@ -150,22 +151,12 @@ class TestMapViewModel: NSObject, ObservableObject {
                 print("Failed to add squares to the map: \(error)")
             }
             self?.adjustMapViewToFitSquares()
-//            // After adding layers, check if camera state should be restored
-//            if let self = self, let savedState = self.savedCameraState {
-//                let cameraOptions = CameraOptions(center: CLLocationCoordinate2D(latitude: savedState.latitude, longitude: savedState.longitude), zoom: savedState.zoom, bearing: 0)
-//                mapView.mapboxMap.setCamera(to: cameraOptions) // Directly set camera without animation
-//            } else {
-//                self?.adjustMapViewToFitSquares()
-//            }
         }
 
         
-        // Check if the style is loaded before trying to add sources and layers
         if mapView.mapboxMap.style.isLoaded {
-            // Style is already loaded, add layers immediately
             setupLayers()
         } else {
-            // Style not loaded, wait for the event
             mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
                 setupLayers()
             }
@@ -280,13 +271,10 @@ class TestMapViewModel: NSObject, ObservableObject {
         guard let boundingBox = self.boundingBox(for: self.locations) else { return }
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 
-        // Get camera options to fit the bounding box
-        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
-        // Animate the camera movement to the new position using fly
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
 
-//        mapView.camera.fly(to: cameraOptions, duration: 1.5)
         while retryCount < 1 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.adjustMapViewToFitSquares()
@@ -318,9 +306,101 @@ class TestMapViewModel: NSObject, ObservableObject {
             self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
         }
     }
+    
+    func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
+        var gridlines = [LineString]()
+
+        // Define your map bounds, adjust these values according to your requirement
+        let minLat = -90.0
+        let maxLat = 90.0
+        let minLong = -180.0
+        let maxLong = 180.0
+
+        // Generate latitude lines
+        for lat in stride(from: minLat, through: maxLat, by: inset) {
+            let line = LineString([
+                CLLocationCoordinate2D(latitude: lat, longitude: minLong),
+                CLLocationCoordinate2D(latitude: lat, longitude: maxLong)
+            ])
+            gridlines.append(line)
+        }
+
+        // Generate longitude lines
+        for long in stride(from: minLong, through: maxLong, by: inset) {
+            let line = LineString([
+                CLLocationCoordinate2D(latitude: minLat, longitude: long),
+                CLLocationCoordinate2D(latitude: maxLat, longitude: long)
+            ])
+            gridlines.append(line)
+        }
+
+        return gridlines
+    }
+
+    
+    func addGridlinesToMap() {
+        guard let mapView = mapView else { return }
+        
+        let gridlines = generateGridlines()
+        let features = gridlines.map { Feature(geometry: .lineString($0)) }
+
+        var source = GeoJSONSource()
+        source.data = .featureCollection(FeatureCollection(features: features))
+
+        let addLayer = {
+            var lineLayer = LineLayer(id: "gridline-layer")
+            lineLayer.source = "gridline-source"
+            lineLayer.lineColor = .constant(StyleColor(self.isDarkModeEnabled ? .white : .black))
+            lineLayer.lineWidth = .constant(1)
+
+            // Define a zoom-dependent expression for line opacity
+            let opacityExpression = Exp(.interpolate) {
+                Exp(.linear)
+                Exp(.zoom)
+                0
+                0
+                6
+                0
+                22
+                1
+            }
+            lineLayer.lineOpacity = .expression(opacityExpression)
+
+            do {
+                // Find the "road-simple" layer to add your layer above it
+                if mapView.mapboxMap.style.layerExists(withId: "road-simple") {
+                    try mapView.mapboxMap.style.addLayer(lineLayer, layerPosition: .above("road-simple"))
+                } else {
+                    // If "road-simple" layer isn't found, add the layer without specifying position
+                    try mapView.mapboxMap.style.addLayer(lineLayer)
+                }
+            } catch {
+                print("Error adding gridlines to the map: \(error)")
+            }
+        }
+
+        if mapView.mapboxMap.style.isLoaded {
+            do {
+                try mapView.mapboxMap.style.addSource(source, id: "gridline-source")
+                addLayer()
+            } catch {
+                print("Error adding gridlines source to the map: \(error)")
+            }
+        } else {
+            mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
+                do {
+                    try mapView.mapboxMap.style.addSource(source, id: "gridline-source")
+                    addLayer()
+                } catch {
+                    print("Error adding gridlines source to the map: \(error)")
+                }
+            }
+        }
+    }
+
 }
 
-extension TestMapViewModel: CLLocationManagerDelegate {
+extension MainMapViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
     }
     
@@ -330,4 +410,11 @@ extension TestMapViewModel: CLLocationManagerDelegate {
             checkBeenThere(location: newLocation)
         }
     }
+}
+
+struct Location: Codable, Hashable {
+    var lowLatitude: Double
+    var highLatitude: Double
+    var lowLongitude: Double
+    var highLongitude: Double
 }

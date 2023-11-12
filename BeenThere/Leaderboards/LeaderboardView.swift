@@ -32,7 +32,6 @@ struct LeaderboardView: View {
                                 ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
                                     let friend = viewModel.sortedFriendsByLocationCount()[index]
                                     NavigationLink(destination: FriendView(friend: friend)) {
-                                        
                                         HStack {
                                             Text("\(index + 1).")
                                                 .bold()

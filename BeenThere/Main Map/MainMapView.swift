@@ -8,28 +8,25 @@
 import SwiftUI
 import MapboxMaps
 
-struct TestMapView: UIViewRepresentable {
-    @StateObject var viewModel = TestMapViewModel()
+struct MainMapView: UIViewRepresentable {
+    @StateObject var viewModel = MainMapViewModel()
     @Environment(\.colorScheme) var colorScheme
 
-    func makeCoordinator() -> TestMapViewModel {
+    func makeCoordinator() -> MainMapViewModel {
         return viewModel
     }
     
     func makeUIView(context: Context) -> MapView {
-        // Make sure the viewModel creates and configures the map view
         viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")!)
-        
         return viewModel.mapView!
     }
 
     
     func updateUIView(_ uiView: MapView, context: Context) {
         viewModel.updateMapStyleURL()
+        viewModel.addGridlinesToMap()
         viewModel.checkAndAddSquaresIfNeeded()
     }
-
-
 }
 
 
