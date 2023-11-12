@@ -17,13 +17,10 @@ struct ContentView: View {
     @StateObject var accountViewModel = SettingsViewModel()
     @StateObject var friendMapViewModel = FriendMapViewModel()
     @StateObject var sharedMapViewModel = SharedMapViewModel()
-//    @StateObject private var mapViewModel = MapViewModel()
     @StateObject private var mainMapViewModel = MainMapViewModel()
-//    @Environment(\.colorScheme) var colorScheme
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
-
     @State private var showTestDialog = false
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @State private var showSettingsAlert: Bool = false
@@ -138,7 +135,6 @@ struct ContentView: View {
             if let error = error {
                 print("Error: \(error)")
             }
-            // Enable or disable features based on the authorization.
         }
     }
 
@@ -169,13 +165,12 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
-            // Once 'When in Use' permission is granted, request 'Always' authorization
             self.locationManager?.requestAlwaysAuthorization()
         }
         self.authorizationStatus = status
     }
 }
-//
+
 //
 //#Preview {
 //    ContentView()
