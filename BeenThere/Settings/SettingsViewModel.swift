@@ -212,7 +212,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
         
-        friendsAndMe.append(["username": self.username, "locations": myLocations, "uid": self.uid])
+        friendsAndMe.append(["username": self.username, "locations": myLocations, "uid": self.uid, "firstName": self.firstName, "lastName": self.lastName])
         return friendsAndMe.sorted { friendA, friendB in
             let locationsCountA = (friendA["locations"] as? [[String: Any]])?.count ?? 0
             let locationsCountB = (friendB["locations"] as? [[String: Any]])?.count ?? 0

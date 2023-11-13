@@ -30,51 +30,78 @@ struct LeaderboardView: View {
                 }
                 Spacer()
                 ScrollViewReader { proxy in
-                    Form {
+                    List {
+                        
+                        
+                        
+                        
+                        
                         if leaderboardScope == "friends" {
                             if !viewModel.sortedFriendsByLocationCount().isEmpty {
                                 ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
                                     let friend = viewModel.sortedFriendsByLocationCount()[index]
-                                    NavigationLink(destination: FriendView(friend: friend)) {
+                        
+                                    NavigationLink(destination: FriendView(username: friend["username"] as? String ?? "", firstName: friend["firstName"] as? String ?? "", friend: friend)) {
                                         HStack {
                                             Text("\(index + 1).")
                                                 .bold()
                                                 .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                                .font(.title2)
+
                                             
                                             if let friendUID = friend["uid"] as? String {
                                                 if let imageUrl = viewModel.profileImageUrls[friendUID] {
                                                     KFImage(imageUrl)
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 20, height: 20)
+                                                        .frame(width: 30, height: 30)
                                                         .clipShape(Circle())
                                                 } else {
-                                                    Image(systemName: "person.crop.circle.fill")
+                                                    Image(systemName: "person.crop.circle")
                                                         .resizable()
-                                                        .frame(width: 20, height: 20)
+                                                        .frame(width: 30, height: 30)
+                                                        .foregroundStyle(.secondary)
+
                                                 }
                                             }
-                                            
-                                            
-                                            
-                                            if let friendName = friend["username"] as? String {
-                                                Text(friendName)
-                                                    .fontWeight(friendName == viewModel.username ? .black : .regular)
+                            
+                                            if let friendUsername = friend["username"] as? String {
+                                                if let friendFirstName = friend["firstName"] as? String {
+                                                    Text(friendFirstName)
+                                                        .fontWeight(friendUsername == viewModel.username ? .black : .regular)
+                                                        .padding(.trailing, 4)
+                                                        .font(.title2)
+
+                                                    
+                                                }
+                                                Text("@\(friendUsername)")
+                                                    .italic()
+                                                    .foregroundStyle(.secondary)
                                             }
                                             
                                             Spacer()
                                             
                                             if let locations = friend["locations"] as? [[String: Any]] {
                                                 Text("\(locations.count)")
+                                                    .foregroundStyle(.tertiary)
                                             }
                                         }
+                                        .font(.title3)
                                     }
                                 }
                             } else {
                                 Text("You have no friends added yet.")
                                     .foregroundColor(.gray)
                             }
-                        } else if leaderboardScope == "global" {
+                        } 
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        else if leaderboardScope == "global" {
                             Section {
                                 NavigationLink("Shared Map") {
                                     SharedView()
@@ -83,7 +110,7 @@ struct LeaderboardView: View {
                             
                             ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                                 let person = viewModel.sortedUsersByLocationCount()[index]
-                                if let personName = person["username"] as? String,
+                                if let personUsername = person["username"] as? String,
     //                               let personUID = person["uid"] as? String,
                                    let personLocations = person["locations"] as? [[String: Any]] {
                                     HStack {
@@ -92,33 +119,73 @@ struct LeaderboardView: View {
                                             .bold()
                                             .padding(.trailing, 8) // Add some padding to separate the rank from the name
                                         
-                                        if let personUID = person["uid"] as? String {
-                                            if let imageUrl = viewModel.profileImageUrls[person["uid"] as! String] {
+                                        
+                                        
+                                        if let friendUID = person["uid"] as? String {
+                                            if let imageUrl = viewModel.profileImageUrls[friendUID] {
                                                 KFImage(imageUrl)
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
-                                                    .frame(width: 20, height: 20)
+                                                    .frame(width: 30, height: 30)
                                                     .clipShape(Circle())
                                             } else {
-                                                Image(systemName: "person.crop.circle.fill")
+                                                Image(systemName: "person.crop.circle")
                                                     .resizable()
-                                                    .frame(width: 20, height: 20)
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(.secondary)
+
                                             }
                                         }
-                                        
+                        
+                                        if let friendUsername = person["username"] as? String {
+                                            if let friendFirstName = person["firstName"] as? String {
+                                                Text(friendFirstName)
+                                                    .fontWeight(friendUsername == viewModel.username ? .black : .regular)
+                                                    .padding(.trailing, 4)
+                                                    .font(.title2)
+                                            }
+                                            Text("@\(friendUsername)")
+                                                .italic()
+                                                .foregroundStyle(.secondary)
+                                                .font(.title3)
+                                        }
                                        
                                         
-                                        if viewModel.friends.contains(where: { friend in friend["username"] as? String == personName }) || personName == viewModel.username {
-                                            Text(personName)
-                                                .fontWeight(personName == viewModel.username ? .black : .regular)
-                                        } else {
-                                            Text(personName)
-//                                            Text("UnknownUser")
-//                                                .blur(radius: 5)
-                                        }
+//                                        if viewModel.friends.contains(where: { friend in friend["username"] as? String == personUsername }) || personUsername == viewModel.username {
+//                                            if let personUsername = person["username"] as? String {
+//                                                if let personFirstName = person["firstName"] as? String {
+//                                                    Text(personFirstName)
+//                                                        .fontWeight(personUsername == viewModel.username ? .black : .regular)
+//                                                        .padding(.trailing, 8)
+//                                                        .font(.title2)
+//                                                }
+//                                                Text("@\(personUsername)")
+//                                                    .italic()
+//                                                    .foregroundStyle(.secondary)
+//                                            }
+//                                            
+//                                            
+//
+//                                        } else {
+//                                            if let personUsername = person["username"] as? String {
+//                                                if let personFirstName = person["firstName"] as? String {
+//                                                    Text(personFirstName)
+//                                                        .fontWeight(personUsername == viewModel.username ? .black : .regular)
+//                                                        .padding(.trailing, 8)
+//                                                        .font(.title2)
+//
+//                                                    
+//                                                }
+//                                                Text("@\(personUsername)")
+//                                                    .italic()
+//                                                    .foregroundStyle(.secondary)
+//                                            }
+//                                        }
                                         Spacer()
                                         Text("\(personLocations.count)")
+                                            .foregroundStyle(.tertiary)
                                     }
+                                    .font(.title3)
                                 }
                             }
                             .onAppear {

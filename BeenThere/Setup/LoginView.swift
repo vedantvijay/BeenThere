@@ -53,7 +53,7 @@ struct LoginView: View {
                     .fontWeight(.black)
                     .foregroundColor(.white)
                 SignInWithAppleButton { request in
-                    request.requestedScopes = []
+                    request.requestedScopes = [.fullName]
                 } onCompletion: { result in
                     switch result {
                     case .success(let authResults):
@@ -102,7 +102,9 @@ struct LoginView: View {
         userDocumentRef.getDocument { (document, error) in
             if let document = document, !document.exists {
                 let data: [String: Any] = [
-                    "uid": Auth.auth().currentUser?.uid ?? ""
+                    "uid": Auth.auth().currentUser?.uid ?? "",
+                    "firstName": appleIDCredential.fullName?.givenName?.description as? String ?? "",
+                    "lastName": appleIDCredential.fullName?.familyName?.description as? String ?? ""
                 ]
                 userDocumentRef.setData(data) { error in
                     if let error = error {

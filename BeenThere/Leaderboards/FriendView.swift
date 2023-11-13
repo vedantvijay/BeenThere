@@ -12,18 +12,15 @@ struct FriendView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: FriendMapViewModel
 
-    @State private var username = ""
+    let username: String
+    let firstName: String
     
     let friend: [String: Any]
     
     var body: some View {
         VStack {
             FriendMapView()
-                .ignoresSafeArea()
                 .onAppear {
-                    if let friendUsername = friend["username"] {
-                        username = friendUsername as! String
-                    }
                     if let locationDictionaries = friend["locations"] as? [[String: Any]] {
                         let locations: [Location] = locationDictionaries.compactMap { locationDict in
                             do {
@@ -42,7 +39,7 @@ struct FriendView: View {
                     dismiss()
                 }
         }
-        .navigationTitle(username)
+        .navigationTitle(firstName != "" ? firstName : "@\(username)")
     }
 }
 

@@ -195,7 +195,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         guard let boundingBox = self.boundingBox(for: self.locations) else { return }
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 
-        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
         

@@ -13,6 +13,7 @@ enum Tab {
 
 struct CustomTabView: View {
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var viewModel: SettingsViewModel
     @Binding var selection: Tab
     
     var body: some View {
@@ -29,6 +30,10 @@ struct CustomTabView: View {
 
             }
             .frame(maxWidth: .infinity)
+            
+            
+            
+            
             Button(action: {
                 selection = .feed
             }) {
@@ -56,6 +61,11 @@ struct CustomTabView: View {
             }
             .offset(y: -30) // Adjust this to move up or down
             
+            
+            
+            
+            
+            
             Button(action: {
                 selection = .leaderboards
             }) {
@@ -70,12 +80,23 @@ struct CustomTabView: View {
             Button(action: {
                 selection = .profile
             }) {
-                Image(systemName: selection == .profile ? "person.fill" : "person")
-                    .resizable()
-                    .frame(width: 25, height: 25)
-                    .padding()
-                    .foregroundColor(selection == .profile ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
-                    .offset(y: -10)
+                ZStack {
+                    Image(systemName: selection == .profile ? "person.fill" : "person")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(selection == .profile ? colorScheme == .light ? .black : .white : Color(uiColor: UIColor.lightGray))
+                    
+                    // Notification Indicator
+                    if viewModel.receivedFriendRequests.count > 0 && selection != .profile {
+//                        Circle()
+                        Image(systemName: "bell.badge.circle.fill")
+                            .foregroundColor(.red)
+                            .frame(width: 10, height: 10)
+                            .offset(x: 15, y: -15)
+                    }
+                }
+                .padding()
+                .offset(y: -10)
             }
             .frame(maxWidth: .infinity)
         }
