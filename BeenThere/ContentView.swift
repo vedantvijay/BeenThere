@@ -53,6 +53,7 @@ struct ContentView: View {
                     .environmentObject(sharedMapViewModel)
             case .profile:
                 ProfileView()
+                    .environmentObject(accountViewModel)
             }
             if !isKeyboardVisible {
                 CustomTabView(selection: $selection)

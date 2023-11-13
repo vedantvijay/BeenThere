@@ -5,10 +5,11 @@
 //  Created by Jared Jones on 10/28/23.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct LeaderboardView: View {
-    @StateObject var viewModel = SettingsViewModel()
+    @EnvironmentObject var viewModel: SettingsViewModel
     @EnvironmentObject var friendMapViewModel: FriendMapViewModel
     @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
     @State private var leaderboardScope = "friends"
@@ -24,6 +25,9 @@ struct LeaderboardView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
+                .onAppear {
+                    viewModel.updateProfileImages()
+                }
                 Spacer()
                 ScrollViewReader { proxy in
                     Form {
@@ -36,6 +40,22 @@ struct LeaderboardView: View {
                                             Text("\(index + 1).")
                                                 .bold()
                                                 .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                            
+                                            if let friendUID = friend["uid"] as? String {
+                                                if let imageUrl = viewModel.profileImageUrls[friendUID] {
+                                                    KFImage(imageUrl)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 20, height: 20)
+                                                        .clipShape(Circle())
+                                                } else {
+                                                    Image(systemName: "person.crop.circle.fill")
+                                                        .resizable()
+                                                        .frame(width: 20, height: 20)
+                                                }
+                                            }
+                                            
+                                            
                                             
                                             if let friendName = friend["username"] as? String {
                                                 Text(friendName)
@@ -71,6 +91,22 @@ struct LeaderboardView: View {
                                         Text("\(index + 1).")
                                             .bold()
                                             .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                        
+                                        if let personUID = person["uid"] as? String {
+                                            if let imageUrl = viewModel.profileImageUrls[person["uid"] as! String] {
+                                                KFImage(imageUrl)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: 20, height: 20)
+                                                    .clipShape(Circle())
+                                            } else {
+                                                Image(systemName: "person.crop.circle.fill")
+                                                    .resizable()
+                                                    .frame(width: 20, height: 20)
+                                            }
+                                        }
+                                        
+                                       
                                         
                                         if viewModel.friends.contains(where: { friend in friend["username"] as? String == personName }) || personName == viewModel.username {
                                             Text(personName)
@@ -109,6 +145,8 @@ struct LeaderboardView: View {
         .environmentObject(viewModel)
     }
 }
+
+
 //
 //#Preview {
 //    LeaderboardView()

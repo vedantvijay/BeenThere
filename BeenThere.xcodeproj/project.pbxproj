@@ -10,6 +10,9 @@
 		C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C001517C2AF53211007DA96F /* ChangeUsernameView.swift */; };
 		C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */; };
 		C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */; };
+		C04E07272B029E9A00340D58 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04E07262B029E9A00340D58 /* EditProfileView.swift */; };
+		C04E072A2B02AAF200340D58 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C04E07292B02AAF200340D58 /* Kingfisher */; };
+		C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */; };
 		C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B42AFA94E6006B1230 /* LoginView.swift */; };
 		C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */; };
 		C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C085316C2AF1E6F900EAA434 /* SharedMapView.swift */; };
@@ -100,6 +103,8 @@
 		C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		C0453EBD2AE083DF00EAD893 /* BeenThere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeenThere.entitlements; sourceTree = "<group>"; };
+		C04E07262B029E9A00340D58 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		C053C1B42AFA94E6006B1230 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateUsernameView.swift; sourceTree = "<group>"; };
 		C085316C2AF1E6F900EAA434 /* SharedMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapView.swift; sourceTree = "<group>"; };
@@ -155,6 +160,7 @@
 				C0CA21FA2AF9CA1A00F5667A /* FirebaseAuthCombine-Community in Frameworks */,
 				C0CA21FE2AF9CA1A00F5667A /* FirebaseDatabase in Frameworks */,
 				C0CA22262AF9CA2800F5667A /* MapboxMaps.xcframework in Frameworks */,
+				C04E072A2B02AAF200340D58 /* Kingfisher in Frameworks */,
 				C0CA220A2AF9CA1A00F5667A /* FirebaseFunctions in Frameworks */,
 				C0CA220E2AF9CA1A00F5667A /* FirebaseInAppMessaging-Beta in Frameworks */,
 				C0CA21E92AF9C9EA00F5667A /* AlertToast in Frameworks */,
@@ -216,6 +222,8 @@
 			children = (
 				C001517C2AF53211007DA96F /* ChangeUsernameView.swift */,
 				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
+				C04E07262B029E9A00340D58 /* EditProfileView.swift */,
+				C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -358,6 +366,7 @@
 				C0CA221B2AF9CA1A00F5667A /* FirebaseRemoteConfigSwift */,
 				C0CA221D2AF9CA1A00F5667A /* FirebaseStorage */,
 				C0CA221F2AF9CA1A00F5667A /* FirebaseStorageCombine-Community */,
+				C04E07292B02AAF200340D58 /* Kingfisher */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -390,6 +399,7 @@
 			packageReferences = (
 				C0CA21E72AF9C9EA00F5667A /* XCRemoteSwiftPackageReference "AlertToast" */,
 				C0CA21EA2AF9CA1A00F5667A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C04E07282B02AAF200340D58 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -423,6 +433,7 @@
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
 				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
+				C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
@@ -432,6 +443,7 @@
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
 				C08531712AF2923300EAA434 /* CustomTabView.swift in Sources */,
 				C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */,
+				C04E07272B029E9A00340D58 /* EditProfileView.swift in Sources */,
 				C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */,
 				C0B4C0242B0126A0006D5022 /* TemplateMapViewModel.swift in Sources */,
@@ -672,6 +684,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C04E07282B02AAF200340D58 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.10.0;
+			};
+		};
 		C0CA21E72AF9C9EA00F5667A /* XCRemoteSwiftPackageReference "AlertToast" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/elai950/AlertToast";
@@ -691,6 +711,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C04E07292B02AAF200340D58 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C04E07282B02AAF200340D58 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		C0CA21E82AF9C9EA00F5667A /* AlertToast */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C0CA21E72AF9C9EA00F5667A /* XCRemoteSwiftPackageReference "AlertToast" */;

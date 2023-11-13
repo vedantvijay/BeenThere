@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 import AuthenticationServices
 import SwiftUI
+import FirebaseStorage
 
 class SettingsViewModel: ObservableObject {
     @ObservedObject var authViewModel = AuthViewModel()
@@ -17,9 +18,15 @@ class SettingsViewModel: ObservableObject {
     @Published var usernameForUID: [String: String] = [:]
     @Published var isFetchingUsernames = false
     @Published var users: [[String: Any]] = []
-    @Published var uid = ""
+    @Published var uid = "" {
+        didSet {
+            fetchProfileImage()
+        }
+    }
     @Published var newUsername = ""
     @AppStorage("username") var username = ""
+    @AppStorage("firstName") var firstName = ""
+    @AppStorage("lastName") var lastName = ""
     @AppStorage("lowercaseUsername") var lowercaseUsername = ""
     @Published var locations: [Location] = []
     @Published var isCheckingUsername: Bool = false
@@ -27,7 +34,10 @@ class SettingsViewModel: ObservableObject {
     @Published var friends: [[String: Any]] = []
     @Published var sentFriendRequests: [String] = []
     @Published var receivedFriendRequests: [String] = []
-    
+    @Published var profileImageUrl: URL?
+    @Published var profileImageUrls: [String: URL] = [:]
+
+
     private var accountListener: ListenerRegistration?
     var listeners: [ListenerRegistration] = []
     private var db = Firestore.firestore()
@@ -70,6 +80,9 @@ class SettingsViewModel: ObservableObject {
     
     init() {
         self.setUpFirestoreListener()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.updateProfileImages()
+        }
     }
     deinit {
         accountListener?.remove()
@@ -78,6 +91,43 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    func updateProfileImages() {
+        let uids = users.compactMap { $0["uid"] as? String }
+        fetchProfileImageUrls(for: uids)
+    }
+    
+    
+    func fetchProfileImageUrls(for uids: [String]) {
+        let storageRef = Storage.storage().reference()
+        
+        for uid in uids {
+            let profileImageRef = storageRef.child("\(uid)/profile-small.jpg")
+            profileImageRef.downloadURL { [weak self] url, _ in
+                DispatchQueue.main.async {
+                    self?.profileImageUrls[uid] = url
+                }
+            }
+        }
+    }
+    
+    func fetchProfileImage() {
+            guard let uid = Auth.auth().currentUser?.uid else {
+                print("No authenticated user found")
+                return
+            }
+
+            let storageRef = Storage.storage().reference().child("\(uid)/profile.jpg")
+            storageRef.downloadURL { [weak self] url, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("Error fetching profile image URL: \(error)")
+                        self?.profileImageUrl = nil
+                    } else {
+                        self?.profileImageUrl = url
+                    }
+                }
+            }
+        }
     
     func fetchUsernamesForUIDs(uids: [String]) {
             isFetchingUsernames = true
@@ -141,7 +191,6 @@ class SettingsViewModel: ObservableObject {
                 }
                 return userData
             }
-
         }
         // Add the listener to your listeners array so you can remove it later if needed.
         listeners.append(listener)
@@ -163,7 +212,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
         
-        friendsAndMe.append(["username": self.username, "locations": myLocations])
+        friendsAndMe.append(["username": self.username, "locations": myLocations, "uid": self.uid])
         return friendsAndMe.sorted { friendA, friendB in
             let locationsCountA = (friendA["locations"] as? [[String: Any]])?.count ?? 0
             let locationsCountB = (friendB["locations"] as? [[String: Any]])?.count ?? 0
@@ -339,25 +388,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
-//    func showFriendRequestNotification(from username: String) {
-//        let content = UNMutableNotificationContent()
-//        content.title = "New Friend Request"
-//        content.body = "\(username) has sent you a friend request."
-//        content.sound = .default
-//        
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-//        
-//        UNUserNotificationCenter.current().add(request) { error in
-//            if let error = error {
-//                print("Error: \(error)")
-//            }
-//        }
-//    }
 
-
-    
     func setUpFirestoreListener() {
         guard let userID = Auth.auth().currentUser?.uid else {
             print("Error: No authenticated user found")
@@ -377,6 +408,8 @@ class SettingsViewModel: ObservableObject {
             self?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
             self?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
             self?.fetchFriendsData()
+            self?.firstName = data["firstName"] as? String ?? "first name"
+            self?.lastName = data["lastName"] as? String ?? "last name"
 
             if let locationData = data["locations"] as? [[String: Any]] {
                 self?.locations = locationData.compactMap { locationDict in
@@ -390,15 +423,6 @@ class SettingsViewModel: ObservableObject {
                     }
                 }
             }
-            
-//            if let newRequests = data["receivedFriendRequests"] as? [[String: Any]], !newRequests.isEmpty {
-//                for request in newRequests {
-//                    if let username = request["uid"] as? String {
-//                        self?.showFriendRequestNotification(from: username)
-//                    }
-//                }
-//            }
-
         }
         listenForGlobalLeaderboardUpdates()
     }
