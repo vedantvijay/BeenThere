@@ -27,6 +27,9 @@ struct LeaderboardView: View {
                 .padding()
                 .onAppear {
                     viewModel.updateProfileImages()
+                    if viewModel.users.count == 0 {
+                        viewModel.setUpFirestoreListener()
+                    }
                 }
                 Spacer()
                 ScrollViewReader { proxy in
@@ -88,13 +91,7 @@ struct LeaderboardView: View {
                                 Text("You have no friends added yet.")
                                     .foregroundColor(.gray)
                             }
-                        } 
-                        
-                        
-                        
-                        
-                        
-                        
+                        }
                         
                         else if leaderboardScope == "global" {
                             Section {
@@ -143,40 +140,6 @@ struct LeaderboardView: View {
                                                     .font(.title3)
                                             }
                                         }
-                        
-
-                                       
-                                        
-//                                        if viewModel.friends.contains(where: { friend in friend["username"] as? String == personUsername }) || personUsername == viewModel.username {
-//                                            if let personUsername = person["username"] as? String {
-//                                                if let personFirstName = person["firstName"] as? String {
-//                                                    Text(personFirstName)
-//                                                        .fontWeight(personUsername == viewModel.username ? .black : .regular)
-//                                                        .padding(.trailing, 8)
-//                                                        .font(.title2)
-//                                                }
-//                                                Text("@\(personUsername)")
-//                                                    .italic()
-//                                                    .foregroundStyle(.secondary)
-//                                            }
-//                                            
-//                                            
-//
-//                                        } else {
-//                                            if let personUsername = person["username"] as? String {
-//                                                if let personFirstName = person["firstName"] as? String {
-//                                                    Text(personFirstName)
-//                                                        .fontWeight(personUsername == viewModel.username ? .black : .regular)
-//                                                        .padding(.trailing, 8)
-//                                                        .font(.title2)
-//
-//                                                    
-//                                                }
-//                                                Text("@\(personUsername)")
-//                                                    .italic()
-//                                                    .foregroundStyle(.secondary)
-//                                            }
-//                                        }
                                         Spacer()
                                         Text("\(personLocations.count)")
                                             .foregroundStyle(.tertiary)

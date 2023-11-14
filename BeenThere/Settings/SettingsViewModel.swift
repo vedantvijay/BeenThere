@@ -80,9 +80,6 @@ class SettingsViewModel: ObservableObject {
     
     init() {
         self.setUpFirestoreListener()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.updateProfileImages()
-        }
     }
     deinit {
         accountListener?.remove()

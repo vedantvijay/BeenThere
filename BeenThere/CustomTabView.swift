@@ -14,6 +14,8 @@ enum Tab {
 struct CustomTabView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: SettingsViewModel
+//    @EnvironmentObject var friendMapViewModel: FriendMapViewModel
+//    @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
     @Binding var selection: Tab
     
     var body: some View {
