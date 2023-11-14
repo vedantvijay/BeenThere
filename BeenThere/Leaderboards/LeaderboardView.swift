@@ -31,11 +31,6 @@ struct LeaderboardView: View {
                 Spacer()
                 ScrollViewReader { proxy in
                     List {
-                        
-                        
-                        
-                        
-                        
                         if leaderboardScope == "friends" {
                             if !viewModel.sortedFriendsByLocationCount().isEmpty {
                                 ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
@@ -135,20 +130,21 @@ struct LeaderboardView: View {
                                                     .foregroundStyle(.secondary)
 
                                             }
+                                            if let friendUsername = person["username"] as? String {
+                                                if let friendFirstName = person["firstName"] as? String {
+                                                    Text(friendFirstName)
+                                                        .fontWeight(friendUID == viewModel.uid ? .black : .regular)
+                                                        .padding(.trailing, 4)
+                                                        .font(.title2)
+                                                }
+                                                Text("@\(friendUsername)")
+                                                    .italic()
+                                                    .foregroundStyle(.secondary)
+                                                    .font(.title3)
+                                            }
                                         }
                         
-                                        if let friendUsername = person["username"] as? String {
-                                            if let friendFirstName = person["firstName"] as? String {
-                                                Text(friendFirstName)
-                                                    .fontWeight(friendUsername == viewModel.username ? .black : .regular)
-                                                    .padding(.trailing, 4)
-                                                    .font(.title2)
-                                            }
-                                            Text("@\(friendUsername)")
-                                                .italic()
-                                                .foregroundStyle(.secondary)
-                                                .font(.title3)
-                                        }
+
                                        
                                         
 //                                        if viewModel.friends.contains(where: { friend in friend["username"] as? String == personUsername }) || personUsername == viewModel.username {

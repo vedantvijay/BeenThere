@@ -6,21 +6,66 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FriendView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: FriendMapViewModel
+    @EnvironmentObject var accountViewModel: SettingsViewModel
 
     let username: String
     let firstName: String
-    
     let friend: [String: Any]
     
     var body: some View {
         VStack {
+                HStack(alignment: .center) {
+                    Spacer()
+                    if let imageUrl = accountViewModel.profileImageUrls[(friend["uid"] as? String)!] {
+                        KFImage(imageUrl)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 125, height: 125)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.crop.circle")
+                            .resizable()
+                            .frame(width: 125, height: 125)
+                            .foregroundStyle(.secondary)
+                        
+                    }
+                    Spacer()
+                    VStack(spacing: 10) {
+                        if firstName != "" {
+                            Text(firstName)
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
+                        
+                        Text("@\(username)")
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                        Text("\(viewModel.locations.count) chunks")
+                            .foregroundStyle(.tertiary)
+                    }
+                    Spacer()
+                }
+                .padding()
+//                .background {
+//                    RoundedRectangle(cornerRadius: 25)
+//                        .frame(maxHeight: 150)
+//                        .padding()
+//                        .padding()
+//                }
+            Divider()
             FriendMapView()
+                .clipShape(RoundedRectangle(cornerRadius: 25))
+                .padding()
+                .padding()
+                .shadow(color: colorScheme == .light ? .secondary : .secondary, radius: 3)
                 .onAppear {
+                    
                     if let locationDictionaries = friend["locations"] as? [[String: Any]] {
                         let locations: [Location] = locationDictionaries.compactMap { locationDict in
                             do {
@@ -33,13 +78,16 @@ struct FriendView: View {
                             }
                         }
                         viewModel.locations = locations
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            viewModel.locations = locations
+                        }
                     }
                 }
                 .onDisappear {
                     dismiss()
                 }
         }
-        .navigationTitle(firstName != "" ? firstName : "@\(username)")
+//        .navigationTitle(firstName != "" ? firstName : "@\(username)")
     }
 }
 

@@ -101,7 +101,7 @@ class SettingsViewModel: ObservableObject {
         let storageRef = Storage.storage().reference()
         
         for uid in uids {
-            let profileImageRef = storageRef.child("\(uid)/profile-small.jpg")
+            let profileImageRef = storageRef.child("\(uid)/profile.jpg")
             profileImageRef.downloadURL { [weak self] url, _ in
                 DispatchQueue.main.async {
                     self?.profileImageUrls[uid] = url

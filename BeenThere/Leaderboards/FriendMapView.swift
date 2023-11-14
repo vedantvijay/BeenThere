@@ -23,5 +23,7 @@ struct FriendMapView: UIViewRepresentable {
 
     func updateUIView(_ uiView: MapView, context: Context) {
         viewModel.updateMapStyleURL()
+        viewModel.addGridlinesToMap()
+        viewModel.checkAndAddSquaresIfNeeded()
     }
 }

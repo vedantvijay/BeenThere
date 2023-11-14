@@ -35,21 +35,21 @@ struct ProfileView: View {
                             .shadow(radius: 10)
                     }
                     Spacer()
-                    VStack(spacing: 5) {
+                    VStack(spacing: 10) {
                         Text("\(viewModel.firstName) \(viewModel.lastName)")
                             .font(.title)
                             .fontWeight(.bold)
 
                         Text("@\(viewModel.username)")
-                            .font(.headline)
-                            .foregroundColor(.gray)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
 
                         Text("\(viewModel.locations.count) chunks")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.tertiary)
                     }
                     Spacer()
                 }
+                .padding()
                 Form {
                     NavigationLink {
                         EditProfileView()

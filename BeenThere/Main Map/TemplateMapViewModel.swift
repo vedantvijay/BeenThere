@@ -122,7 +122,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     1
                     UIColor.green
                     6
-                    self!.isDarkModeEnabled ? UIColor(red: 1/255, green: 50/255, blue: 32/255, alpha: 1) : UIColor(red: 213/255, green: 255/255, blue: 196/255, alpha: 1)
+                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
                 }
                 fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
