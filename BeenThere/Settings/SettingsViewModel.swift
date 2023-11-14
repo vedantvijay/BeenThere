@@ -405,8 +405,8 @@ class SettingsViewModel: ObservableObject {
             self?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
             self?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
             self?.fetchFriendsData()
-            self?.firstName = data["firstName"] as? String ?? "first name"
-            self?.lastName = data["lastName"] as? String ?? "last name"
+            self?.firstName = data["firstName"] as? String ?? ""
+            self?.lastName = data["lastName"] as? String ?? ""
 
             if let locationData = data["locations"] as? [[String: Any]] {
                 self?.locations = locationData.compactMap { locationDict in

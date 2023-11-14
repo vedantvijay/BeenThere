@@ -119,7 +119,7 @@ struct ManageFriendsView: View {
                 }
             }
        }
-        .navigationTitle(accountViewModel.username)
+        .navigationTitle("Manage Friends")
         .onAppear {
             accountViewModel.updateUsernames()
         }

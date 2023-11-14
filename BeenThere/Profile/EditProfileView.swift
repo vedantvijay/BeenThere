@@ -44,7 +44,6 @@ struct EditProfileView: View {
 
     
     var body: some View {
-        NavigationView {
             Form {
                 Section(header: Text("Profile Picture")) {
                     HStack {
@@ -147,7 +146,8 @@ struct EditProfileView: View {
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage)
             }
-        }
+            .navigationTitle("Edit Profile")
+        
     }
     
     var isChangeButtonDisabled: Bool {

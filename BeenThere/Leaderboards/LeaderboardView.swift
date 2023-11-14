@@ -43,7 +43,7 @@ struct LeaderboardView: View {
                                         HStack {
                                             Text("\(index + 1).")
                                                 .bold()
-                                                .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                                .padding(.trailing, 3) // Add some padding to separate the rank from the name
                                                 .font(.title2)
 
                                             
@@ -52,24 +52,29 @@ struct LeaderboardView: View {
                                                     KFImage(imageUrl)
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 30, height: 30)
                                                         .clipShape(Circle())
+                                                        .frame(width: 30, height: 30)
+                                                        .padding(.trailing, 10) // Add some padding to separate the rank from the name
+
                                                 } else {
                                                     Image(systemName: "person.crop.circle")
                                                         .resizable()
                                                         .frame(width: 30, height: 30)
                                                         .foregroundStyle(.secondary)
+                                                        .padding(.trailing, 5) // Add some padding to separate the rank from the name
+
 
                                                 }
                                             }
                             
                                             if let friendUsername = friend["username"] as? String {
                                                 if let friendFirstName = friend["firstName"] as? String {
-                                                    Text(friendFirstName)
-                                                        .fontWeight(friendUsername == viewModel.username ? .black : .regular)
-                                                        .padding(.trailing, 4)
-                                                        .font(.title2)
-
+                                                    if friendFirstName != "" {
+                                                        Text(friendFirstName)
+                                                            .fontWeight(friendUsername == viewModel.username ? .bold : .regular)
+                                                            .padding(.trailing, 4)
+                                                            .font(.title2)
+                                                    }
                                                     
                                                 }
                                                 Text("@\(friendUsername)")
@@ -109,7 +114,7 @@ struct LeaderboardView: View {
                                         // Display the rank
                                         Text("\(index + 1).")
                                             .bold()
-                                            .padding(.trailing, 8) // Add some padding to separate the rank from the name
+                                            .padding(.trailing, 5) // Add some padding to separate the rank from the name
                                         
                                         
                                         
@@ -120,19 +125,25 @@ struct LeaderboardView: View {
                                                     .aspectRatio(contentMode: .fill)
                                                     .frame(width: 30, height: 30)
                                                     .clipShape(Circle())
+                                                    .padding(.trailing, 10) // Add some padding to separate the rank from the name
+
                                             } else {
                                                 Image(systemName: "person.crop.circle")
                                                     .resizable()
                                                     .frame(width: 30, height: 30)
                                                     .foregroundStyle(.secondary)
+                                                    .padding(.trailing, 5) // Add some padding to separate the rank from the name
 
                                             }
+                                            
                                             if let friendUsername = person["username"] as? String {
                                                 if let friendFirstName = person["firstName"] as? String {
-                                                    Text(friendFirstName)
-                                                        .fontWeight(friendUID == viewModel.uid ? .black : .regular)
-                                                        .padding(.trailing, 4)
-                                                        .font(.title2)
+                                                    if friendFirstName != "" {
+                                                        Text(friendFirstName)
+                                                            .fontWeight(friendUID == viewModel.uid ? .bold : .regular)
+                                                            .padding(.trailing, 4)
+                                                            .font(.title2)
+                                                    }
                                                 }
                                                 Text("@\(friendUsername)")
                                                     .italic()

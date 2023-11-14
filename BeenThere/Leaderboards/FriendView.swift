@@ -28,26 +28,27 @@ struct FriendView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 125, height: 125)
                             .clipShape(Circle())
+
                     } else {
                         Image(systemName: "person.crop.circle")
                             .resizable()
                             .frame(width: 125, height: 125)
                             .foregroundStyle(.secondary)
-                        
                     }
                     Spacer()
                     VStack(spacing: 10) {
                         if firstName != "" {
                             Text(firstName)
-                                .font(.title)
+                                .font(.largeTitle)
                                 .fontWeight(.bold)
                         }
                         
                         Text("@\(username)")
-                            .font(.title3)
+                            .font(.title)
                             .foregroundStyle(.secondary)
                         Text("\(viewModel.locations.count) chunks")
                             .foregroundStyle(.tertiary)
+                            .font(.title3)
                     }
                     Spacer()
                 }

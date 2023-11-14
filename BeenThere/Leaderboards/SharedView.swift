@@ -37,7 +37,6 @@ struct SharedView: View {
     
     var body: some View {
         SharedMapView()
-            .ignoresSafeArea()
             .onAppear {
                 viewModel.updateMapStyleURL()
                 viewModel.locations = userLocations

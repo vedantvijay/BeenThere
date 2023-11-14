@@ -29,8 +29,6 @@
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
 		C0C808DC2ADD83440070E679 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DB2ADD83440070E679 /* Assets.xcassets */; };
 		C0C808DF2ADD83440070E679 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0C808DE2ADD83440070E679 /* Preview Assets.xcassets */; };
-		C0C808E72ADD855C0070E679 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808E62ADD855C0070E679 /* MapView.swift */; };
-		C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808E82ADD85670070E679 /* MapViewModel.swift */; };
 		C0C808EE2ADD8A460070E679 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */; };
 		C0CA21E92AF9C9EA00F5667A /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C0CA21E82AF9C9EA00F5667A /* AlertToast */; };
 		C0CA21EC2AF9CA1A00F5667A /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C0CA21EB2AF9CA1A00F5667A /* FirebaseAnalytics */; };
@@ -123,8 +121,6 @@
 		C0C808DB2ADD83440070E679 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C0C808DE2ADD83440070E679 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C0C808E52ADD84AE0070E679 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		C0C808E62ADD855C0070E679 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-		C0C808E82ADD85670070E679 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		C0C808ED2ADD8A450070E679 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C0CA21DD2AF9C9D800F5667A /* MapboxCoreMaps.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = MapboxCoreMaps.xcframework; sourceTree = "<group>"; };
 		C0CA21DE2AF9C9D800F5667A /* Turf.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Turf.xcframework; sourceTree = "<group>"; };
@@ -254,8 +250,6 @@
 		C044EF092AED8A0E00AEC9E2 /* Trash */ = {
 			isa = PBXGroup;
 			children = (
-				C0C808E82ADD85670070E679 /* MapViewModel.swift */,
-				C0C808E62ADD855C0070E679 /* MapView.swift */,
 			);
 			path = Trash;
 			sourceTree = "<group>";
@@ -435,7 +429,6 @@
 				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
 				C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
-				C0C808E72ADD855C0070E679 /* MapView.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
 				C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* SettingsViewModel.swift in Sources */,
@@ -452,7 +445,6 @@
 				C0949F022AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift in Sources */,
 				C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */,
 				C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */,
-				C0C808E92ADD85670070E679 /* MapViewModel.swift in Sources */,
 				C0949F042AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift in Sources */,
 				C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */,
 				C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */,
@@ -589,7 +581,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -628,7 +620,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"BeenThere/Preview Content\"";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;

@@ -37,14 +37,14 @@ class EditProfileViewModel: ObservableObject {
             // Uploading profile images to Firebase Storage
             if let image = profileImage {
                 group.enter()
-                uploadProfileImage(image, atPath: "\(uid)/profile.jpg", resolution: 500) {
+                uploadProfileImage(image, atPath: "\(uid)/profile.jpg", resolution: 200) {
                     group.leave()
                 }
 
-                group.enter()
-                uploadProfileImage(image, atPath: "\(uid)/profile-small.jpg", resolution: 50) {
-                    group.leave()
-                }
+//                group.enter()
+//                uploadProfileImage(image, atPath: "\(uid)/profile-small.jpg", resolution: 50) {
+//                    group.leave()
+//                }
             }
 
             // Call completion handler after all tasks are finished
@@ -55,7 +55,7 @@ class EditProfileViewModel: ObservableObject {
 
         private func uploadProfileImage(_ image: UIImage, atPath path: String, resolution: CGFloat, completion: @escaping () -> Void) {
             let resizedImage = resizeImage(image: image, targetSize: CGSize(width: resolution, height: resolution))
-            guard let imageData = resizedImage.jpegData(compressionQuality: 0.8) else {
+            guard let imageData = resizedImage.jpegData(compressionQuality: 1) else {
                 completion()
                 return
             }

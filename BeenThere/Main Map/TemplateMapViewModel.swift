@@ -33,7 +33,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     var retryCount = 0
     var lastCameraCenter: CLLocationCoordinate2D?
     var lastCameraZoom: CGFloat?
-    var lastCameraBearing: CLLocationDirection?
     var lastCameraPitch: CGFloat?
     var locationManager = CLLocationManager()
     var currentSquares = Set<String>()
@@ -61,11 +60,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             guard let cameraState = self?.mapView?.cameraState else { return }
             self?.lastCameraCenter = cameraState.center
             self?.lastCameraZoom = cameraState.zoom
-            self?.lastCameraBearing = cameraState.bearing
             self?.lastCameraPitch = cameraState.pitch
         }
-        if let center = lastCameraCenter, let zoom = lastCameraZoom, let bearing = lastCameraBearing, let pitch = lastCameraPitch {
-            let lastState = CameraOptions(center: center, zoom: zoom, bearing: bearing, pitch: pitch)
+        if let center = lastCameraCenter, let zoom = lastCameraZoom, let pitch = lastCameraPitch {
+            let lastState = CameraOptions(center: center, zoom: zoom, pitch: pitch)
             mapView?.camera.ease(to: lastState, duration: 0.5)
         } else {
             mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
@@ -74,8 +72,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
-        addGridlinesToMap()
     }
+    
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
@@ -201,7 +199,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         
         self.lastCameraCenter = cameraOptions.center
         self.lastCameraZoom = cameraOptions.zoom
-        self.lastCameraBearing = cameraOptions.bearing
         self.lastCameraPitch = cameraOptions.pitch
     }
     
@@ -351,6 +348,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    func layerExists(withId id: String) -> Bool {
+            return mapView?.mapboxMap.style.layerExists(withId: id) ?? false
+        }
     
 }
 

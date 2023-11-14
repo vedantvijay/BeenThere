@@ -14,8 +14,9 @@ enum Tab {
 struct CustomTabView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: SettingsViewModel
-//    @EnvironmentObject var friendMapViewModel: FriendMapViewModel
-//    @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
+    @EnvironmentObject var mainMapViewModel: MainMapViewModel
+    @EnvironmentObject var friendMapViewModel: FriendMapViewModel
+    @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
     @Binding var selection: Tab
     
     var body: some View {
@@ -53,6 +54,9 @@ struct CustomTabView: View {
                     .frame(width: 66, height: 66)
                     .foregroundStyle(Material.bar)
                 Button(action: {
+                    if selection == .map {
+                        mainMapViewModel.adjustMapViewToFitSquares()
+                    }
                     selection = .map
                 }) {
                     Image(systemName: selection == .map ? "safari.fill" : "safari")

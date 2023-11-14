@@ -46,7 +46,7 @@ struct ContentView: View {
                
                 FeedView()
             case .map:
-                MainMapView(viewModel: mainMapViewModel)
+                    MainMapView(viewModel: mainMapViewModel)
             case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
@@ -58,6 +58,10 @@ struct ContentView: View {
             if !isKeyboardVisible {
                 CustomTabView(selection: $selection)
                     .padding(.bottom, 10)
+                    .environmentObject(mainMapViewModel)
+                    .environmentObject(friendMapViewModel)
+                    .environmentObject(sharedMapViewModel)
+                    .environmentObject(accountViewModel)
             }
 
         }
