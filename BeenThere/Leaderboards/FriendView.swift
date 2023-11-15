@@ -60,6 +60,7 @@ struct FriendView: View {
 //                        .padding()
 //                }
             Divider()
+                .padding(.horizontal)
             FriendMapView()
                 .clipShape(RoundedRectangle(cornerRadius: 25))
                 .padding()

@@ -188,6 +188,7 @@ class SettingsViewModel: ObservableObject {
                 }
                 return userData
             }
+            self!.updateProfileImages()
         }
         // Add the listener to your listeners array so you can remove it later if needed.
         listeners.append(listener)
@@ -220,7 +221,6 @@ class SettingsViewModel: ObservableObject {
 
     
     func fetchFriendsData() {
-        print("LOG: fetching friends data")
         print(friends)
         for friend in friends {
             print(friend)

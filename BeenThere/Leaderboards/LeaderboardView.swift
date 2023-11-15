@@ -25,8 +25,10 @@ struct LeaderboardView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                .onAppear {
+                .onDisappear {
                     viewModel.updateProfileImages()
+                }
+                .onAppear {
                     if viewModel.users.count == 0 {
                         viewModel.setUpFirestoreListener()
                     }
@@ -53,13 +55,13 @@ struct LeaderboardView: View {
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
                                                         .clipShape(Circle())
-                                                        .frame(width: 30, height: 30)
+                                                        .frame(width: 50, height: 50)
                                                         .padding(.trailing, 10) // Add some padding to separate the rank from the name
 
                                                 } else {
                                                     Image(systemName: "person.crop.circle")
                                                         .resizable()
-                                                        .frame(width: 30, height: 30)
+                                                        .frame(width: 50, height: 50)
                                                         .foregroundStyle(.secondary)
                                                         .padding(.trailing, 5) // Add some padding to separate the rank from the name
 
@@ -123,14 +125,14 @@ struct LeaderboardView: View {
                                                 KFImage(imageUrl)
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
-                                                    .frame(width: 30, height: 30)
+                                                    .frame(width: 50, height: 50)
                                                     .clipShape(Circle())
                                                     .padding(.trailing, 10) // Add some padding to separate the rank from the name
 
                                             } else {
                                                 Image(systemName: "person.crop.circle")
                                                     .resizable()
-                                                    .frame(width: 30, height: 30)
+                                                    .frame(width: 50, height: 50)
                                                     .foregroundStyle(.secondary)
                                                     .padding(.trailing, 5) // Add some padding to separate the rank from the name
 

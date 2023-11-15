@@ -106,7 +106,6 @@ struct CustomTabView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        
     }
 }
 
