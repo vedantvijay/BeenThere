@@ -70,18 +70,20 @@ struct LeaderboardView: View {
                                             }
                             
                                             if let friendUsername = friend["username"] as? String {
-                                                if let friendFirstName = friend["firstName"] as? String {
+                                                if let friendFirstName = friend["firstName"] as? String, let friendLastName = friend["lastName"] as? String {
                                                     if friendFirstName != "" {
-                                                        Text(friendFirstName)
+                                                        Text("\(friendFirstName) \(friendLastName)")
                                                             .fontWeight(friendUsername == viewModel.username ? .bold : .regular)
                                                             .padding(.trailing, 4)
                                                             .font(.title2)
                                                     }
                                                     
+                                                } else {
+                                                    Text("@\(friendUsername)")
+                                                        .italic()
+                                                        .foregroundStyle(.secondary)
                                                 }
-                                                Text("@\(friendUsername)")
-                                                    .italic()
-                                                    .foregroundStyle(.secondary)
+                                                
                                             }
                                             
                                             Spacer()
@@ -127,30 +129,28 @@ struct LeaderboardView: View {
                                                     .aspectRatio(contentMode: .fill)
                                                     .frame(width: 50, height: 50)
                                                     .clipShape(Circle())
-                                                    .padding(.trailing, 10) // Add some padding to separate the rank from the name
-
+                                                    .padding(.trailing, 10)
                                             } else {
                                                 Image(systemName: "person.crop.circle")
                                                     .resizable()
                                                     .frame(width: 50, height: 50)
                                                     .foregroundStyle(.secondary)
-                                                    .padding(.trailing, 5) // Add some padding to separate the rank from the name
+                                                    .padding(.trailing, 5)
 
                                             }
                                             
                                             if let friendUsername = person["username"] as? String {
-                                                if let friendFirstName = person["firstName"] as? String {
-                                                    if friendFirstName != "" {
-                                                        Text(friendFirstName)
+                                                if let personFirstName = person["firstName"] as? String {
+                                                    if personFirstName != "" {
+                                                        Text(personFirstName)
                                                             .fontWeight(friendUID == viewModel.uid ? .bold : .regular)
                                                             .padding(.trailing, 4)
-                                                            .font(.title2)
+                                                    } else {
+                                                        Text("@\(friendUsername)")
+                                                            .italic()
+                                                            .foregroundStyle(.secondary)
                                                     }
                                                 }
-                                                Text("@\(friendUsername)")
-                                                    .italic()
-                                                    .foregroundStyle(.secondary)
-                                                    .font(.title3)
                                             }
                                         }
                                         Spacer()

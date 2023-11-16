@@ -28,19 +28,31 @@ struct EditProfileView: View {
     
     private let debounceInterval = 0.5
     
-    var isDisabled: Bool {
-            if firstName.isEmpty || lastName.isEmpty || newUsername.isEmpty {
-                return true // Disable if any essential field is empty
-            }
-
-            if isChangeButtonDisabled {
-                return true // Disable if any checks are ongoing or failed
-            }
-
-            // Enable only if all conditions are satisfied
-            return profileImage == nil && firstName == accountViewModel.firstName &&
-                   lastName == accountViewModel.lastName && newUsername == accountViewModel.username
+    var isFirstNameValid: Bool {
+            // Regex for first name: allow letters, hyphens, apostrophes, up to 50 characters
+            let regex = "^[a-zA-Z\\-\\']{1,20}$"
+            return firstName.range(of: regex, options: .regularExpression) != nil
         }
+
+        var isLastNameValid: Bool {
+            // Regex for last name: allow letters, hyphens, apostrophes, up to 50 characters
+            let regex = "^[a-zA-Z\\-\\']{1,20}$"
+            return lastName.range(of: regex, options: .regularExpression) != nil
+        }
+    
+    var isDisabled: Bool {
+        if !isFirstNameValid || !isLastNameValid || newUsername.isEmpty {
+            return true // Disable if any essential field is invalid or empty
+        }
+        
+        if isChangeButtonDisabled {
+            return true // Disable if any checks are ongoing or failed
+        }
+        
+        // Enable only if all conditions are satisfied
+        return profileImage == nil && firstName == accountViewModel.firstName &&
+        lastName == accountViewModel.lastName && newUsername == accountViewModel.username
+    }
 
     
     var body: some View {
