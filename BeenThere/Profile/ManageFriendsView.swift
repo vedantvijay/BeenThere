@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AlertToast
+import Kingfisher
 
 struct ManageFriendsView: View {
     @Environment(\.dismiss) var dismiss
@@ -17,38 +18,37 @@ struct ManageFriendsView: View {
     
     var body: some View {
         List {
-           Section {
-               HStack {
-                   TextField("Add Friend", text: $newFriendUsername)
-                       .autocapitalization(.none)
-                       .disableAutocorrection(true)
-                       .foregroundColor(.gray)
-                       .fontWeight(.black)
-                       .onChange(of: accountViewModel.receivedFriendRequests.count) {
-                           print("LOG: Changed")
-                       }
-                   Button("Add") {
-                       viewModel.sendFriendRequest(friendUsername: newFriendUsername)
-                       newFriendUsername = ""
-                   }
-                   .buttonStyle(.bordered)
-                   .tint(.green)
-                   .fontWeight(.black)
-                   .disabled(newFriendUsername.count < 4 || newFriendUsername.count > 15 || newFriendUsername.contains(" "))
-               }
-               .onTapGesture {
-                   newFriendUsername = ""
-               }
-           }
+            Section {
+                HStack {
+                    TextField("Add Friend", text: $newFriendUsername)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .foregroundColor(.gray)
+                        .fontWeight(.black)
+                        .onChange(of: accountViewModel.receivedFriendRequests.count) {
+                            print("LOG: Changed")
+                        }
+                    Button("Add") {
+                        viewModel.sendFriendRequest(friendUsername: newFriendUsername)
+                        newFriendUsername = ""
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+                    .fontWeight(.black)
+                    .disabled(newFriendUsername.count < 4 || newFriendUsername.count > 15 || newFriendUsername.contains(" "))
+                }
+                .onTapGesture {
+                    newFriendUsername = ""
+                }
+            }
             if !accountViewModel.sentFriendRequests.isEmpty {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
                         HStack {
                             let uid = accountViewModel.sentFriendRequests[index]
                             if let username = accountViewModel.usernameForUID[uid] {
-                                Text(username)
+                                Text("@\(username)")
                                     .foregroundColor(.gray)
-                                    .fontWeight(.black)
                                 
                                 Spacer()
                                 Button("Cancel") {
@@ -64,7 +64,7 @@ struct ManageFriendsView: View {
                     }
                 }
             }
-
+            
             if !accountViewModel.receivedFriendRequests.isEmpty {
                 Section("Received") {
                     if accountViewModel.isFetchingUsernames {
@@ -74,9 +74,8 @@ struct ManageFriendsView: View {
                             HStack {
                                 let uid = accountViewModel.receivedFriendRequests[index]
                                 if let username = accountViewModel.usernameForUID[uid] {
-                                    Text(username)
+                                    Text("@\(username)")
                                         .foregroundColor(.gray)
-                                        .fontWeight(.black)
                                     
                                     Spacer()
                                     
@@ -103,20 +102,49 @@ struct ManageFriendsView: View {
                     ForEach(accountViewModel.friends.indices, id: \.self) { index in
                         HStack {
                             if let uid = accountViewModel.friends[index]["uid"] as? String {
-                                if let username = accountViewModel.friends[index]["username"] as? String {
-                                    Text(username)
-                                        .fontWeight(.black)
-                                    Spacer()
-                                    Button("Unfriend") {
-                                        viewModel.unfriend(friendUID: uid)
-                                    }
-                                    .tint(.red)
-                                    .buttonStyle(.bordered)
+                                // Display the user's photo if available
+                                if let imageUrl = accountViewModel.profileImageUrls[uid] {
+                                    KFImage(imageUrl)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .clipShape(Circle())
+                                        .frame(width: 50, height: 50)
+                                        .padding(.trailing, 10)
+                                } else {
+                                    Image(systemName: "person.crop.circle")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.trailing, 10)
+
                                 }
+                                
+                                // Display the first name if available, otherwise username
+//                                let displayName = (accountViewModel.friends[index]["firstName"] as? String) ?? "@\((accountViewModel.friends[index]["username"] as? String) ?? "Unknown")"
+                                if let username = accountViewModel.friends[index]["username"] as? String {
+                                    if let firstName = accountViewModel.friends[index]["firstName"] as? String {
+                                        Text(firstName)
+                                    } else {
+                                        Text("@\(username)")
+                                            .italic()
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    
+                                }
+//                                Text(displayName)
+//                                    .fontWeight(.black)
+                                
+                                Spacer()
+                                Button("Unfriend") {
+                                    viewModel.unfriend(friendUID: uid)
+                                }
+                                .tint(.red)
+                                .buttonStyle(.bordered)
                             }
                         }
                     }
                 }
+
             }
        }
         .navigationTitle("Manage Friends")

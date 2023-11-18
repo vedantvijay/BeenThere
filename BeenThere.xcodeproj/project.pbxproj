@@ -207,8 +207,6 @@
 				C0D2A9072AE585CB006326C1 /* SettingsView.swift */,
 				C0D2A9092AE58EF5006326C1 /* SettingsViewModel.swift */,
 				C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */,
-				C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */,
-				C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -216,6 +214,8 @@
 		C0245CCE2AF947D100C7CD4F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */,
+				C0949F012AE5BD5C006EE5D2 /* ManageFriendsViewModel.swift */,
 				C001517C2AF53211007DA96F /* ChangeUsernameView.swift */,
 				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
 				C04E07262B029E9A00340D58 /* EditProfileView.swift */,
