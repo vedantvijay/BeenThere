@@ -46,7 +46,17 @@ struct ContentView: View {
                
                 FeedView()
             case .map:
+                ZStack {
                     MainMapView(viewModel: mainMapViewModel)
+                    Button {
+                        showSettingsAlert = true
+                    } label: {
+                        Image(systemName: "location.slash.circle.fill")
+                            .padding([.top, .trailing])
+                            .tint(.red)
+                    }
+                }
+                    
             case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
