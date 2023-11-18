@@ -12,6 +12,11 @@ import SwiftUI
 import FirebaseStorage
 
 class SettingsViewModel: ObservableObject {
+    
+    static let sharedMain = SettingsViewModel()
+    static let sharedFriend = SettingsViewModel()
+    static let sharedShared = SettingsViewModel()
+    
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
     @Published var usernameChanged = false
@@ -28,7 +33,9 @@ class SettingsViewModel: ObservableObject {
     @AppStorage("firstName") var firstName = ""
     @AppStorage("lastName") var lastName = ""
     @AppStorage("lowercaseUsername") var lowercaseUsername = ""
+    
     @Published var locations: [Location] = []
+    
     @Published var isCheckingUsername: Bool = false
     @Published var isUsernameTaken: Bool = false
     @Published var friends: [[String: Any]] = []
@@ -36,7 +43,6 @@ class SettingsViewModel: ObservableObject {
     @Published var receivedFriendRequests: [String] = []
     @Published var profileImageUrl: URL?
     @Published var profileImageUrls: [String: URL] = [:]
-
 
     private var accountListener: ListenerRegistration?
     var listeners: [ListenerRegistration] = []

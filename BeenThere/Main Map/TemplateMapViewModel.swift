@@ -10,6 +10,7 @@ import MapboxMaps
 import CoreLocation
 import FirebaseAuth
 import Firebase
+import Combine
 import SwiftUI
 
 class TemplateMapViewModel: NSObject, ObservableObject {
@@ -39,20 +40,31 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     var db = Firestore.firestore()
     var locationsListener: ListenerRegistration?
     
+    var accountViewModel: SettingsViewModel?
+    var cancellable: AnyCancellable?
+    
 
-    override init() {
+    init(accountViewModel: SettingsViewModel) {
         super.init()
+        self.accountViewModel = accountViewModel
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
-//        locationManager.distanceFilter = 5
         locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
+        observeLocations()
     }
     deinit {
         locationsListener?.remove()
     }
+    
+    func observeLocations() {
+            cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
+                self?.locations = newLocations
+                // Any additional logic you need to perform when locations change.
+            }
+        }
         
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
@@ -299,15 +311,19 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let lowLongitude = floor(longitude / increment) * increment
         let highLongitude = lowLongitude + increment
 
-        let result = locations.filter {
-                $0.lowLatitude <= latitude && $0.highLatitude > latitude &&
-                $0.lowLongitude <= longitude && $0.highLongitude > longitude
-            }
+        let locationExists = locations.contains { existingLocation in
+            existingLocation.lowLatitude == lowLatitude &&
+            existingLocation.highLatitude == highLatitude &&
+            existingLocation.lowLongitude == lowLongitude &&
+            existingLocation.highLongitude == highLongitude
+        }
 
-        if result.isEmpty {
-            self.saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
+        if !locationExists {
+            print("LOG: Saving to firestore")
+            saveLocationToFirestore(lowLat: lowLatitude, highLat: highLatitude, lowLong: lowLongitude, highLong: highLongitude)
         }
     }
+
 
     func saveLocationToFirestore(lowLat: Double, highLat: Double, lowLong: Double, highLong: Double) {
         let locationData: [String: Any] = [
@@ -360,7 +376,6 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("LOG: Test")
         if let newLocation = locations.last {
             checkBeenThere(location: newLocation)
         }

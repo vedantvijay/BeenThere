@@ -14,8 +14,8 @@ import SwiftUI
 
 class MainMapViewModel: TemplateMapViewModel {
     
-    override init() {
-        super.init()
+    init() {
+        super.init(accountViewModel: SettingsViewModel.sharedMain)
         setUpFirestoreListener()
     }
     

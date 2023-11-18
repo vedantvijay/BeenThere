@@ -29,6 +29,9 @@ struct LeaderboardView: View {
                     viewModel.updateProfileImages()
                 }
                 .onAppear {
+//                    if viewModel.listeners.isEmpty {
+//                        viewModel.setUpFirestoreListener()
+//                    }
                     if viewModel.users.count == 0 {
                         viewModel.setUpFirestoreListener()
                     }

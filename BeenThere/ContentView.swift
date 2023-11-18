@@ -14,8 +14,8 @@ struct ContentView: View {
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject var accountViewModel = SettingsViewModel()
-    @StateObject var friendMapViewModel = FriendMapViewModel()
-    @StateObject var sharedMapViewModel = SharedMapViewModel()
+    @StateObject var friendMapViewModel = FriendMapViewModel(accountViewModel: SettingsViewModel.sharedFriend)
+    @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: SettingsViewModel.sharedShared)
     @StateObject private var mainMapViewModel = MainMapViewModel()
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
@@ -46,17 +46,24 @@ struct ContentView: View {
                
                 FeedView()
             case .map:
-                ZStack {
+                ZStack(alignment: .topTrailing) {
                     MainMapView(viewModel: mainMapViewModel)
-                    Button {
-                        showSettingsAlert = true
-                    } label: {
-                        Image(systemName: "location.slash.circle.fill")
-                            .padding([.top, .trailing])
-                            .tint(.red)
+                    if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
+                        Button {
+                            showSettingsAlert = true
+                        } label: {
+                            Image(systemName: "location.slash.circle.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .padding([.top, .trailing])
+                        .tint(.red)
+
                     }
                 }
-                    
+                .onChange(of: locationManagerDelegate.authorizationStatus) {
+                    self.authorizationStatus = locationManagerDelegate.authorizationStatus
+                }
+                
             case .leaderboards:
                 LeaderboardView()
                     .environmentObject(friendMapViewModel)
@@ -86,6 +93,9 @@ struct ContentView: View {
                 }),
                 secondaryButton: .cancel()
             )
+        }
+        .onChange(of: accountViewModel.locations.count) {
+            mainMapViewModel.locations = accountViewModel.locations
         }
         .onChange(of: colorScheme) {
             if colorScheme == .light {

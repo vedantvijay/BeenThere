@@ -9,6 +9,7 @@ import SwiftUI
 import MapboxMaps
 
 struct MainMapView: UIViewRepresentable {
+    @EnvironmentObject var accountViewModel: SettingsViewModel
     @StateObject var viewModel = MainMapViewModel()
     @Environment(\.colorScheme) var colorScheme
 
@@ -30,7 +31,8 @@ struct MainMapView: UIViewRepresentable {
         if uiView.mapboxMap.style.uri != newStyleURI {
             uiView.mapboxMap.style.uri = newStyleURI
         }
-
+        
+        
         // Defer other updates until the style is loaded.
         uiView.mapboxMap.onNext(event: .styleLoaded) { _ in
             viewModel.addGridlinesToMap()
