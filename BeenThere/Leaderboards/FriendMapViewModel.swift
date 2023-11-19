@@ -13,8 +13,6 @@ import Firebase
 import SwiftUI
 
 class FriendMapViewModel: TemplateMapViewModel {
-    // See TemplateMapViewModel
-    
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
-
+    override func observeLocations() { }
 }

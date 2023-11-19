@@ -15,7 +15,7 @@ import SwiftUI
 class SharedMapViewModel: TemplateMapViewModel {
         
     override func adjustMapViewToFitSquares() { }
-    
+    override func observeLocations() { }
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
 
     
