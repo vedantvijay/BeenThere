@@ -43,8 +43,7 @@ struct ProfileView: View {
                         Text("@\(viewModel.username)")
                             .font(.title3)
                             .foregroundStyle(.secondary)
-
-                        Text("\(viewModel.locations.count) chunks")
+                        Text(viewModel.locations.count == 1 ? "\(viewModel.locations.count) chunk" : "\(viewModel.locations.count) chunks")
                             .foregroundStyle(.tertiary)
                     }
                     Spacer()
