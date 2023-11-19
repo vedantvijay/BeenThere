@@ -46,7 +46,7 @@ struct FriendView: View {
                         Text("@\(username)")
                             .font(.title)
                             .foregroundStyle(.secondary)
-                        Text("\(viewModel.locations.count) chunks")
+                        Text(viewModel.locations.count == 1 ? "\(viewModel.locations.count) chunk" : "\(viewModel.locations.count) chunks")
                             .foregroundStyle(.tertiary)
                             .font(.title3)
                     }

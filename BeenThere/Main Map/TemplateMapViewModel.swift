@@ -54,6 +54,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
         observeLocations()
+        accountViewModel.setUpFirestoreListener()
+//        setUpFirestoreListener()
     }
     deinit {
         locationsListener?.remove()
@@ -62,9 +64,37 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func observeLocations() {
             cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
                 self?.locations = newLocations
+                print("LOG: I tried")
                 // Any additional logic you need to perform when locations change.
             }
         }
+    
+//    func setUpFirestoreListener() {
+//        guard let userID = Auth.auth().currentUser?.uid else {
+//            print("Error: No authenticated user found")
+//            return
+//        }
+//        
+//        locationsListener = db.collection("users").document(userID).addSnapshotListener { (documentSnapshot, error) in
+//            guard let data = documentSnapshot?.data() else {
+//                print("No data in document")
+//                return
+//            }
+//            
+//            if let locationData = data["locations"] as? [[String: Any]] {
+//                self.locations = locationData.compactMap { locationDict in
+//                    do {
+//                        let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
+//                        let location = try JSONDecoder().decode(Location.self, from: jsonData)
+//                        return location
+//                    } catch {
+//                        print("Error decoding location: \(error)")
+//                        return nil
+//                    }
+//                }
+//            }
+//        }
+//    }
         
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
@@ -96,6 +126,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     
     func addSquaresToMap(locations: [Location]) {
+        print("LOG: step 3")
         guard let mapView = mapView else { return }
 
         var features = [Feature]()
@@ -114,15 +145,28 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             features.append(feature)
         }
         
+        let sourceId = "square-source"
+        let layerId = "square-fill-layer"
         var source = GeoJSONSource()
+        let featureCollection = FeatureCollection(features: features)
+
         source.data = .featureCollection(FeatureCollection(features: features))
         
         let setupLayers = { [weak self] in
             do {
-                try mapView.mapboxMap.style.addSource(source, id: "square-source")
-                
-                var fillLayer = FillLayer(id: "square-fill-layer")
-                fillLayer.source = "square-source"
+                // Check if the source already exists
+                if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
+                            // Update the existing source with new data
+                            try mapView.mapboxMap.style.updateGeoJSONSource(withId: sourceId, geoJSON: .featureCollection(featureCollection))
+                        } else {
+                            // Create a new source
+                            var source = GeoJSONSource()
+                            source.data = .featureCollection(featureCollection)
+                            try mapView.mapboxMap.style.addSource(source, id: sourceId)
+                        }
+                // Setup the fill layer
+                var fillLayer = FillLayer(id: layerId)
+                fillLayer.source = sourceId
 
                 let fillColorExpression = Exp(.interpolate) {
                     Exp(.linear)
@@ -136,13 +180,22 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 }
                 fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
-                
-                let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
 
-                if let landLayerId = landLayerId {
-                    try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
+                // Check if the layer already exists
+                if mapView.mapboxMap.style.layerExists(withId: layerId) {
+                    try mapView.mapboxMap.style.updateLayer(withId: layerId, type: FillLayer.self) { layer in
+                        layer.fillColor = fillLayer.fillColor
+                        layer.fillOpacity = fillLayer.fillOpacity
+                        // Update other properties if needed
+                    }
                 } else {
-                    try mapView.mapboxMap.style.addLayer(fillLayer)
+                    let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
+
+                    if let landLayerId = landLayerId {
+                        try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
+                    } else {
+                        try mapView.mapboxMap.style.addLayer(fillLayer)
+                    }
                 }
 
                 self?.currentSquares = Set(features.compactMap { feature in
@@ -151,14 +204,14 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     }
                     return nil
                 })
+                print("LOG: step 4")
+                self?.adjustMapViewToFitSquares()
 
             } catch {
-                print("Failed to add squares to the map: \(error)")
+                print("Failed to add or update squares on the map: \(error)")
             }
-            self?.adjustMapViewToFitSquares()
         }
 
-        
         if mapView.mapboxMap.style.isLoaded {
             setupLayers()
         } else {
@@ -167,15 +220,18 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             }
         }
     }
+
     
     func checkAndAddSquaresIfNeeded() {
-        if !areSquaresAdded() {
+        print("LOG: step 1")
+        if areSquaresAdded() {
+            print("LOG: step 2")
             addSquaresToMap(locations: locations)
         }
     }
 
     private func areSquaresAdded() -> Bool {
-        return locations.count < 1
+        return locations.count >= 1
     }
     
     func boundingBox(for locations: [Location]) -> (southWest: CLLocationCoordinate2D, northEast: CLLocationCoordinate2D)? {

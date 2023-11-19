@@ -9,8 +9,8 @@ import SwiftUI
 import MapboxMaps
 
 struct MainMapView: UIViewRepresentable {
-    @EnvironmentObject var accountViewModel: SettingsViewModel
-    @StateObject var viewModel = MainMapViewModel()
+//    @EnvironmentObject var accountViewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: MainMapViewModel
     @Environment(\.colorScheme) var colorScheme
 
     func makeUIView(context: Context) -> MapView {
@@ -31,7 +31,6 @@ struct MainMapView: UIViewRepresentable {
         if uiView.mapboxMap.style.uri != newStyleURI {
             uiView.mapboxMap.style.uri = newStyleURI
         }
-        
         
         // Defer other updates until the style is loaded.
         uiView.mapboxMap.onNext(event: .styleLoaded) { _ in

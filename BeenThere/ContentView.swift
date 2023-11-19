@@ -16,7 +16,7 @@ struct ContentView: View {
     @StateObject var accountViewModel = SettingsViewModel()
     @StateObject var friendMapViewModel = FriendMapViewModel(accountViewModel: SettingsViewModel.sharedFriend)
     @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: SettingsViewModel.sharedShared)
-    @StateObject private var mainMapViewModel = MainMapViewModel()
+    @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: SettingsViewModel.sharedMain)
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
@@ -47,7 +47,12 @@ struct ContentView: View {
                 FeedView()
             case .map:
                 ZStack(alignment: .topTrailing) {
-                    MainMapView(viewModel: mainMapViewModel)
+                    MainMapView()
+                        .environmentObject(mainMapViewModel)
+//                        .onChange(of: accountViewModel.locations) {
+//                            print("LOG: changing locations")
+//                            mainMapViewModel.checkAndAddSquaresIfNeeded()
+//                        }
                     if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                         Button {
                             showSettingsAlert = true
@@ -57,7 +62,6 @@ struct ContentView: View {
                         .buttonStyle(.bordered)
                         .padding([.top, .trailing])
                         .tint(.red)
-
                     }
                 }
                 .onChange(of: locationManagerDelegate.authorizationStatus) {
@@ -95,7 +99,10 @@ struct ContentView: View {
             )
         }
         .onChange(of: accountViewModel.locations.count) {
+            
             mainMapViewModel.locations = accountViewModel.locations
+            
+            mainMapViewModel.addSquaresToMap(locations: accountViewModel.locations)
         }
         .onChange(of: colorScheme) {
             if colorScheme == .light {

@@ -18,7 +18,6 @@ class SharedMapViewModel: TemplateMapViewModel {
     override func observeLocations() { }
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
 
-    
     override func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
