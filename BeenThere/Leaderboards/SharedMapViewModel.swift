@@ -23,7 +23,7 @@ class SharedMapViewModel: TemplateMapViewModel {
         mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView?.location.options.puckType = .puck2D()
+        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         addGridlinesToMap()
         centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))
