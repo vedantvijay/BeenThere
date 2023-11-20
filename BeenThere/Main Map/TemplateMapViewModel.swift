@@ -32,9 +32,24 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         }
     }
     var retryCount = 0
-    var lastCameraCenter: CLLocationCoordinate2D?
-    var lastCameraZoom: CGFloat?
-    var lastCameraPitch: CGFloat?
+    @AppStorage("lastCameraCenterLatitude") var lastCameraCenterLatitude: Double?
+    @AppStorage("lastCameraCenterLongitude") var lastCameraCenterLongitude: Double?
+    @AppStorage("lastCameraZoom") var lastCameraZoom: Double?
+    @AppStorage("lastCameraPitch") var lastCameraPitch: Double?
+    
+    
+    var lastCameraCenter: CLLocationCoordinate2D? {
+            get {
+                guard let latitude = lastCameraCenterLatitude, let longitude = lastCameraCenterLongitude else {
+                    return nil
+                }
+                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            }
+            set {
+                lastCameraCenterLatitude = newValue?.latitude
+                lastCameraCenterLongitude = newValue?.longitude
+            }
+        }
     var locationManager = CLLocationManager()
     var currentSquares = Set<String>()
     var db = Firestore.firestore()
@@ -266,8 +281,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
         
         self.lastCameraCenter = cameraOptions.center
-        self.lastCameraZoom = cameraOptions.zoom
-        self.lastCameraPitch = cameraOptions.pitch
+        self.lastCameraZoom = Double(cameraOptions.zoom ?? 0)
+        self.lastCameraPitch = Double(cameraOptions.pitch ?? 0)
     }
     
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
