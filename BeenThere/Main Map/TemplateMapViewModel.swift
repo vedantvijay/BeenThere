@@ -32,24 +32,9 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         }
     }
     var retryCount = 0
-    @AppStorage("lastCameraCenterLatitude") var lastCameraCenterLatitude: Double?
-    @AppStorage("lastCameraCenterLongitude") var lastCameraCenterLongitude: Double?
-    @AppStorage("lastCameraZoom") var lastCameraZoom: Double?
-    @AppStorage("lastCameraPitch") var lastCameraPitch: Double?
-    
-    
-    var lastCameraCenter: CLLocationCoordinate2D? {
-            get {
-                guard let latitude = lastCameraCenterLatitude, let longitude = lastCameraCenterLongitude else {
-                    return nil
-                }
-                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            }
-            set {
-                lastCameraCenterLatitude = newValue?.latitude
-                lastCameraCenterLongitude = newValue?.longitude
-            }
-        }
+    var lastCameraCenter: CLLocationCoordinate2D?
+    var lastCameraZoom: CGFloat?
+    var lastCameraPitch: CGFloat?
     var locationManager = CLLocationManager()
     var currentSquares = Set<String>()
     var db = Firestore.firestore()
@@ -89,13 +74,13 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 //            print("Error: No authenticated user found")
 //            return
 //        }
-//        
+//
 //        locationsListener = db.collection("users").document(userID).addSnapshotListener { (documentSnapshot, error) in
 //            guard let data = documentSnapshot?.data() else {
 //                print("No data in document")
 //                return
 //            }
-//            
+//
 //            if let locationData = data["locations"] as? [[String: Any]] {
 //                self.locations = locationData.compactMap { locationDict in
 //                    do {
@@ -281,8 +266,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
         
         self.lastCameraCenter = cameraOptions.center
-        self.lastCameraZoom = Double(cameraOptions.zoom ?? 0)
-        self.lastCameraPitch = Double(cameraOptions.pitch ?? 0)
+        self.lastCameraZoom = cameraOptions.zoom
+        self.lastCameraPitch = cameraOptions.pitch
     }
     
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
