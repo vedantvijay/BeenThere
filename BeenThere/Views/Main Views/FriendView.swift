@@ -12,7 +12,7 @@ struct FriendView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: FriendMapViewModel
-    @EnvironmentObject var accountViewModel: SettingsViewModel
+    @EnvironmentObject var accountViewModel: AccountViewModel
 
     let username: String
     let firstName: String

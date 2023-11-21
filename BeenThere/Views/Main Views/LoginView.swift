@@ -1,10 +1,3 @@
-//
-//  LoginView.swift
-//  BeenThere
-//
-//  Created by Jared Jones on 10/21/23.
-//
-
 import SwiftUI
 import AuthenticationServices
 import Firebase
@@ -12,7 +5,7 @@ import FirebaseAuth
 
 struct LoginView: View {
     @AppStorage("appState") var appState = "opening"
-    @EnvironmentObject var accountViewModel: SettingsViewModel
+    @EnvironmentObject var accountViewModel: AccountViewModel
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
 

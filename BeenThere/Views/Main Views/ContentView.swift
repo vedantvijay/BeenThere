@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  BeenThere
-//
-//  Created by Jared Jones on 10/16/23.
-//
-
 import SwiftUI
 import CoreLocation
 import FirebaseAuth
@@ -13,10 +6,10 @@ struct ContentView: View {
     @AppStorage("username") var username = ""
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var accountViewModel = SettingsViewModel()
-    @StateObject var friendMapViewModel = FriendMapViewModel(accountViewModel: SettingsViewModel.sharedFriend)
-    @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: SettingsViewModel.sharedShared)
-    @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: SettingsViewModel.sharedMain)
+    @StateObject var accountViewModel = AccountViewModel()
+    @StateObject var friendMapViewModel = FriendMapViewModel(accountViewModel: AccountViewModel.sharedFriend)
+    @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: AccountViewModel.sharedShared)
+    @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: AccountViewModel.sharedMain)
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
@@ -49,10 +42,6 @@ struct ContentView: View {
                 ZStack(alignment: .topTrailing) {
                     MainMapView()
                         .environmentObject(mainMapViewModel)
-//                        .onChange(of: accountViewModel.locations) {
-//                            print("LOG: changing locations")
-//                            mainMapViewModel.checkAndAddSquaresIfNeeded()
-//                        }
                     if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                         Button {
                             showSettingsAlert = true
@@ -77,7 +66,7 @@ struct ContentView: View {
                     .environmentObject(accountViewModel)
             }
             if !isKeyboardVisible {
-                CustomTabView(selection: $selection)
+                CustomTabBarView(selection: $selection)
                     .padding(.bottom, 10)
                     .environmentObject(mainMapViewModel)
                     .environmentObject(friendMapViewModel)
@@ -201,8 +190,3 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
         self.authorizationStatus = status
     }
 }
-
-//
-//#Preview {
-//    ContentView()
-//}

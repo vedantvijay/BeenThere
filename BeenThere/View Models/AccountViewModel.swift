@@ -11,11 +11,11 @@ import AuthenticationServices
 import SwiftUI
 import FirebaseStorage
 
-class SettingsViewModel: ObservableObject {
+class AccountViewModel: ObservableObject {
     
-    static let sharedMain = SettingsViewModel()
-    static let sharedFriend = SettingsViewModel()
-    static let sharedShared = SettingsViewModel()
+    static let sharedMain = AccountViewModel()
+    static let sharedFriend = AccountViewModel()
+    static let sharedShared = AccountViewModel()
     
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""

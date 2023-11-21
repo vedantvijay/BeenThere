@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct ProfileView: View {
-    @EnvironmentObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: AccountViewModel
     
     var body: some View {
         NavigationStack {

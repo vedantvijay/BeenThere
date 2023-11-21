@@ -40,11 +40,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     var db = Firestore.firestore()
     var locationsListener: ListenerRegistration?
     
-    var accountViewModel: SettingsViewModel?
+    var accountViewModel: AccountViewModel?
     var cancellable: AnyCancellable?
     
 
-    init(accountViewModel: SettingsViewModel) {
+    init(accountViewModel: AccountViewModel) {
         super.init()
         self.accountViewModel = accountViewModel
         locationManager.desiredAccuracy = kCLLocationAccuracyBest

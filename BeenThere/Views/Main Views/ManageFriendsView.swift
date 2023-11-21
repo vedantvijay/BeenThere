@@ -12,7 +12,7 @@ import Kingfisher
 struct ManageFriendsView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ManageFriendsViewModel()
-    @EnvironmentObject var accountViewModel: SettingsViewModel
+    @EnvironmentObject var accountViewModel: AccountViewModel
     
     @State private var newFriendUsername = ""
     

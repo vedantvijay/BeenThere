@@ -12,7 +12,7 @@ struct CreateUsernameView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var accountViewModel = SettingsViewModel()
+    @StateObject var accountViewModel = AccountViewModel()
     @AppStorage("username") var username = ""
     @State private var newUsername = ""
     @State private var isCheckingUsername = false

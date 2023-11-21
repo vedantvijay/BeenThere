@@ -56,7 +56,7 @@ enum AppUIState {
 struct BeenThereApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var authViewModel = AuthViewModel()
-    @StateObject var accountViewModel = SettingsViewModel()
+    @StateObject var accountViewModel = AccountViewModel()
     @AppStorage("appState") var appState = "notAuthenticated"
     @AppStorage("username") var username = ""
     

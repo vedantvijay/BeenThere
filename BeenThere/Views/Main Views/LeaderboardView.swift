@@ -9,7 +9,7 @@ import Kingfisher
 import SwiftUI
 
 struct LeaderboardView: View {
-    @EnvironmentObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: AccountViewModel
     @EnvironmentObject var friendMapViewModel: FriendMapViewModel
     @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
     @State private var leaderboardScope = "friends"

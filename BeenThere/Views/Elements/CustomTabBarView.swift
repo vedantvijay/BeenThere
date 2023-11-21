@@ -1,19 +1,12 @@
-//
-//  CustomTabView.swift
-//  BeenThere
-//
-//  Created by Jared Jones on 11/1/23.
-//
-
 import SwiftUI
 
 enum Tab {
     case settings, feed, map, leaderboards, profile
 }
 
-struct CustomTabView: View {
+struct CustomTabBarView: View {
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: AccountViewModel
     @EnvironmentObject var mainMapViewModel: MainMapViewModel
     @EnvironmentObject var friendMapViewModel: FriendMapViewModel
     @EnvironmentObject var sharedMapViewModel: SharedMapViewModel
@@ -110,5 +103,5 @@ struct CustomTabView: View {
 }
 
 #Preview {
-    CustomTabView(selection: .constant(.map))
+    CustomTabBarView(selection: .constant(.map))
 }

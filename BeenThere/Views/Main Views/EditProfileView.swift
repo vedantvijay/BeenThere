@@ -11,7 +11,7 @@ import Kingfisher
 
 struct EditProfileView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var accountViewModel: SettingsViewModel
+    @EnvironmentObject var accountViewModel: AccountViewModel
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var showingImagePicker = false
