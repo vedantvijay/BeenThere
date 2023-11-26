@@ -55,7 +55,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         locationManager.delegate = self
         observeLocations()
         accountViewModel.setUpFirestoreListener()
-//        setUpFirestoreListener()
     }
     deinit {
         locationsListener?.remove()
@@ -65,37 +64,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
                 self?.locations = newLocations
                 print("LOG: I tried")
-                // Any additional logic you need to perform when locations change.
+                self?.adjustMapViewToFitSquares()
             }
         }
-    
-//    func setUpFirestoreListener() {
-//        guard let userID = Auth.auth().currentUser?.uid else {
-//            print("Error: No authenticated user found")
-//            return
-//        }
-//
-//        locationsListener = db.collection("users").document(userID).addSnapshotListener { (documentSnapshot, error) in
-//            guard let data = documentSnapshot?.data() else {
-//                print("No data in document")
-//                return
-//            }
-//
-//            if let locationData = data["locations"] as? [[String: Any]] {
-//                self.locations = locationData.compactMap { locationDict in
-//                    do {
-//                        let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
-//                        let location = try JSONDecoder().decode(Location.self, from: jsonData)
-//                        return location
-//                    } catch {
-//                        print("Error decoding location: \(error)")
-//                        return nil
-//                    }
-//                }
-//            }
-//        }
-//    }
-        
+
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView?.mapboxMap.onEvery(event: .cameraChanged) { [weak self] _ in
@@ -154,17 +126,13 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         
         let setupLayers = { [weak self] in
             do {
-                // Check if the source already exists
                 if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
-                            // Update the existing source with new data
                             try mapView.mapboxMap.style.updateGeoJSONSource(withId: sourceId, geoJSON: .featureCollection(featureCollection))
                         } else {
-                            // Create a new source
                             var source = GeoJSONSource()
                             source.data = .featureCollection(featureCollection)
                             try mapView.mapboxMap.style.addSource(source, id: sourceId)
                         }
-                // Setup the fill layer
                 var fillLayer = FillLayer(id: layerId)
                 fillLayer.source = sourceId
 
@@ -219,7 +187,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             }
         }
     }
-
     
     func checkAndAddSquaresIfNeeded() {
         print("LOG: step 1")
@@ -358,7 +325,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
 
-        // Adjustments for 0.25 degree increments
         let increment: Double = 0.25
         
         let lowLatitude = floor(latitude / increment) * increment
