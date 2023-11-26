@@ -82,6 +82,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         } else {
             mapView = MapView(frame: frame, mapInitOptions: mapInitOptions)
         }
+        mapView?.ornaments.scaleBarView.isHidden = true
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
