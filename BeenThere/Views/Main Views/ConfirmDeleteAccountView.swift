@@ -125,7 +125,7 @@ struct ConfirmDeleteAccountView: View {
         }
     }
 }
-
-#Preview {
-    ConfirmDeleteAccountView()
-}
+//
+//#Preview {
+//    ConfirmDeleteAccountView()
+//}

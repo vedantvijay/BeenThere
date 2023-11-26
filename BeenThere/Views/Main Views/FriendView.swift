@@ -89,10 +89,9 @@ struct FriendView: View {
                     dismiss()
                 }
         }
-//        .navigationTitle(firstName != "" ? firstName : "@\(username)")
     }
 }
 
 //#Preview {
-//    FriendView()
+//    FriendView(username: Person.preview.username, firstName: Person.preview.firstName, friend: [:])
 //}

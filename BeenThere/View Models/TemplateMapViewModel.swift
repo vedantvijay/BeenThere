@@ -190,7 +190,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     }
                 } else {
                     let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
-
                     if let landLayerId = landLayerId {
                         try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
                     } else {

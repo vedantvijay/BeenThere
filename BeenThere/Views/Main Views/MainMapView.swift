@@ -39,3 +39,9 @@ struct MainMapView: UIViewRepresentable {
         }
     }
 }
+
+
+
+//#Preview {
+//    MainMapView()
+//}

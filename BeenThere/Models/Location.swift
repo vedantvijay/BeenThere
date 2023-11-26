@@ -6,3 +6,7 @@ struct Location: Codable, Hashable {
     var lowLongitude: Double
     var highLongitude: Double
 }
+
+extension Location {
+    static let preview = Location(lowLatitude: 50, highLatitude: 50.25, lowLongitude: 50, highLongitude: 50.25)
+}

@@ -190,3 +190,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
         self.authorizationStatus = status
     }
 }
+
+#Preview {
+    ContentView()
+}
