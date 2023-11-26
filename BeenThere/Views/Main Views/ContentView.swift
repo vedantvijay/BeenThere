@@ -36,21 +36,40 @@ struct ContentView: View {
             case .settings:
                 SettingsView()
             case .feed:
-               
                 FeedView()
             case .map:
-                ZStack(alignment: .topTrailing) {
+                ZStack(alignment: .top) {
                     MainMapView()
                         .environmentObject(mainMapViewModel)
-                    if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
-                        Button {
-                            showSettingsAlert = true
-                        } label: {
-                            Image(systemName: "location.slash.circle.fill")
+                    HStack {
+                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
+                            ForEach(MapType.allCases) { type in
+                                Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
+                                    .tag(type)
+                            }
                         }
-                        .buttonStyle(.bordered)
-                        .padding([.top, .trailing])
-                        .tint(.red)
+
+                        .padding([.top, .leading])
+                        .onChange(of: mainMapViewModel.mapType) {
+                            mainMapViewModel.mapType = mainMapViewModel.mapType
+                            mainMapViewModel.checkAndAddSquaresIfNeeded()
+                            mainMapViewModel.adjustMapViewToFitSquares()
+                        }
+
+                        Spacer()
+                    }
+                    HStack {
+                        if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
+                            Spacer()
+                            Button {
+                                showSettingsAlert = true
+                            } label: {
+                                Image(systemName: "location.slash.circle.fill")
+                            }
+                            .padding([.top, .trailing])
+                            .buttonStyle(.bordered)
+                            .tint(.red)
+                        }
                     }
                 }
                 .onChange(of: locationManagerDelegate.authorizationStatus) {
@@ -88,9 +107,7 @@ struct ContentView: View {
             )
         }
         .onChange(of: accountViewModel.locations.count) {
-            
             mainMapViewModel.locations = accountViewModel.locations
-            
             mainMapViewModel.addSquaresToMap(locations: accountViewModel.locations)
         }
         .onChange(of: colorScheme) {
@@ -191,6 +208,6 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}

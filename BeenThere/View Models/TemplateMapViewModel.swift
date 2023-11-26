@@ -14,15 +14,18 @@ import Combine
 import SwiftUI
 
 class TemplateMapViewModel: NSObject, ObservableObject {
+    @Published var mapType = MapType.visited
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var isDarkModeEnabled: Bool = false
-    @Published var locations: [Location] = [] {
-        didSet {
-            checkAndAddSquaresIfNeeded()
-        }
-    }
+    @Published var locations: [Location] = [] 
+//    {
+//        didSet {
+//            checkAndAddSquaresIfNeeded()
+//        }
+//    }
+    @Published var posts: [Post] = []
     @Published var showTappedLocation: Bool = false {
         didSet {
             if !showTappedLocation {
@@ -193,9 +196,35 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         print("LOG: step 1")
         if areSquaresAdded() {
             print("LOG: step 2")
-            addSquaresToMap(locations: locations)
+            clearExistingSquares() // New function to clear existing squares
+
+            switch mapType {
+            case .visited:
+                addSquaresToMap(locations: locations)
+
+            case .photos:
+                let photoLocations = posts.compactMap { $0.location }
+                addSquaresToMap(locations: photoLocations)
+            }
         }
     }
+
+    func clearExistingSquares() {
+        guard let mapView = mapView else { return }
+        let sourceId = "square-source"
+        let layerId = "square-fill-layer"
+
+        if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
+            try? mapView.mapboxMap.style.removeSource(withId: sourceId)
+        }
+
+        if mapView.mapboxMap.style.layerExists(withId: layerId) {
+            try? mapView.mapboxMap.style.removeLayer(withId: layerId)
+        }
+    }
+
+
+
 
     private func areSquaresAdded() -> Bool {
         return locations.count >= 1
@@ -225,7 +254,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares() {
         guard let mapView = mapView else { return }
 
-        guard let boundingBox = self.boundingBox(for: self.locations) else { return }
+        
+        guard let boundingBox = self.boundingBox(for: mapType == .visited ? self.locations : posts.map { $0.location }) else { return }
+        
+        
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
@@ -403,3 +435,4 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
         }
     }
 }
+

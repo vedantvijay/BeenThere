@@ -29,9 +29,6 @@ struct LeaderboardView: View {
                     viewModel.updateProfileImages()
                 }
                 .onAppear {
-//                    if viewModel.listeners.isEmpty {
-//                        viewModel.setUpFirestoreListener()
-//                    }
                     if viewModel.users.count == 0 {
                         viewModel.setUpFirestoreListener()
                     }
@@ -43,15 +40,12 @@ struct LeaderboardView: View {
                             if !viewModel.sortedFriendsByLocationCount().isEmpty {
                                 ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
                                     let friend = viewModel.sortedFriendsByLocationCount()[index]
-                        
                                     NavigationLink(destination: FriendView(username: friend["username"] as? String ?? "", firstName: friend["firstName"] as? String ?? "", friend: friend)) {
                                         HStack {
                                             Text("\(index + 1).")
                                                 .bold()
-                                                .padding(.trailing, 3) // Add some padding to separate the rank from the name
+                                                .padding(.trailing, 3)
                                                 .font(.title2)
-
-                                            
                                             if let friendUID = friend["uid"] as? String {
                                                 if let imageUrl = viewModel.profileImageUrls[friendUID] {
                                                     KFImage(imageUrl)
@@ -59,19 +53,15 @@ struct LeaderboardView: View {
                                                         .aspectRatio(contentMode: .fill)
                                                         .clipShape(Circle())
                                                         .frame(width: 50, height: 50)
-                                                        .padding(.trailing, 10) // Add some padding to separate the rank from the name
-
+                                                        .padding(.trailing, 10)
                                                 } else {
                                                     Image(systemName: "person.crop.circle")
                                                         .resizable()
                                                         .frame(width: 50, height: 50)
                                                         .foregroundStyle(.secondary)
-                                                        .padding(.trailing, 5) // Add some padding to separate the rank from the name
-
-
+                                                        .padding(.trailing, 5)
                                                 }
                                             }
-                            
                                             if let friendUsername = friend["username"] as? String {
                                                 if let friendFirstName = friend["firstName"] as? String, let friendLastName = friend["lastName"] as? String {
                                                     if friendFirstName != "" {

@@ -68,7 +68,6 @@ struct ProfileView: View {
                                     .fontWeight(.black)
                             }
                         }
-                        
                     }
                 }
             }

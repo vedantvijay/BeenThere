@@ -36,18 +36,35 @@ struct SharedView: View {
     }
     
     var body: some View {
-        SharedMapView()
-            .onAppear {
-                viewModel.updateMapStyleURL()
-                viewModel.locations = userLocations
+        ZStack(alignment: .topLeading) {
+            SharedMapView()
+                .onAppear {
+                    viewModel.updateMapStyleURL()
+                    viewModel.locations = userLocations
+                }
+                .onChange(of: colorScheme) {
+                    viewModel.updateMapStyleURL()
+                }
+                .navigationTitle("Shared Map")
+                .onDisappear {
+                    dismiss()
+                }
+            HStack {
+                Picker("Map Type", selection: $viewModel.mapType) {
+                    ForEach(MapType.allCases) { type in
+                        Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
+                            .tag(type)
+                    }
+                }
+                .padding([.top, .leading])
+                .onChange(of: viewModel.mapType) {
+                    viewModel.mapType = viewModel.mapType
+                    viewModel.checkAndAddSquaresIfNeeded()
+                    viewModel.adjustMapViewToFitSquares()
+                }
             }
-            .onChange(of: colorScheme) {
-                viewModel.updateMapStyleURL()
-            }
-            .navigationTitle("Shared Map")
-            .onDisappear {
-                dismiss()
-            }
+        }
+        
     }
 }
 

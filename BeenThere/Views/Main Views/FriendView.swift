@@ -61,33 +61,52 @@ struct FriendView: View {
 //                }
             Divider()
                 .padding(.horizontal)
-            FriendMapView()
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-                .padding()
-                .padding()
-                .shadow(color: colorScheme == .light ? .secondary : .secondary, radius: 3)
-                .onAppear {
-                    
-                    if let locationDictionaries = friend["locations"] as? [[String: Any]] {
-                        let locations: [Location] = locationDictionaries.compactMap { locationDict in
-                            do {
-                                let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
-                                let location = try JSONDecoder().decode(Location.self, from: jsonData)
-                                return location
-                            } catch {
-                                print("Error decoding location: \(error)")
-                                return nil
+            ZStack(alignment: .top) {
+                FriendMapView()
+                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                    .padding()
+                    .padding()
+                    .shadow(color: colorScheme == .light ? .secondary : .secondary, radius: 3)
+                    .onAppear {
+                        
+                        if let locationDictionaries = friend["locations"] as? [[String: Any]] {
+                            let locations: [Location] = locationDictionaries.compactMap { locationDict in
+                                do {
+                                    let jsonData = try JSONSerialization.data(withJSONObject: locationDict, options: [])
+                                    let location = try JSONDecoder().decode(Location.self, from: jsonData)
+                                    return location
+                                } catch {
+                                    print("Error decoding location: \(error)")
+                                    return nil
+                                }
+                            }
+                            viewModel.locations = locations
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                viewModel.locations = locations
                             }
                         }
-                        viewModel.locations = locations
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            viewModel.locations = locations
+                    }
+                    .onDisappear {
+                        dismiss()
+                    }
+                HStack {
+                    Picker("Map Type", selection: $viewModel.mapType) {
+                        ForEach(MapType.allCases) { type in
+                            Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
+                                .tag(type)
                         }
                     }
+                    .padding(.top)
+                    .padding(.top)
+
+                    .onChange(of: viewModel.mapType) {
+                        viewModel.mapType = viewModel.mapType
+                        viewModel.checkAndAddSquaresIfNeeded()
+                        viewModel.adjustMapViewToFitSquares()
+                    }
                 }
-                .onDisappear {
-                    dismiss()
-                }
+            }
+            
         }
     }
 }

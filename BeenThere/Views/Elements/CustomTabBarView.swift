@@ -1,9 +1,5 @@
 import SwiftUI
 
-enum Tab {
-    case settings, feed, map, leaderboards, profile
-}
-
 struct CustomTabBarView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: AccountViewModel

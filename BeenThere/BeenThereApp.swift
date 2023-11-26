@@ -45,13 +45,6 @@ class AuthViewModel: ObservableObject {
     }
 }
 
-enum AppUIState {
-    case opening
-    case authenticated
-    case notAuthenticated
-    case createUser
-}
-
 @main
 struct BeenThereApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
