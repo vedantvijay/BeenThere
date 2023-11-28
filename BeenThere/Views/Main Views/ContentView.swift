@@ -86,7 +86,7 @@ struct ContentView: View {
             }
             if !isKeyboardVisible {
                 CustomTabBarView(selection: $selection)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 45)
                     .environmentObject(mainMapViewModel)
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
@@ -95,7 +95,7 @@ struct ContentView: View {
 
         }
         .ignoresSafeArea()
-        .background(Material.bar)
+        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),

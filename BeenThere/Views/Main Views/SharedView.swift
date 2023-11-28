@@ -36,7 +36,7 @@ struct SharedView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .top) {
             SharedMapView()
                 .onAppear {
                     viewModel.updateMapStyleURL()

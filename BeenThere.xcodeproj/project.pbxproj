@@ -76,6 +76,7 @@
 		C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */; };
 		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
 		C0EAC0BB2B1409250003B44E /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAC0BA2B1409250003B44E /* Enums.swift */; };
+		C0EAC0BD2B1507140003B44E /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAC0BC2B1507140003B44E /* CreatePostView.swift */; };
 		C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE62AF954A000C2776A /* FeedViewModel.swift */; };
 		C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE82AF954B900C2776A /* FeedView.swift */; };
 		C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */; };
@@ -139,6 +140,7 @@
 		C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsView.swift; sourceTree = "<group>"; };
 		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
 		C0EAC0BA2B1409250003B44E /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		C0EAC0BC2B1507140003B44E /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		C0F46EE62AF954A000C2776A /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		C0F46EE82AF954B900C2776A /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */,
 				C09C698C2AE88382008A3148 /* FriendView.swift */,
 				C0F46EE82AF954B900C2776A /* FeedView.swift */,
+				C0EAC0BC2B1507140003B44E /* CreatePostView.swift */,
 			);
 			path = "Main Views";
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
+				C0EAC0BD2B1507140003B44E /* CreatePostView.swift in Sources */,
 				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
 				C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */,
 				C03424C92B0C562500A9CA9A /* Location.swift in Sources */,
@@ -597,7 +601,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -636,7 +640,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;

@@ -264,9 +264,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
         
-        self.lastCameraCenter = cameraOptions.center
-        self.lastCameraZoom = cameraOptions.zoom
-        self.lastCameraPitch = cameraOptions.pitch
+        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+            self.lastCameraCenter = cameraOptions.center
+            self.lastCameraZoom = cameraOptions.zoom
+            self.lastCameraPitch = cameraOptions.pitch
+        }
     }
     
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {
