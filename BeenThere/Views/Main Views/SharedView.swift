@@ -49,20 +49,20 @@ struct SharedView: View {
                 .onDisappear {
                     dismiss()
                 }
-            HStack {
-                Picker("Map Type", selection: $viewModel.mapType) {
-                    ForEach(MapType.allCases) { type in
-                        Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
-                            .tag(type)
-                    }
-                }
-                .padding([.top, .leading])
-                .onChange(of: viewModel.mapType) {
-                    viewModel.mapType = viewModel.mapType
-                    viewModel.checkAndAddSquaresIfNeeded()
-                    viewModel.adjustMapViewToFitSquares()
-                }
-            }
+//            HStack {
+//                Picker("Map Type", selection: $viewModel.mapType) {
+//                    ForEach(MapType.allCases) { type in
+//                        Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
+//                            .tag(type)
+//                    }
+//                }
+//                .padding([.top, .leading])
+//                .onChange(of: viewModel.mapType) {
+//                    viewModel.mapType = viewModel.mapType
+//                    viewModel.checkAndAddSquaresIfNeeded()
+//                    viewModel.adjustMapViewToFitSquares()
+//                }
+//            }
         }
         
     }

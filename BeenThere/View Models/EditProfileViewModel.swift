@@ -12,13 +12,11 @@ import FirebaseStorage
 
 class EditProfileViewModel: ObservableObject {
     func saveChanges(uid: String, firstName: String, lastName: String, username: String, profileImage: UIImage?, completion: @escaping () -> Void) {
-            // Firestore database reference
             let db = Firestore.firestore()
             let userRef = db.collection("users").document(uid)
 
             let group = DispatchGroup()
 
-            // Updating Firestore
             group.enter()
             userRef.updateData([
                 "firstName": firstName,

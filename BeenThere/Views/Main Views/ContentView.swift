@@ -41,23 +41,22 @@ struct ContentView: View {
                 ZStack(alignment: .top) {
                     MainMapView()
                         .environmentObject(mainMapViewModel)
-                    HStack {
-                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
-                            ForEach(MapType.allCases) { type in
-                                Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
-                                    .tag(type)
-                            }
-                        }
-
-                        .padding([.top, .leading])
-                        .onChange(of: mainMapViewModel.mapType) {
-                            mainMapViewModel.mapType = mainMapViewModel.mapType
-                            mainMapViewModel.checkAndAddSquaresIfNeeded()
-                            mainMapViewModel.adjustMapViewToFitSquares()
-                        }
-
-                        Spacer()
-                    }
+//                    HStack {
+//                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
+//                            ForEach(MapType.allCases) { type in
+//                                Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
+//                                    .tag(type)
+//                            }
+//                        }
+//                        .padding([.top, .leading])
+//                        .onChange(of: mainMapViewModel.mapType) {
+//                            mainMapViewModel.mapType = mainMapViewModel.mapType
+//                            mainMapViewModel.checkAndAddSquaresIfNeeded()
+//                            mainMapViewModel.adjustMapViewToFitSquares()
+//                        }
+//
+//                        Spacer()
+//                    }
                     HStack {
                         if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                             Spacer()
@@ -86,7 +85,7 @@ struct ContentView: View {
             }
             if !isKeyboardVisible {
                 CustomTabBarView(selection: $selection)
-                    .padding(.bottom, 45)
+                    .padding(.bottom, 40)
                     .environmentObject(mainMapViewModel)
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
