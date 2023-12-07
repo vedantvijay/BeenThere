@@ -433,7 +433,12 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let newLocation = locations.last {
-            checkBeenThere(location: newLocation)
+            // 100 mph
+            if newLocation.speed <= 100 * 0.45 {
+                checkBeenThere(location: newLocation)
+            } else {
+                print("Speed is over 100 mph. Location not updated.")
+            }
         }
     }
 }

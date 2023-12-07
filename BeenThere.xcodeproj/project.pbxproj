@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C001517C2AF53211007DA96F /* ChangeUsernameView.swift */; };
 		C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */; };
+		C03126972B213146004CAE0B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03126962B213146004CAE0B /* SearchBar.swift */; };
+		C031269A2B213EAD004CAE0B /* MapboxGeocoder in Frameworks */ = {isa = PBXBuildFile; productRef = C03126992B213EAD004CAE0B /* MapboxGeocoder */; };
 		C03424C72B0C55BD00A9CA9A /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03424C62B0C55BD00A9CA9A /* Post.swift */; };
 		C03424C92B0C562500A9CA9A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03424C82B0C562500A9CA9A /* Location.swift */; };
 		C03424CB2B0C568400A9CA9A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03424CA2B0C568400A9CA9A /* User.swift */; };
@@ -106,6 +108,7 @@
 /* Begin PBXFileReference section */
 		C001517C2AF53211007DA96F /* ChangeUsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeUsernameView.swift; sourceTree = "<group>"; };
 		C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		C03126962B213146004CAE0B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		C03424C62B0C55BD00A9CA9A /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		C03424C82B0C562500A9CA9A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		C03424CA2B0C568400A9CA9A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -154,6 +157,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C031269A2B213EAD004CAE0B /* MapboxGeocoder in Frameworks */,
 				C0BC79AA2B20FC7A00654DEA /* FirebaseRemoteConfig in Frameworks */,
 				C0BC79A62B20FC7A00654DEA /* FirebaseMLModelDownloader in Frameworks */,
 				C0BC79902B20FC7A00654DEA /* FirebaseDatabaseSwift in Frameworks */,
@@ -270,6 +274,7 @@
 				C09C69902AE883C2008A3148 /* FriendMapView.swift */,
 				C001517C2AF53211007DA96F /* ChangeUsernameView.swift */,
 				C085316C2AF1E6F900EAA434 /* SharedMapView.swift */,
+				C03126962B213146004CAE0B /* SearchBar.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -382,6 +387,7 @@
 				C0BC79AB2B20FC7A00654DEA /* FirebaseRemoteConfigSwift */,
 				C0BC79AD2B20FC7A00654DEA /* FirebaseStorage */,
 				C0BC79AF2B20FC7A00654DEA /* FirebaseStorageCombine-Community */,
+				C03126992B213EAD004CAE0B /* MapboxGeocoder */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -416,6 +422,7 @@
 				C0BC79742B20FC0400654DEA /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				C0BC79772B20FC0D00654DEA /* XCRemoteSwiftPackageReference "AlertToast" */,
 				C0BC797A2B20FC4000654DEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C03126982B213EAD004CAE0B /* XCRemoteSwiftPackageReference "MapboxGeocoder" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -464,6 +471,7 @@
 				C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */,
 				C04E07272B029E9A00340D58 /* EditProfileView.swift in Sources */,
 				C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */,
+				C03126972B213146004CAE0B /* SearchBar.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */,
 				C0B4C0242B0126A0006D5022 /* TemplateMapViewModel.swift in Sources */,
 				C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */,
@@ -608,7 +616,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -647,7 +655,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -703,6 +711,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C03126982B213EAD004CAE0B /* XCRemoteSwiftPackageReference "MapboxGeocoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/MapboxGeocoder.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.1;
+			};
+		};
 		C0BC796F2B20FBEC00654DEA /* XCRemoteSwiftPackageReference "mapbox-directions-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-directions-swift.git";
@@ -738,6 +754,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C03126992B213EAD004CAE0B /* MapboxGeocoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C03126982B213EAD004CAE0B /* XCRemoteSwiftPackageReference "MapboxGeocoder" */;
+			productName = MapboxGeocoder;
+		};
 		C0BC79702B20FBEC00654DEA /* MapboxDirections */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C0BC796F2B20FBEC00654DEA /* XCRemoteSwiftPackageReference "mapbox-directions-swift" */;

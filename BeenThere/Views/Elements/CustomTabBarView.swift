@@ -68,6 +68,7 @@ struct CustomTabBarView: View {
             .padding(.bottom)
 
         }
+        .offset(y: -3)
         .ignoresSafeArea()
         .frame(height: 65)
     }

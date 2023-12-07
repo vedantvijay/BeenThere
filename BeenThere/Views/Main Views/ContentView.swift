@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @State private var showSettingsAlert: Bool = false
     @State private var selection = Tab.map
+    @State private var focusedField: Any?
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -35,12 +36,20 @@ struct ContentView: View {
             switch selection {
             case .settings:
                 SettingsView()
+                    .ignoresSafeArea()
+
             case .feed:
                 FeedView()
+                    .ignoresSafeArea()
             case .map:
                 ZStack(alignment: .top) {
                     MainMapView()
+                        .ignoresSafeArea()
                         .environmentObject(mainMapViewModel)
+                        .onTapGesture {
+                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                        }
+                    SearchBar()
 //                    HStack {
 //                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
 //                            ForEach(MapType.allCases) { type in
@@ -70,6 +79,7 @@ struct ContentView: View {
                             .tint(.red)
                         }
                     }
+                    .ignoresSafeArea()
                 }
                 .onChange(of: locationManagerDelegate.authorizationStatus) {
                     self.authorizationStatus = locationManagerDelegate.authorizationStatus
@@ -77,23 +87,23 @@ struct ContentView: View {
                 
             case .leaderboards:
                 LeaderboardView()
+                    .ignoresSafeArea()
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
             case .profile:
                 ProfileView()
+                    .ignoresSafeArea()
                     .environmentObject(accountViewModel)
             }
             if !isKeyboardVisible {
                 CustomTabBarView(selection: $selection)
-                    .padding(.bottom, 40)
                     .environmentObject(mainMapViewModel)
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
                     .environmentObject(accountViewModel)
+                    .ignoresSafeArea()
             }
-
         }
-        .ignoresSafeArea()
         .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
         .alert(isPresented: $showSettingsAlert) {
             Alert(
@@ -210,3 +220,4 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
 //#Preview {
 //    ContentView()
 //}
+

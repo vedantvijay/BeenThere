@@ -118,6 +118,15 @@
       }
     },
     {
+      "identity" : "mapboxgeocoder.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/MapboxGeocoder.swift",
+      "state" : {
+        "revision" : "10c497840c9e1142194563f402ddc903310a935d",
+        "version" : "0.15.0"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
