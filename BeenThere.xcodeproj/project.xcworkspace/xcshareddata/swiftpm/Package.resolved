@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher",
       "state" : {
-        "revision" : "277f1ab2c6664b19b4a412e32b094b201e2d5757",
-        "version" : "7.10.0"
+        "revision" : "add0a87ec4e31e2ca2a0b2085f0559201e4f5918",
+        "version" : "7.10.1"
       }
     },
     {
@@ -109,12 +109,75 @@
       }
     },
     {
+      "identity" : "mapbox-common-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-common-ios.git",
+      "state" : {
+        "revision" : "f9c766afbc69d2685f8a95157b0c1a177da20465",
+        "version" : "23.8.5"
+      }
+    },
+    {
+      "identity" : "mapbox-core-maps-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-core-maps-ios.git",
+      "state" : {
+        "revision" : "a7847acfef0c62e0a0135804f029e92f026b3c43",
+        "version" : "10.16.3"
+      }
+    },
+    {
       "identity" : "mapbox-directions-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mapbox/mapbox-directions-swift.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "fc7c5177216a272af536af8f434b80eb6c261f26"
+        "revision" : "3aaab4fb516638c51ec8a2e73cd2fabdb4588622",
+        "version" : "2.11.1"
+      }
+    },
+    {
+      "identity" : "mapbox-events-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-events-ios.git",
+      "state" : {
+        "revision" : "91ae071c0232c144251dfe0d0724525deaf293d4",
+        "version" : "1.0.10"
+      }
+    },
+    {
+      "identity" : "mapbox-maps-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-maps-ios.git",
+      "state" : {
+        "revision" : "1678e9d0cc1d462d2b97473da685464009908b6a",
+        "version" : "10.16.3"
+      }
+    },
+    {
+      "identity" : "mapbox-navigation-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-navigation-ios.git",
+      "state" : {
+        "revision" : "316a8b934f9cdc7546c29c7a5aee66ce6fc6f9b2",
+        "version" : "2.17.0"
+      }
+    },
+    {
+      "identity" : "mapbox-navigation-native-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-navigation-native-ios.git",
+      "state" : {
+        "revision" : "b25226ce65092aaecd537047b08571c3459932ea",
+        "version" : "160.0.1"
+      }
+    },
+    {
+      "identity" : "mapbox-speech-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mapbox/mapbox-speech-swift.git",
+      "state" : {
+        "revision" : "a9ef284deae227c6111c27a3535098c1e9a9d8e3",
+        "version" : "2.1.1"
       }
     },
     {
@@ -154,12 +217,21 @@
       }
     },
     {
+      "identity" : "solar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ceeK/Solar.git",
+      "state" : {
+        "revision" : "c2b96f2d5fb7f835b91cefac5e83101f54643901",
+        "version" : "3.0.1"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "8f4d2753f0e4778c76d5f05ad16c74f707390531",
-        "version" : "1.2.3"
+        "revision" : "c8ed701b513cf5177118a175d85fbbbcd707ab41",
+        "version" : "1.3.0"
       }
     },
     {

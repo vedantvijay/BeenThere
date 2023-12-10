@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreLocation
 import FirebaseAuth
+import MapboxCoreNavigation
+import MapboxNavigation
 
 struct ContentView: View {
     @AppStorage("username") var username = ""
@@ -11,6 +13,8 @@ struct ContentView: View {
     @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: AccountViewModel.sharedShared)
     @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: AccountViewModel.sharedMain)
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
+    @StateObject var navigationManager = NavigationManager()
+
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
     @State private var showTestDialog = false
@@ -163,6 +167,7 @@ struct ContentView: View {
         }
         .confirmationDialog("Navigate", isPresented: $mainMapViewModel.showTappedLocation) {
             if let location = mainMapViewModel.tappedLocation {
+//                NavigationLink("Navigate", destination: NavigatingView(startPoint: locationManagerDelegate.locationManager?.location, endPoint: location))
                 Link("Open in Google Maps", destination: googleMapsURL(for: location))
                 Link("Open in Apple Maps", destination: appleMapsURL(for: location))
             }

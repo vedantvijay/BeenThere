@@ -116,7 +116,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         // Create and configure new annotation
         var annotation = PointAnnotation(coordinate: coordinate)
         // Set additional properties here, for example:
-        annotation.image = PointAnnotation.Image(image: UIImage(systemName: "smallcircle.filled.circle")!, name: "Pin")
+        annotation.image = PointAnnotation.Image(image: UIImage(systemName: "pin")!, name: "Pin")
         
 
         annotationManager.annotations = [annotation]
