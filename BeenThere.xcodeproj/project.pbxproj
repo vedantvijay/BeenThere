@@ -19,6 +19,7 @@
 		C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */; };
 		C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B42AFA94E6006B1230 /* LoginView.swift */; };
 		C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */; };
+		C06A55572B26508F0081B137 /* RouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06A55562B26508F0081B137 /* RouteView.swift */; };
 		C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C085316C2AF1E6F900EAA434 /* SharedMapView.swift */; };
 		C08531712AF2923300EAA434 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531702AF2923300EAA434 /* CustomTabBarView.swift */; };
 		C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */; };
@@ -118,6 +119,7 @@
 		C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		C053C1B42AFA94E6006B1230 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateUsernameView.swift; sourceTree = "<group>"; };
+		C06A55562B26508F0081B137 /* RouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteView.swift; sourceTree = "<group>"; };
 		C085316C2AF1E6F900EAA434 /* SharedMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapView.swift; sourceTree = "<group>"; };
 		C08531702AF2923300EAA434 /* CustomTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
 		C08531722AF2C03A00EAA434 /* SharedMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMapViewModel.swift; sourceTree = "<group>"; };
@@ -250,15 +252,16 @@
 			isa = PBXGroup;
 			children = (
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
+				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
+				C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */,
+				C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */,
+				C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */,
+				C06A55562B26508F0081B137 /* RouteView.swift */,
 				C053C1B42AFA94E6006B1230 /* LoginView.swift */,
 				C0D2A9072AE585CB006326C1 /* SettingsView.swift */,
-				C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */,
 				C08531742AF2C27700EAA434 /* SharedView.swift */,
 				C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */,
-				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
-				C0949F032AE5C484006EE5D2 /* ConfirmDeleteAccountView.swift */,
 				C04E07262B029E9A00340D58 /* EditProfileView.swift */,
-				C044EF072AED84D800AEC9E2 /* LeaderboardView.swift */,
 				C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */,
 				C09C698C2AE88382008A3148 /* FriendView.swift */,
 				C0F46EE82AF954B900C2776A /* FeedView.swift */,
@@ -471,6 +474,7 @@
 				C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */,
 				C04E07272B029E9A00340D58 /* EditProfileView.swift in Sources */,
 				C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */,
+				C06A55572B26508F0081B137 /* RouteView.swift in Sources */,
 				C03126972B213146004CAE0B /* SearchBar.swift in Sources */,
 				C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */,
 				C0B4C0242B0126A0006D5022 /* TemplateMapViewModel.swift in Sources */,

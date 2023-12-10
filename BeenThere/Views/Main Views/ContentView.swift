@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var showSettingsAlert: Bool = false
     @State private var selection = Tab.map
     @State private var focusedField: Any?
+    @State private var showNavigation = false
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -49,7 +50,11 @@ struct ContentView: View {
                         .onTapGesture {
                             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         }
-                    SearchBar()
+//                    if showNavigation {
+//                        
+//                    } else {
+//                        SearchBar(showNavigation: $showNavigation)
+//                    }
 //                    HStack {
 //                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
 //                            ForEach(MapType.allCases) { type in

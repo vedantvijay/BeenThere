@@ -23,10 +23,7 @@ struct SettingsView: View {
     @State private var showFriendView = false
 //    @AppStorage("units") var units = "chunks"
     
-    
-    
     var body: some View {
-        NavigationStack {
             Form {
 //                Section {
 //                    Picker("Units", selection: $units) {
@@ -35,20 +32,19 @@ struct SettingsView: View {
 //                        }
 //                    }
 //                }
-                Section {
-                    Button("Sign Out") {
-                        viewModel.signOut()
-                        dismiss()
-                        appState = "notAuthenticated"
-                    }
-                    NavigationLink("Delete Account") {
-                        ConfirmDeleteAccountView()
-                    }
-                }
+//                Section {
+//                    Button("Sign Out") {
+//                        viewModel.signOut()
+//                        dismiss()
+//                        appState = "notAuthenticated"
+//                    }
+//                    NavigationLink("Delete Account") {
+//                        ConfirmDeleteAccountView()
+//                            .environmentObject(viewModel)
+//                    }
+//                }
             }
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-        }
     }
 }
 

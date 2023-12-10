@@ -9,7 +9,10 @@ import SwiftUI
 import Kingfisher
 
 struct ProfileView: View {
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AccountViewModel
+    @AppStorage("appState") var appState = "authenticated"
+
     
     var body: some View {
         NavigationStack {
@@ -50,25 +53,46 @@ struct ProfileView: View {
                 }
                 .padding()
                 Form {
-                    NavigationLink {
-                        EditProfileView()
-                    } label: {
-                        Text("Edit Profile")
-                    }
-                    NavigationLink {
-                        ManageFriendsView()
-                    } label: {
-                        HStack {
-                            Text("Manage Friends")
-                            Spacer()
-                            if viewModel.receivedFriendRequests.count > 0 {
-                                Image(systemName: "bell.badge.circle.fill")
-                                    .foregroundStyle(.red)
-                                    .font(.title3)
-                                    .fontWeight(.black)
+                    Section {
+                        NavigationLink {
+                            EditProfileView()
+                        } label: {
+                            Text("Edit Profile")
+                        }
+                        NavigationLink {
+                            ManageFriendsView()
+                        } label: {
+                            HStack {
+                                Text("Manage Friends")
+                                Spacer()
+                                if viewModel.receivedFriendRequests.count > 0 {
+                                    Image(systemName: "bell.badge.circle.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.title3)
+                                        .fontWeight(.black)
+                                }
                             }
                         }
+                        NavigationLink {
+                            SettingsView()
+                                .environmentObject(viewModel)
+                        } label: {
+                            Text("Settings")
+                        }
                     }
+                    Section {
+                        
+                        Button("Sign Out") {
+                            viewModel.signOut()
+                            dismiss()
+                            appState = "notAuthenticated"
+                        }
+                        NavigationLink("Delete Account") {
+                            ConfirmDeleteAccountView()
+                                .environmentObject(viewModel)
+                        }
+                    }
+                    
                 }
             }
         }

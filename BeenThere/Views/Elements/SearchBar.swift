@@ -16,10 +16,11 @@ struct SearchBar: View {
     @State private var suggestions: [GeocodedPlacemark] = []
     @State private var userLocation: CLLocationCoordinate2D?
     @FocusState private var isSearchFocused: Bool
+    @Binding var showNavigation: Bool
 
-    private var geocoder = Geocoder.shared
-    private let locationManager = CLLocationManager()
-    @State private var showProfile = false
+    var geocoder = Geocoder.shared
+    let locationManager = CLLocationManager()
+    @State var showProfile = false
     
     var body: some View {
         VStack {
@@ -74,17 +75,26 @@ struct SearchBar: View {
                     VStack(alignment: .leading, spacing: 10) {
                         ForEach(suggestions, id: \.name) { place in
                             HStack {
-                                Text(place.name)
-                                    .bold()
-                                Text(place.qualifiedName ?? "")
-                                    .foregroundStyle(.secondary)
+                                VStack(alignment: .leading) {
+                                    Text(place.name)
+                                        .bold()
+                                    Text(place.qualifiedName ?? "")
+                                        .foregroundStyle(.secondary)
+                                        .font(.caption)
+                                        .lineLimit(1)
+                                    
+                                }
                                 Spacer()
+                                Button {
+                                    selectPlace(place)
+                                } label: {
+                                    Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
+                                        .font(.largeTitle)
+                                }
                             }
+                            .frame(maxWidth: .infinity)
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 10).fill(Color.secondary))
-                            .onTapGesture {
-                                self.searchText = place.qualifiedName ?? ""
-                            }
                         }
                     }
                     .padding(.horizontal)
@@ -104,20 +114,44 @@ struct SearchBar: View {
         }
     }
     
-    private func fetchSuggestions(for query: String) {
+    func selectPlace(_ place: GeocodedPlacemark) {
+        self.searchText = place.qualifiedName ?? ""
+        self.showNavigation = true
+        // Add additional actions here, like closing the search, navigating, etc.
+        // Example: self.isSearchFocused = false
+    }
+    
+    func fetchSuggestions(for query: String) {
         let options = ForwardGeocodeOptions(query: query)
         if let location = userLocation {
-//            options.allowedISOCountryCodes = ["US"]
+            // options.allowedISOCountryCodes = ["US"]
             options.focalLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
         }
         
         _ = geocoder.geocode(options) { (placemarks, attribution, error) in
             DispatchQueue.main.async {
-                self.suggestions = placemarks ?? []
+                var uniquePlacemarks = [GeocodedPlacemark]()
+                var seen: Set<String> = []
+
+                for placemark in placemarks ?? [] {
+                    // Safely unwrap formattedName or use a fallback value (e.g., an empty string)
+                    let address = placemark.qualifiedName ?? ""
+
+                    // Skip if the formattedName is empty (or your defined fallback)
+                    guard !address.isEmpty else { continue }
+
+                    if !seen.contains(address) {
+                        seen.insert(address)
+                        uniquePlacemarks.append(placemark)
+                    }
+                }
+
+                self.suggestions = uniquePlacemarks
             }
         }
     }
-    
+
+
     private func requestLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
@@ -125,6 +159,6 @@ struct SearchBar: View {
     }
 }
 
-#Preview {
-    SearchBar()
-}
+//#Preview {
+//    SearchBar()
+//}

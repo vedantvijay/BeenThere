@@ -15,14 +15,17 @@ struct CustomTabBarView: View {
                 .frame(height: 90)
             HStack(alignment: .bottom) {
                 Button(action: {
-                    selection = .settings
+                    selection = .profile
+//                    selection = .settings
                 }) {
                     VStack {
-                        Image("search")
+                        Image(systemName: "person.fill")
+//                        Image("search")
                             .resizable()
                             .frame(width: 25, height: 25)
                             .offset(y: -5)
-                        Text("Search")
+                        Text("Profile")
+//                        Text("Search")
                             .font(.caption)
                     }
                 }

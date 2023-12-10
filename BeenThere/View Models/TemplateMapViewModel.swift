@@ -20,11 +20,13 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var isDarkModeEnabled: Bool = false
     @Published var locations: [Location] = [] 
+    
 //    {
 //        didSet {
 //            checkAndAddSquaresIfNeeded()
 //        }
 //    }
+    
     @Published var posts: [Post] = []
     @Published var showTappedLocation: Bool = false {
         didSet {
@@ -90,8 +92,48 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
+        mapView?.addGestureRecognizer(longPressGesture)
     }
     
+    @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began, let mapView = mapView else { return }
+
+        let locationInView = gesture.location(in: mapView)
+        let coordinate = mapView.mapboxMap.coordinate(for: locationInView)
+
+        addAnnotationAndCenterMap(at: coordinate)
+    }
+
+
+    func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
+        guard let mapView = mapView, let annotationManager = annotationManager else { return }
+
+        // Remove existing annotations if necessary
+        annotationManager.annotations.removeAll()
+
+        // Create and configure new annotation
+        var annotation = PointAnnotation(coordinate: coordinate)
+        // Set additional properties here, for example:
+        annotation.image = PointAnnotation.Image(image: UIImage(systemName: "smallcircle.filled.circle")!, name: "Pin")
+        
+
+        annotationManager.annotations = [annotation]
+        
+        tappedLocation = coordinate
+        
+        showTappedLocation = true
+
+        // Center the map on the new annotation
+        let cameraOptions = CameraOptions(center: coordinate, zoom: lastCameraZoom ?? 14)
+        mapView.camera.ease(to: cameraOptions, duration: 0.5)
+
+        // Update last camera properties
+        lastCameraCenter = coordinate
+    }
+
+
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
@@ -254,15 +296,15 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares() {
         guard let mapView = mapView else { return }
 
-        
         guard let boundingBox = self.boundingBox(for: mapType == .visited ? self.locations : posts.map { $0.location }) else { return }
-        
         
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
 
-        mapView.camera.fly(to: cameraOptions, duration: 0.5)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            mapView.camera.fly(to: cameraOptions, duration: 0.5)
+        }
         
         if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
             self.lastCameraCenter = cameraOptions.center
@@ -434,7 +476,7 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let newLocation = locations.last {
             // hopefully fix crashed while still working
-            if newLocation.speed <= 100 * 0.45 && newLocation.speed != -1 {
+            if newLocation.speed.magnitude <= 100 * 0.45 && newLocation.speed.magnitude != -1 {
                 checkBeenThere(location: newLocation)
             } else {
                 print("Speed is over 100 mph. Location not updated.")
