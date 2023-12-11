@@ -3,6 +3,7 @@ import CoreLocation
 import FirebaseAuth
 import MapboxCoreNavigation
 import MapboxNavigation
+import MapboxDirections
 
 struct ContentView: View {
     @AppStorage("username") var username = ""
@@ -14,7 +15,8 @@ struct ContentView: View {
     @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: AccountViewModel.sharedMain)
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
     @StateObject var navigationManager = NavigationManager()
-
+    @State private var isNavigationActive = false
+    @State private var activeRoute: Route?
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
     @State private var showTestDialog = false
@@ -54,27 +56,28 @@ struct ContentView: View {
                         .onTapGesture {
                             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         }
-//                    if showNavigation {
-//                        
-//                    } else {
-//                        SearchBar(showNavigation: $showNavigation)
-//                    }
-//                    HStack {
-//                        Picker("Map Type", selection: $mainMapViewModel.mapType) {
-//                            ForEach(MapType.allCases) { type in
-//                                Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
-//                                    .tag(type)
+//                        .onAppear {
+//                            mainMapViewModel.onNavigationStart = { route in
+//                                print("Navigation start triggered")
+//                                if let routeResponse = mainMapViewModel.routeResponse, let routeIndex = routeResponse.routes?.firstIndex(of: route) {
+//                                    self.activeRoute = route
+//                                    self.isNavigationActive = true
+//                                    print("isNavigationActive set to true")
+//                                }
 //                            }
 //                        }
-//                        .padding([.top, .leading])
-//                        .onChange(of: mainMapViewModel.mapType) {
-//                            mainMapViewModel.mapType = mainMapViewModel.mapType
-//                            mainMapViewModel.checkAndAddSquaresIfNeeded()
-//                            mainMapViewModel.adjustMapViewToFitSquares()
+//                        .onAppear {
+//                            let origin = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194) // Example coordinates
+//                            let destination = CLLocationCoordinate2D(latitude: 34.0522, longitude: -118.2437)
+//                            mainMapViewModel.requestDirections(from: origin, to: destination)
 //                        }
-//
-//                        Spacer()
-//                    }
+
+//                        .sheet(isPresented: $isNavigationActive) {
+//                            Text("Navigation View Controller should be here")
+//                        }
+
+
+
                     HStack {
                         if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                             Spacer()
@@ -167,7 +170,12 @@ struct ContentView: View {
         }
         .confirmationDialog("Navigate", isPresented: $mainMapViewModel.showTappedLocation) {
             if let location = mainMapViewModel.tappedLocation {
-//                NavigationLink("Navigate", destination: NavigatingView(startPoint: locationManagerDelegate.locationManager?.location, endPoint: location))
+//                Button("Start Navigation") {
+//                    if let destination = mainMapViewModel.tappedLocation, let currentLocation = mainMapViewModel.locationManager.location?.coordinate {
+//                        mainMapViewModel.requestDirections(from: currentLocation, to: destination)
+//
+//                    }
+//                }
                 Link("Open in Google Maps", destination: googleMapsURL(for: location))
                 Link("Open in Apple Maps", destination: appleMapsURL(for: location))
             }

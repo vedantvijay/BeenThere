@@ -301,10 +301,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 
         let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            mapView.camera.fly(to: cameraOptions, duration: 0.5)
-        }
+        
+        mapView.camera.fly(to: cameraOptions, duration: 0.5)
         
         if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
             self.lastCameraCenter = cameraOptions.center
