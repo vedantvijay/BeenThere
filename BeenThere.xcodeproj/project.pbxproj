@@ -17,6 +17,7 @@
 		C01B19202B266C3000E42FE5 /* MapboxGeocoder in Frameworks */ = {isa = PBXBuildFile; productRef = C01B191F2B266C3000E42FE5 /* MapboxGeocoder */; };
 		C01B19232B266C4100E42FE5 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19222B266C4100E42FE5 /* Kingfisher */; };
 		C01B19262B266C4E00E42FE5 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19252B266C4E00E42FE5 /* AlertToast */; };
+		C01B19282B27711100E42FE5 /* DirectionsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01B19272B27711100E42FE5 /* DirectionsSheetView.swift */; };
 		C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */; };
 		C03126972B213146004CAE0B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03126962B213146004CAE0B /* SearchBar.swift */; };
 		C03424C72B0C55BD00A9CA9A /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03424C62B0C55BD00A9CA9A /* Post.swift */; };
@@ -71,6 +72,7 @@
 
 /* Begin PBXFileReference section */
 		C001517C2AF53211007DA96F /* ChangeUsernameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeUsernameView.swift; sourceTree = "<group>"; };
+		C01B19272B27711100E42FE5 /* DirectionsSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionsSheetView.swift; sourceTree = "<group>"; };
 		C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C03126962B213146004CAE0B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		C03424C62B0C55BD00A9CA9A /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
+				C01B19272B27711100E42FE5 /* DirectionsSheetView.swift */,
 				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
 				C06A55582B26626A0081B137 /* NavigatingView.swift */,
 				C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */,
@@ -363,6 +366,7 @@
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
 				C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */,
+				C01B19282B27711100E42FE5 /* DirectionsSheetView.swift in Sources */,
 				C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,
 				C0EAC0BB2B1409250003B44E /* Enums.swift in Sources */,
@@ -517,7 +521,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -556,7 +560,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;

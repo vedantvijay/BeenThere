@@ -72,6 +72,7 @@ struct BeenThereApp: App {
                         .statusBarHidden()
                 }
             }
+            .preferredColorScheme(.dark)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     determineUIState()

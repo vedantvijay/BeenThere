@@ -50,34 +50,17 @@ struct ContentView: View {
                     .ignoresSafeArea()
             case .map:
                 ZStack(alignment: .top) {
-                    MainMapView()
-                        .ignoresSafeArea()
-                        .environmentObject(mainMapViewModel)
-                        .onTapGesture {
-                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                        }
-//                        .onAppear {
-//                            mainMapViewModel.onNavigationStart = { route in
-//                                print("Navigation start triggered")
-//                                if let routeResponse = mainMapViewModel.routeResponse, let routeIndex = routeResponse.routes?.firstIndex(of: route) {
-//                                    self.activeRoute = route
-//                                    self.isNavigationActive = true
-//                                    print("isNavigationActive set to true")
-//                                }
-//                            }
-//                        }
-//                        .onAppear {
-//                            let origin = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194) // Example coordinates
-//                            let destination = CLLocationCoordinate2D(latitude: 34.0522, longitude: -118.2437)
-//                            mainMapViewModel.requestDirections(from: origin, to: destination)
-//                        }
-
-//                        .sheet(isPresented: $isNavigationActive) {
-//                            Text("Navigation View Controller should be here")
-//                        }
-
-
-
+                    ZStack(alignment: .bottom) {
+                        MainMapView()
+                            .ignoresSafeArea()
+                            .environmentObject(mainMapViewModel)
+                            .onTapGesture {
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                mainMapViewModel.showTappedLocation = false
+                            }
+                        DirectionsSheetView()
+                                .environmentObject(mainMapViewModel)
+                    }
                     HStack {
                         if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                             Spacer()
@@ -102,10 +85,14 @@ struct ContentView: View {
                     .ignoresSafeArea()
                     .environmentObject(friendMapViewModel)
                     .environmentObject(sharedMapViewModel)
+                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+
             case .profile:
                 ProfileView()
                     .ignoresSafeArea()
                     .environmentObject(accountViewModel)
+                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+
             }
             if !isKeyboardVisible {
                 CustomTabBarView(selection: $selection)
@@ -114,9 +101,10 @@ struct ContentView: View {
                     .environmentObject(sharedMapViewModel)
                     .environmentObject(accountViewModel)
                     .ignoresSafeArea()
+                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
             }
         }
-        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+//        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),
@@ -168,29 +156,20 @@ struct ContentView: View {
                 isKeyboardVisible = false
             }
         }
-        .confirmationDialog("Navigate", isPresented: $mainMapViewModel.showTappedLocation) {
-            if let location = mainMapViewModel.tappedLocation {
-//                Button("Start Navigation") {
-//                    if let destination = mainMapViewModel.tappedLocation, let currentLocation = mainMapViewModel.locationManager.location?.coordinate {
-//                        mainMapViewModel.requestDirections(from: currentLocation, to: destination)
-//
-//                    }
-//                }
-                Link("Open in Google Maps", destination: googleMapsURL(for: location))
-                Link("Open in Apple Maps", destination: appleMapsURL(for: location))
-            }
-        }
+//        .sheet(isPresented: $mainMapViewModel.showTappedLocation) {
+//            if mainMapViewModel.tappedLocation != nil {
+//                DirectionsSheetView(location: mainMapViewModel.tappedLocation!)
+//                        .presentationDetents([.height(200)])
+//                        .presentationDragIndicator(.visible)
+//                        .presentationBackground(.thinMaterial)
+//                        .presentationBackgroundInteraction(.enabled)
+//            }
+//            
+//        }
     }
     
     private func requestLocationAccess() {
         locationManagerDelegate.requestLocationAccess()
-    }
-
-    private func googleMapsURL(for location: CLLocationCoordinate2D) -> URL {
-        URL(string: "comgooglemaps://?q=\(location.latitude),\(location.longitude)&center=\(location.latitude),\(location.longitude)&zoom=14")!
-    }
-    private func appleMapsURL(for location: CLLocationCoordinate2D) -> URL {
-        URL(string: "http://maps.apple.com/?ll=\(location.latitude),\(location.longitude)&q=\(location.latitude),\(location.longitude)")!
     }
 
     func requestNotificationPermission() {

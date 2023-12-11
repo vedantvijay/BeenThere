@@ -15,21 +15,21 @@ struct CustomTabBarView: View {
                 .frame(height: 90)
             HStack(alignment: .bottom) {
                 Button(action: {
-                    selection = .profile
+                    selection = .feed
 //                    selection = .settings
                 }) {
                     VStack {
-                        Image(systemName: "person.fill")
+                        Image(systemName: "rectangle.3.group.bubble.left")
 //                        Image("search")
                             .resizable()
                             .frame(width: 25, height: 25)
                             .offset(y: -5)
-                        Text("Profile")
+                        Text("Feed")
 //                        Text("Search")
                             .font(.caption)
                     }
                 }
-                .foregroundColor(selection == .settings ? .white : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
+                .foregroundColor(selection == .feed ? .white : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
                 .frame(maxWidth: .infinity)
                 VStack {
                     ZStack {

@@ -92,7 +92,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
-        
+
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
         mapView?.addGestureRecognizer(longPressGesture)
     }
@@ -110,30 +110,62 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
         guard let mapView = mapView, let annotationManager = annotationManager else { return }
 
-        // Remove existing annotations if necessary
         annotationManager.annotations.removeAll()
 
-        // Create and configure new annotation
         var annotation = PointAnnotation(coordinate: coordinate)
-        // Set additional properties here, for example:
         annotation.image = PointAnnotation.Image(image: UIImage(systemName: "pin")!, name: "Pin")
         
-
         annotationManager.annotations = [annotation]
         
         tappedLocation = coordinate
-        
         showTappedLocation = true
+        
+        // Calculate the offset based on the zoom level
+        let zoomLevel = mapView.cameraState.zoom
+        let latitudeOffset = calculateOffset(zoomLevel: zoomLevel, mapViewHeight: mapView.bounds.height)
+
+        // Adjust the center position
+        let adjustedCenter = CLLocationCoordinate2D(
+            latitude: coordinate.latitude - latitudeOffset,
+            longitude: coordinate.longitude
+        )
 
         // Center the map on the new annotation
-        let cameraOptions = CameraOptions(center: coordinate)
+        let cameraOptions = CameraOptions(center: showTappedLocation ? adjustedCenter : coordinate)
         mapView.camera.ease(to: cameraOptions, duration: 0.5)
 
         // Update last camera properties
         lastCameraCenter = coordinate
     }
+    
+//    func centerAfterSheetDissapears(at coordinate: CLLocationCoordinate2D) {
+//        guard let mapView = mapView else { return }
+//
+//        let zoomLevel = mapView.cameraState.zoom
+//        let latitudeOffset = calculateOffset(zoomLevel: zoomLevel, mapViewHeight: mapView.bounds.height)
+//        
+//        let adjustedCenter = CLLocationCoordinate2D(
+//            latitude: coordinate.latitude + latitudeOffset,
+//            longitude: coordinate.longitude
+//        )
+//        
+//        let cameraOptions = CameraOptions(center: showTappedLocation ? coordinate : adjustedCenter)
+//        mapView.camera.ease(to: cameraOptions, duration: 0.5)
+//        
+////        let cameraCenter = coordinate
+//        lastCameraCenter = coordinate
+//    }
 
+    // Calculate the offset for latitude based on the zoom level and map view height
+    private func calculateOffset(zoomLevel: CGFloat, mapViewHeight: CGFloat) -> CLLocationDegrees {
+        // Constants for conversion - these may need to be adjusted based on testing
+        let degreesPerScreenHeightAtZoom0: CLLocationDegrees = 360 // Approximate value
+        let screenHeightPercentage: CGFloat = 0.25 // 25% of the screen height
 
+        // Adjusting offset based on zoom level and screen height
+        let scale = pow(2, zoomLevel) // Assuming each zoom level halves the visible area
+        return degreesPerScreenHeightAtZoom0 * screenHeightPercentage / scale
+    }
     
     func updateMapStyleURL() {
         if UITraitCollection.current.userInterfaceStyle == .dark {
