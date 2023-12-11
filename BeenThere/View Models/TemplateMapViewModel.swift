@@ -126,7 +126,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         showTappedLocation = true
 
         // Center the map on the new annotation
-        let cameraOptions = CameraOptions(center: coordinate, zoom: lastCameraZoom ?? 14)
+        let cameraOptions = CameraOptions(center: coordinate)
         mapView.camera.ease(to: cameraOptions, duration: 0.5)
 
         // Update last camera properties
