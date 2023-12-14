@@ -92,9 +92,18 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
+        
+        mapView?.ornaments.logoView.alpha = 0.1
+        mapView?.ornaments.attributionButton.alpha = 0.1
+        mapView?.ornaments.options.logo.position = .topLeft
+        mapView?.ornaments.options.attributionButton.position = .topRight
+        mapView?.ornaments.options.logo.margins = CGPoint(x: 30, y: -40)
+        mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 20, y: -58)
 
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
         mapView?.addGestureRecognizer(longPressGesture)
+        mapView?.ornaments.scaleBarView.isHidden = true
+
     }
     
     @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
@@ -160,7 +169,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     private func calculateOffset(zoomLevel: CGFloat, mapViewHeight: CGFloat) -> CLLocationDegrees {
         // Constants for conversion - these may need to be adjusted based on testing
         let degreesPerScreenHeightAtZoom0: CLLocationDegrees = 360 // Approximate value
-        let screenHeightPercentage: CGFloat = 0.25 // 25% of the screen height
+        let screenHeightPercentage: CGFloat = 0.10 // 25% of the screen height
 
         // Adjusting offset based on zoom level and screen height
         let scale = pow(2, zoomLevel) // Assuming each zoom level halves the visible area

@@ -35,7 +35,7 @@ struct CustomTabBarView: View {
                     ZStack {
                         Circle()
                             .frame(width: 60, height: 60)
-                            .foregroundStyle(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)))
+                            .foregroundStyle(selection == .map ? Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)) : Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 0.5)))
                         Button(action: {
                             if selection == .map {
                                 mainMapViewModel.adjustMapViewToFitSquares()

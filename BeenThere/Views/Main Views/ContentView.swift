@@ -25,6 +25,8 @@ struct ContentView: View {
     @State private var selection = Tab.map
     @State private var focusedField: Any?
     @State private var showNavigation = false
+    @State private var isInteractingWithSlidyView = false
+
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -52,29 +54,28 @@ struct ContentView: View {
                 ZStack(alignment: .top) {
                     ZStack(alignment: .bottom) {
                         MainMapView()
+                            .disabled(isInteractingWithSlidyView)
                             .ignoresSafeArea()
                             .environmentObject(mainMapViewModel)
                             .onTapGesture {
                                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                 mainMapViewModel.showTappedLocation = false
                             }
-                        DirectionsSheetView()
-                                .environmentObject(mainMapViewModel)
+                        SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView)
+//                        DirectionsSheetView()
+//                                .environmentObject(mainMapViewModel)
                     }
                     HStack {
                         if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
-                            Spacer()
                             Button {
                                 showSettingsAlert = true
                             } label: {
                                 Image(systemName: "location.slash.circle.fill")
                             }
-                            .padding([.top, .trailing])
                             .buttonStyle(.bordered)
                             .tint(.red)
                         }
                     }
-                    .ignoresSafeArea()
                 }
                 .onChange(of: locationManagerDelegate.authorizationStatus) {
                     self.authorizationStatus = locationManagerDelegate.authorizationStatus
