@@ -46,7 +46,6 @@ struct ProfileView: View {
                         .foregroundStyle(.secondary)
                     SettingsView(navigationPath: $navigationPath)
                         .padding()
-                    
                     Button {
                         viewModel.signOut()
                         dismiss()

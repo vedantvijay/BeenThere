@@ -100,20 +100,20 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.options.logo.margins = CGPoint(x: 30, y: -40)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 20, y: -58)
 
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
-        mapView?.addGestureRecognizer(longPressGesture)
+//        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
+//        mapView?.addGestureRecognizer(longPressGesture)
         mapView?.ornaments.scaleBarView.isHidden = true
 
     }
     
-    @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .began, let mapView = mapView else { return }
-
-        let locationInView = gesture.location(in: mapView)
-        let coordinate = mapView.mapboxMap.coordinate(for: locationInView)
-
-        addAnnotationAndCenterMap(at: coordinate)
-    }
+//    @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
+//        guard gesture.state == .began, let mapView = mapView else { return }
+//
+//        let locationInView = gesture.location(in: mapView)
+//        let coordinate = mapView.mapboxMap.coordinate(for: locationInView)
+//
+//        addAnnotationAndCenterMap(at: coordinate)
+//    }
 
 
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
