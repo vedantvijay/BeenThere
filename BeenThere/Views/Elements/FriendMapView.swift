@@ -10,19 +10,18 @@ import MapboxMaps
 
 struct FriendMapView: UIViewRepresentable {
     @EnvironmentObject var viewModel: FriendMapViewModel
-    @Environment(\.colorScheme) var colorScheme
 
     func makeCoordinator() -> FriendMapViewModel {
         return viewModel
     }
     
     func makeUIView(context: Context) -> MapView {
-        viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")!)
+        viewModel.configureMapView(with: .zero, styleURI: StyleURI(rawValue: "mapbox://styles/jaredjones/clot6czi600kb01qq4arcfy2g")!)
         return viewModel.mapView!
     }
 
     func updateUIView(_ uiView: MapView, context: Context) {
-        viewModel.updateMapStyleURL()
+//        viewModel.updateMapStyleURL()
         viewModel.addGridlinesToMap()
         viewModel.checkAndAddSquaresIfNeeded()
     }

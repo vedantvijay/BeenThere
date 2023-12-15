@@ -66,7 +66,7 @@ struct FriendView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 25))
                     .padding()
                     .padding()
-                    .shadow(color: colorScheme == .light ? .secondary : .secondary, radius: 3)
+//                    .shadow(color: colorScheme == .light ? .secondary : .secondary, radius: 3)
                     .onAppear {
                         
                         if let locationDictionaries = friend["locations"] as? [[String: Any]] {
