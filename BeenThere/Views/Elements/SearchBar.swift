@@ -16,6 +16,7 @@ struct SearchBarView: View {
     @State private var suggestions: [GeocodedPlacemark] = []
     @State private var userLocation: CLLocationCoordinate2D?
     @FocusState private var isSearchFocused: Bool
+    @Binding var isFocused: Bool
 
     var geocoder = Geocoder.shared
     let locationManager = CLLocationManager()
@@ -45,6 +46,9 @@ struct SearchBarView: View {
                                     .padding(8)
                             }
                         )
+                        .onChange(of: isSearchFocused) {
+                            isFocused = isSearchFocused
+                        }
                     Button {
                         showProfile = true
                     } label: {

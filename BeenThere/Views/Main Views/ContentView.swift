@@ -43,10 +43,6 @@ struct ContentView: View {
     var body: some View {
         VStack {
             switch selection {
-            case .settings:
-                SettingsView()
-                    .ignoresSafeArea()
-
             case .feed:
                 FeedView()
                     .ignoresSafeArea()

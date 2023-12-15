@@ -1,16 +1,9 @@
-//
-//  SlidyView.swift
-//  BeenThere
-//
-//  Created by Jared Jones on 12/13/23.
-//
-
 import SwiftUI
 
 struct SlidyView: View {
     let lowHeight: CGFloat = 50
     let mediumHeight: CGFloat = 350
-    let tallHeight: CGFloat = 700
+    let tallHeight: CGFloat = 750
     
     @Binding var isInteractingWithSlidyView: Bool
     @State private var currentHeight: CGFloat
@@ -18,11 +11,10 @@ struct SlidyView: View {
     @GestureState private var dragState = DragState.inactive
     @State private var dragStartY: CGFloat? = nil
     @State private var isGestureActive = false
+    @State private var isSearchBarFocused: Bool = false
 
-//    private let swipeThresholdVelocity: CGFloat = 100
-    private let swipeThresholdDistance: CGFloat = 1 // adjust for sensitivity
 
-    
+    private let swipeThresholdDistance: CGFloat = 1
     
     init(isInteractingWithSlidyView: Binding<Bool>) {
         _isInteractingWithSlidyView = isInteractingWithSlidyView
@@ -40,17 +32,26 @@ struct SlidyView: View {
                 .frame(width: 40, height: 5)
                 .padding(6)
                 .foregroundStyle(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
-            ScrollView {
+            
+            GeometryReader { geometry in
                 VStack {
-                    SearchBarView()
+                    FeedView()
+//                    ProfileView()
+//                    SearchBarView(isFocused: $isSearchBarFocused)
                 }
-                .padding()
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .clipped()
                 .offset(y: verticalOffset(for: currentHeight))
+                .onChange(of: isSearchBarFocused) {
+                    if isSearchBarFocused {
+                        withAnimation {
+                            currentHeight = tallHeight
+                        }
+                    }
+                }
+
             }
-//            CustomScrollView(content: {
-//                
-//            }, onDragGesture: handleDragGesture)
-            .padding(.top, 50)
+            .padding(.top, 20)
         }
         .frame(height: currentHeight)
         .gesture(

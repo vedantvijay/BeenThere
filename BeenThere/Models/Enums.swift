@@ -12,7 +12,7 @@ enum AppUIState {
 }
 
 enum Tab {
-    case settings, feed, map, leaderboards, profile
+    case feed, map, leaderboards, profile
 }
 
 enum MapType: String, CaseIterable, Identifiable {
