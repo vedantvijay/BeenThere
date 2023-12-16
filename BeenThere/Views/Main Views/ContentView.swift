@@ -26,6 +26,7 @@ struct ContentView: View {
     @State private var focusedField: Any?
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
+    @State private var showSpeedAlert = false
 
     
     var usesMetric: Bool {
@@ -58,8 +59,6 @@ struct ContentView: View {
                                 mainMapViewModel.showTappedLocation = false
                             }
                         SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView)
-//                        DirectionsSheetView()
-//                                .environmentObject(mainMapViewModel)
                     }
                     HStack {
                         if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
@@ -70,6 +69,17 @@ struct ContentView: View {
                             }
                             .buttonStyle(.bordered)
                             .tint(.red)
+                        }
+                        if let lastLocation = mainMapViewModel.locationManager.location {
+                            if lastLocation.speed.magnitude > 100 * 0.45 && lastLocation.speed.magnitude != -1 {
+                                Button {
+                                    showSpeedAlert = true
+                                } label: {
+                                    Image(systemName: "airplane.circle.fill")
+                                }
+                                .buttonStyle(.bordered)
+                                .tint(.orange)
+                            }
                         }
                     }
                 }
@@ -101,7 +111,6 @@ struct ContentView: View {
                     .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
             }
         }
-//        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),
@@ -110,6 +119,12 @@ struct ContentView: View {
                     openAppSettings()
                 }),
                 secondaryButton: .cancel()
+            )
+        }
+        .alert(isPresented: $showSpeedAlert) {
+            Alert(
+                title: Text("Too Fast"),
+                message: Text("Location tracking will be disabled until you are travelling less than 100 mph.")
             )
         }
         .onChange(of: accountViewModel.locations.count) {

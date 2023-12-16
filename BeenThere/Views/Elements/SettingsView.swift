@@ -26,8 +26,10 @@ struct SettingsView: View {
     var body: some View {
             VStack(alignment: .leading) {
                 SettingsItemView(icon: Image("person"), text: "Edit Profile", destinationID: editProfileID, navigationPath: $navigationPath)
+                Divider()
                 SettingsItemView(icon: Image("people"), text: "Manage Friends", destinationID: manageFriendsID, navigationPath: $navigationPath)
-                SettingsItemView(icon: Image("share"), text: "Sharing", destinationID: sharingID, navigationPath: $navigationPath)
+                Divider()
+//                SettingsItemView(icon: Image("share"), text: "Sharing", destinationID: sharingID, navigationPath: $navigationPath)
                 SettingsItemView(icon: Image(systemName: "person.slash.fill"), text: "Delete Account", destinationID: deleteAccountID, navigationPath: $navigationPath)
             }
             .padding()

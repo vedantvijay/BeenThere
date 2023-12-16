@@ -32,6 +32,7 @@ struct SettingsItemView: View {
                     .padding(.leading)
                 Spacer()
             }
+            .padding(.vertical, 5)
         }
     }
 }

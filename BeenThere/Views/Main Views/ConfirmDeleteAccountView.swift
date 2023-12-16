@@ -91,11 +91,12 @@ struct ConfirmDeleteAccountView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(uiColor: UIColor(red: 0.08, green: 0.1, blue: 0.15, alpha: 1)))
         .onDisappear {
             dismiss()
         }
         .navigationTitle("Delete Account")
-//        .background(Color(uiColor: UIColor.systemGroupedBackground))
         .onReceive(timer) { _ in
             if let minutes = accountViewModel.minutesSinceLastLogin {
                 minutesSinceLastLogin = minutes

@@ -78,8 +78,9 @@ struct SlidyView: View {
                         withAnimation {
                             self.currentHeight = closestHeight
                         }
-                        isInteractingWithSlidyView = currentHeight == tallHeight
                     }
+                    isInteractingWithSlidyView = currentHeight == tallHeight
+
                 }
             
             
