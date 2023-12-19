@@ -71,7 +71,7 @@ struct ContentView: View {
                             .tint(.red)
                         }
                         if let lastLocation = mainMapViewModel.locationManager.location {
-                            if lastLocation.speed.magnitude > 100 * 0.45 && lastLocation.speed.magnitude != -1 {
+                            if lastLocation.speed.magnitude > 100 * 0.45 {
                                 Button {
                                     showSpeedAlert = true
                                 } label: {
