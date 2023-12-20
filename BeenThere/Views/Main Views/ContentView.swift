@@ -75,7 +75,7 @@ struct ContentView: View {
                                 Button {
                                     showSpeedAlert = true
                                 } label: {
-                                    Image(systemName: "airplane.circle.fill")
+                                    Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
                                 }
                                 .buttonStyle(.bordered)
                                 .tint(.orange)
