@@ -42,75 +42,81 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack {
-            switch selection {
-            case .feed:
-                FeedView()
-                    .ignoresSafeArea()
-            case .map:
-                ZStack(alignment: .top) {
-                    ZStack(alignment: .bottom) {
-                        MainMapView()
-                            .disabled(isInteractingWithSlidyView)
-                            .ignoresSafeArea()
-                            .environmentObject(mainMapViewModel)
-                            .onTapGesture {
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                                mainMapViewModel.showTappedLocation = false
+        GeometryReader { geometry in
+            VStack {
+                switch selection {
+                case .feed:
+                    FeedView()
+                        .ignoresSafeArea()
+                case .map:
+                    
+                        ZStack(alignment: .top) {
+                            ZStack(alignment: .bottom) {
+                                MainMapView()
+                                    .disabled(isInteractingWithSlidyView)
+                                    .ignoresSafeArea()
+                                    .environmentObject(mainMapViewModel)
+                                    .onTapGesture {
+                                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                        mainMapViewModel.showTappedLocation = false
+                                    }
+                                SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
                             }
-                        SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView)
-                    }
-                    HStack {
-                        if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
-                            Button {
-                                showSettingsAlert = true
-                            } label: {
-                                Image(systemName: "location.slash.circle.fill")
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(.red)
-                        }
-                        if let lastLocation = mainMapViewModel.locationManager.location {
-                            if lastLocation.speed.magnitude > 100 * 0.45 {
-                                Button {
-                                    showSpeedAlert = true
-                                } label: {
-                                    Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
+                            HStack {
+                                if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
+                                    Button {
+                                        showSettingsAlert = true
+                                    } label: {
+                                        Image(systemName: "location.slash.circle.fill")
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.red)
                                 }
-                                .buttonStyle(.bordered)
-                                .tint(.orange)
+                                if let lastLocation = mainMapViewModel.locationManager.location {
+                                    if lastLocation.speed.magnitude > 100 * 0.45 {
+                                        Button {
+                                            showSpeedAlert = true
+                                        } label: {
+                                            Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
+                                        }
+                                        .buttonStyle(.bordered)
+                                        .tint(.orange)
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-                .onChange(of: locationManagerDelegate.authorizationStatus) {
-                    self.authorizationStatus = locationManagerDelegate.authorizationStatus
-                }
-                
-            case .leaderboards:
-                LeaderboardView()
-                    .ignoresSafeArea()
-                    .environmentObject(friendMapViewModel)
-                    .environmentObject(sharedMapViewModel)
-                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+                        .onChange(of: locationManagerDelegate.authorizationStatus) {
+                            self.authorizationStatus = locationManagerDelegate.authorizationStatus
+                        }
 
-            case .profile:
-                ProfileView()
-                    .ignoresSafeArea()
-                    .environmentObject(accountViewModel)
-                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+                    
+                                    
+                case .leaderboards:
+                    LeaderboardView()
+                        .ignoresSafeArea()
+                        .environmentObject(friendMapViewModel)
+                        .environmentObject(sharedMapViewModel)
+                        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
 
-            }
-            if !isKeyboardVisible {
-                CustomTabBarView(selection: $selection)
-                    .environmentObject(mainMapViewModel)
-                    .environmentObject(friendMapViewModel)
-                    .environmentObject(sharedMapViewModel)
-                    .environmentObject(accountViewModel)
-                    .ignoresSafeArea()
-                    .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+                case .profile:
+                    ProfileView()
+                        .ignoresSafeArea()
+                        .environmentObject(accountViewModel)
+                        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+
+                }
+                if !isKeyboardVisible {
+                    CustomTabBarView(selection: $selection)
+                        .environmentObject(mainMapViewModel)
+                        .environmentObject(friendMapViewModel)
+                        .environmentObject(sharedMapViewModel)
+                        .environmentObject(accountViewModel)
+                        .ignoresSafeArea()
+                        .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+                }
             }
         }
+
         .alert(isPresented: $showSettingsAlert) {
             Alert(
                 title: Text("Location Access Denied"),

@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SlidyView: View {
     let lowHeight: CGFloat = 50
-    let mediumHeight: CGFloat = 350
-    let tallHeight: CGFloat = 750
+    let screenHeight: CGFloat
+    let screenWidth: CGFloat
     
     @Binding var isInteractingWithSlidyView: Bool
     @State private var currentHeight: CGFloat
@@ -13,35 +13,35 @@ struct SlidyView: View {
     @State private var isGestureActive = false
     @State private var isSearchBarFocused: Bool = false
 
-
     private let swipeThresholdDistance: CGFloat = 1
     
-    init(isInteractingWithSlidyView: Binding<Bool>) {
+    init(isInteractingWithSlidyView: Binding<Bool>, screenHeight: CGFloat, screenWidth: CGFloat) {
+        self.screenHeight = screenHeight
+        self.screenWidth = screenWidth
         _isInteractingWithSlidyView = isInteractingWithSlidyView
         _currentHeight = State(initialValue: lowHeight)
     }
     
-    
     var body: some View {
-        ZStack(alignment: .top) {
-            Rectangle()
-                .cornerRadius(15, corners: [.topLeft, .topRight])
-                .frame(maxWidth: .infinity)
-                .foregroundStyle(Color(uiColor: UIColor(red: 0.15, green: 0.18, blue: 0.25, alpha: 1)))
-            RoundedRectangle(cornerRadius: 20)
-                .frame(width: 40, height: 5)
-                .padding(6)
-                .foregroundStyle(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
-            
-            GeometryReader { geometry in
+            let mediumHeight = screenHeight * 0.4
+            let tallHeight = screenHeight * 0.9
+
+            ZStack(alignment: .top) {
+                Rectangle()
+                    .cornerRadius(15, corners: [.topLeft, .topRight])
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color(uiColor: UIColor(red: 0.15, green: 0.18, blue: 0.25, alpha: 1)))
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(width: 40, height: 5)
+                    .padding(6)
+                    .foregroundStyle(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
+                
                 VStack {
                     FeedView()
-//                    ProfileView()
-//                    SearchBarView(isFocused: $isSearchBarFocused)
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
+                .frame(width: screenWidth, height: currentHeight)
                 .clipped()
-                .offset(y: verticalOffset(for: currentHeight))
+                .offset(y: verticalOffset(for: currentHeight, mediumHeight: mediumHeight))
                 .onChange(of: isSearchBarFocused) {
                     if isSearchBarFocused {
                         withAnimation {
@@ -49,48 +49,46 @@ struct SlidyView: View {
                         }
                     }
                 }
-
             }
-            .padding(.top, 20)
-        }
-        .frame(height: currentHeight)
-        .gesture(
-            DragGesture()
-                .updating($dragAmount) { drag, state, _ in
-                    state = drag.translation
-                }
-                .onChanged { drag in
-                    isInteractingWithSlidyView = true
-                    let newHeight = max(lowHeight, currentHeight - drag.translation.height)
-                    if newHeight != currentHeight {
-                        currentHeight = newHeight
+            .frame(height: currentHeight)
+            .gesture(
+                DragGesture()
+                    .updating($dragAmount) { drag, state, _ in
+                        state = drag.translation
                     }
-                }
-                .onEnded { value in
-                    let verticalDistance = value.translation.height
-                    if abs(verticalDistance) > swipeThresholdDistance {
-                        let swipeUp = verticalDistance < 0
-                        withAnimation {
-                            self.currentHeight = self.nextHeight(swipeUp: swipeUp)
-                        }
-                    } else {
-                        let closestHeight = self.closestHeight(to: currentHeight)
-                        withAnimation {
-                            self.currentHeight = closestHeight
+                    .onChanged { drag in
+                        isInteractingWithSlidyView = true
+                        let newHeight = max(lowHeight, currentHeight - drag.translation.height)
+                        if newHeight != currentHeight {
+                            currentHeight = newHeight
                         }
                     }
-                    isInteractingWithSlidyView = currentHeight == tallHeight
-
-                }
-            
-            
-            
-        )
+                    .onEnded { value in
+                        handleGestureEnd(value, mediumHeight: mediumHeight, tallHeight: tallHeight)
+                    }
+            )
+        
     }
     
-    private func nextHeight(swipeUp: Bool) -> CGFloat {
+    private func handleGestureEnd(_ value: DragGesture.Value, mediumHeight: CGFloat, tallHeight: CGFloat) {
+           let verticalDistance = value.translation.height
+           if abs(verticalDistance) > swipeThresholdDistance {
+               let swipeUp = verticalDistance < 0
+               withAnimation {
+                   self.currentHeight = self.nextHeight(swipeUp: swipeUp, mediumHeight: mediumHeight, tallHeight: tallHeight)
+               }
+           } else {
+               let closestHeight = self.closestHeight(to: currentHeight, mediumHeight: mediumHeight, tallHeight: tallHeight)
+               withAnimation {
+                   self.currentHeight = closestHeight
+               }
+           }
+           isInteractingWithSlidyView = currentHeight == tallHeight
+       }
+    
+    private func nextHeight(swipeUp: Bool, mediumHeight: CGFloat, tallHeight: CGFloat) -> CGFloat {
         _ = [lowHeight, mediumHeight, tallHeight]
-        let closestHeight = self.closestHeight(to: currentHeight)
+        let closestHeight = self.closestHeight(to: currentHeight, mediumHeight: mediumHeight, tallHeight: tallHeight)
         
         if swipeUp {
             switch closestHeight {
@@ -114,12 +112,12 @@ struct SlidyView: View {
     }
     
     
-    private func closestHeight(to height: CGFloat) -> CGFloat {
+    private func closestHeight(to height: CGFloat, mediumHeight: CGFloat, tallHeight: CGFloat) -> CGFloat {
         let heights = [lowHeight, mediumHeight, tallHeight]
         return heights.min(by: { abs($0 - height) < abs($1 - height) }) ?? lowHeight
     }
     
-    private func verticalOffset(for height: CGFloat) -> CGFloat {
+    private func verticalOffset(for height: CGFloat, mediumHeight: CGFloat) -> CGFloat {
         if height <= lowHeight {
             return 100
         } else if height >= mediumHeight {
@@ -130,7 +128,12 @@ struct SlidyView: View {
         }
     }
     
-    private func handleDragGesture(_ gesture: DragGesture.Value) {
+//    private func verticalOffset(for height: CGFloat, screenHeight: CGFloat) -> CGFloat {
+//        return screenHeight - height
+//    }
+
+    
+    private func handleDragGesture(_ gesture: DragGesture.Value, mediumHeight: CGFloat, tallHeight: CGFloat) {
         if isGestureActive {
             // Handle drag change
             let newHeight = max(lowHeight, currentHeight - gesture.translation.height)
@@ -143,10 +146,10 @@ struct SlidyView: View {
             if abs(verticalDistance) > swipeThresholdDistance {
                 let swipeUp = verticalDistance < 0
                 withAnimation {
-                    self.currentHeight = self.nextHeight(swipeUp: swipeUp)
+                    self.currentHeight = self.nextHeight(swipeUp: swipeUp, mediumHeight: mediumHeight, tallHeight: tallHeight)
                 }
             } else {
-                let closestHeight = self.closestHeight(to: currentHeight)
+                let closestHeight = self.closestHeight(to: currentHeight, mediumHeight: mediumHeight, tallHeight: tallHeight)
                 withAnimation {
                     self.currentHeight = closestHeight
                 }
@@ -232,6 +235,6 @@ struct ViewOffsetKey: PreferenceKey {
 }
 
 
-#Preview {
-    SlidyView(isInteractingWithSlidyView: .constant(true))
-}
+//#Preview {
+//    SlidyView(isInteractingWithSlidyView: .constant(true))
+//}

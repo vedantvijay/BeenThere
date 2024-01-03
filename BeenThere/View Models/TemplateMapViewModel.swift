@@ -14,6 +14,9 @@ import Combine
 import SwiftUI
 
 class TemplateMapViewModel: NSObject, ObservableObject {
+    private let speedReadingsKey = "speedReadings"
+
+    
     @Published var mapType = MapType.visited
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
@@ -95,10 +98,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         
         mapView?.ornaments.logoView.alpha = 0.1
         mapView?.ornaments.attributionButton.alpha = 0.1
-        mapView?.ornaments.options.logo.position = .topLeft
-        mapView?.ornaments.options.attributionButton.position = .topRight
-        mapView?.ornaments.options.logo.margins = CGPoint(x: 30, y: -40)
-        mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 20, y: -58)
+
+        mapView?.ornaments.options.logo.position = .bottomLeft
+        mapView?.ornaments.options.attributionButton.position = .bottomRight
+        mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 60)
+        mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 60)
 
 //        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
 //        mapView?.addGestureRecognizer(longPressGesture)
@@ -509,18 +513,37 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 }
 
 extension TemplateMapViewModel: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-    }
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        var speedReadings = loadSpeedReadings()
+
         if let newLocation = locations.last {
-            // hopefully fix crashed while still working
-            if newLocation.speed.magnitude <= 100 * 0.45 && newLocation.speed.magnitude != -1 {
+            speedReadings.append(newLocation.speed.magnitude)
+            if speedReadings.count > 5 {
+                speedReadings.removeFirst()
+            }
+
+            saveSpeedReadings(speedReadings)
+
+            let averageSpeed = speedReadings.reduce(0, +) / Double(speedReadings.count)
+            print("Average speed: \(averageSpeed) m/s")
+
+            if averageSpeed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
                 checkBeenThere(location: newLocation)
             } else {
-                print("Speed is over 100 mph. Location not updated.")
+                print("Average speed is over 100 mph. Location not updated.")
             }
         }
     }
+
+    private func saveSpeedReadings(_ readings: [Double]) {
+        UserDefaults.standard.set(readings, forKey: speedReadingsKey)
+    }
+
+    private func loadSpeedReadings() -> [Double] {
+        UserDefaults.standard.array(forKey: speedReadingsKey) as? [Double] ?? []
+    }
 }
+
+
 
