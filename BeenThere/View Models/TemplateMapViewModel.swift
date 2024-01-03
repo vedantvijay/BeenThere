@@ -518,20 +518,22 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
         var speedReadings = loadSpeedReadings()
 
         if let newLocation = locations.last {
-            speedReadings.append(newLocation.speed.magnitude)
-            if speedReadings.count > 5 {
-                speedReadings.removeFirst()
-            }
+            if newLocation.speedAccuracy.magnitude < 10 * 0.44704 {
+                speedReadings.append(newLocation.speed.magnitude)
+                if speedReadings.count > 5 {
+                    speedReadings.removeFirst()
+                }
 
-            saveSpeedReadings(speedReadings)
+                saveSpeedReadings(speedReadings)
 
-            let averageSpeed = speedReadings.reduce(0, +) / Double(speedReadings.count)
-            print("Average speed: \(averageSpeed) m/s")
+                let averageSpeed = speedReadings.reduce(0, +) / Double(speedReadings.count)
+                print("Average speed: \(averageSpeed) m/s")
 
-            if averageSpeed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
-                checkBeenThere(location: newLocation)
-            } else {
-                print("Average speed is over 100 mph. Location not updated.")
+                if averageSpeed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
+                    checkBeenThere(location: newLocation)
+                } else {
+                    print("Average speed is over 100 mph. Location not updated.")
+                }
             }
         }
     }
