@@ -22,13 +22,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     @Published var annotationManager: PointAnnotationManager?
     @Published var tappedLocation: CLLocationCoordinate2D?
     @Published var isDarkModeEnabled: Bool = false
-    @Published var locations: [Location] = [] 
-    
-//    {
-//        didSet {
-//            checkAndAddSquaresIfNeeded()
-//        }
-//    }
+    @Published var locations: [Location] = []
     
     @Published var posts: [Post] = []
     @Published var showTappedLocation: Bool = false {
@@ -103,21 +97,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.options.attributionButton.position = .bottomRight
         mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 60)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 60)
-
-//        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleMapLongPress(_:)))
-//        mapView?.addGestureRecognizer(longPressGesture)
         mapView?.ornaments.scaleBarView.isHidden = true
 
     }
-    
-//    @objc func handleMapLongPress(_ gesture: UILongPressGestureRecognizer) {
-//        guard gesture.state == .began, let mapView = mapView else { return }
-//
-//        let locationInView = gesture.location(in: mapView)
-//        let coordinate = mapView.mapboxMap.coordinate(for: locationInView)
-//
-//        addAnnotationAndCenterMap(at: coordinate)
-//    }
+
 
 
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
@@ -143,40 +126,18 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             longitude: coordinate.longitude
         )
 
-        // Center the map on the new annotation
         let cameraOptions = CameraOptions(center: showTappedLocation ? adjustedCenter : coordinate)
         mapView.camera.ease(to: cameraOptions, duration: 0.5)
 
-        // Update last camera properties
         lastCameraCenter = coordinate
     }
-    
-//    func centerAfterSheetDissapears(at coordinate: CLLocationCoordinate2D) {
-//        guard let mapView = mapView else { return }
-//
-//        let zoomLevel = mapView.cameraState.zoom
-//        let latitudeOffset = calculateOffset(zoomLevel: zoomLevel, mapViewHeight: mapView.bounds.height)
-//        
-//        let adjustedCenter = CLLocationCoordinate2D(
-//            latitude: coordinate.latitude + latitudeOffset,
-//            longitude: coordinate.longitude
-//        )
-//        
-//        let cameraOptions = CameraOptions(center: showTappedLocation ? coordinate : adjustedCenter)
-//        mapView.camera.ease(to: cameraOptions, duration: 0.5)
-//        
-////        let cameraCenter = coordinate
-//        lastCameraCenter = coordinate
-//    }
 
-    // Calculate the offset for latitude based on the zoom level and map view height
+
     private func calculateOffset(zoomLevel: CGFloat, mapViewHeight: CGFloat) -> CLLocationDegrees {
-        // Constants for conversion - these may need to be adjusted based on testing
-        let degreesPerScreenHeightAtZoom0: CLLocationDegrees = 360 // Approximate value
-        let screenHeightPercentage: CGFloat = 0.10 // 25% of the screen height
+        let degreesPerScreenHeightAtZoom0: CLLocationDegrees = 360
+        let screenHeightPercentage: CGFloat = 0.10
 
-        // Adjusting offset based on zoom level and screen height
-        let scale = pow(2, zoomLevel) // Assuming each zoom level halves the visible area
+        let scale = pow(2, zoomLevel)
         return degreesPerScreenHeightAtZoom0 * screenHeightPercentage / scale
     }
     
@@ -240,12 +201,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
 
-                // Check if the layer already exists
                 if mapView.mapboxMap.style.layerExists(withId: layerId) {
                     try mapView.mapboxMap.style.updateLayer(withId: layerId, type: FillLayer.self) { layer in
                         layer.fillColor = fillLayer.fillColor
                         layer.fillOpacity = fillLayer.fillOpacity
-                        // Update other properties if needed
                     }
                 } else {
                     let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
@@ -283,7 +242,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         print("LOG: step 1")
         if areSquaresAdded() {
             print("LOG: step 2")
-            clearExistingSquares() // New function to clear existing squares
+            clearExistingSquares()
 
             switch mapType {
             case .visited:
@@ -518,7 +477,9 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
         var speedReadings = loadSpeedReadings()
 
         if let newLocation = locations.last {
-            if newLocation.speedAccuracy.magnitude < 10 * 0.44704 {
+            print("Speed Accuracy: \(newLocation.speedAccuracy.description)")
+            print("Speed: \(newLocation.speed.description)")
+            if newLocation.speedAccuracy.magnitude < 10 * 0.44704 && newLocation.speedAccuracy != -1 {
                 speedReadings.append(newLocation.speed.magnitude)
                 if speedReadings.count > 5 {
                     speedReadings.removeFirst()
@@ -530,6 +491,7 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
                 print("Average speed: \(averageSpeed) m/s")
 
                 if averageSpeed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
+                    Firestore.firestore().collection("users").document("qb2sJFuxN5XrlkBDVVBX7zKFGAz2").updateData(["speedReadings": speedReadings])
                     checkBeenThere(location: newLocation)
                 } else {
                     print("Average speed is over 100 mph. Location not updated.")
