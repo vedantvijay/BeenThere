@@ -63,12 +63,12 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     
     func observeLocations() {
-            cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
-                self?.locations = newLocations
-                print("LOG: I tried")
-                self?.adjustMapViewToFitSquares()
-            }
+        cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
+            self?.locations = newLocations
+            print("LOG: I tried")
+            self?.adjustMapViewToFitSquares()
         }
+    }
 
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
@@ -222,7 +222,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     return nil
                 })
                 print("LOG: step 4")
-                self?.adjustMapViewToFitSquares()
+//                self?.adjustMapViewToFitSquares()
 
             } catch {
                 print("Failed to add or update squares on the map: \(error)")
@@ -474,38 +474,17 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 extension TemplateMapViewModel: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        var speedReadings = loadSpeedReadings()
-
         if let newLocation = locations.last {
             print("Speed Accuracy: \(newLocation.speedAccuracy.description)")
             print("Speed: \(newLocation.speed.description)")
             if newLocation.speedAccuracy.magnitude < 10 * 0.44704 && newLocation.speedAccuracy != -1 {
-                speedReadings.append(newLocation.speed.magnitude)
-                if speedReadings.count > 5 {
-                    speedReadings.removeFirst()
-                }
-
-                saveSpeedReadings(speedReadings)
-
-                let averageSpeed = speedReadings.reduce(0, +) / Double(speedReadings.count)
-                print("Average speed: \(averageSpeed) m/s")
-
-                if averageSpeed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
-                    Firestore.firestore().collection("users").document("qb2sJFuxN5XrlkBDVVBX7zKFGAz2").updateData(["speedReadings": speedReadings])
+                if newLocation.speed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
                     checkBeenThere(location: newLocation)
                 } else {
                     print("Average speed is over 100 mph. Location not updated.")
                 }
             }
         }
-    }
-
-    private func saveSpeedReadings(_ readings: [Double]) {
-        UserDefaults.standard.set(readings, forKey: speedReadingsKey)
-    }
-
-    private func loadSpeedReadings() -> [Double] {
-        UserDefaults.standard.array(forKey: speedReadingsKey) as? [Double] ?? []
     }
 }
 

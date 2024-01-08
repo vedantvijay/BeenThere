@@ -39,6 +39,5 @@ class SharedMapViewModel: TemplateMapViewModel {
         let cameraOptions = CameraOptions(center: coordinate, zoom: Double(zoomLevel))
         mapView.mapboxMap.setCamera(to: cameraOptions)
     }
-
 }
 
