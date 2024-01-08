@@ -66,7 +66,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
             self?.locations = newLocations
             print("LOG: I tried")
-            self?.adjustMapViewToFitSquares()
+//            self?.adjustMapViewToFitSquares()
         }
     }
 
@@ -222,7 +222,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     return nil
                 })
                 print("LOG: step 4")
-//                self?.adjustMapViewToFitSquares()
+                self?.adjustMapViewToFitSquares()
 
             } catch {
                 print("Failed to add or update squares on the map: \(error)")
