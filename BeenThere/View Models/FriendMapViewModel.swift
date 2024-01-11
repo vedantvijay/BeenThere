@@ -16,7 +16,6 @@ class FriendMapViewModel: TemplateMapViewModel {
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
     
     override func addSquaresToMap(locations: [Location]) {
-        print("LOG: step 3")
         guard let mapView = mapView else { return }
 
         var features = [Feature]()

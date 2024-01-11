@@ -10,8 +10,8 @@ import SwiftUI
 struct SharedView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var viewModel: SharedMapViewModel
-    @EnvironmentObject var accountViewModel: AccountViewModel
+    @ObservedObject var viewModel: SharedMapViewModel
+    @ObservedObject var accountViewModel: AccountViewModel
     
     var userLocations: [Location] {
         let tempLocations = accountViewModel.users.flatMap { user -> [Location] in
@@ -37,7 +37,7 @@ struct SharedView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            SharedMapView()
+            SharedMapView(viewModel: viewModel)
                 .onAppear {
                     viewModel.updateMapStyleURL()
                     viewModel.locations = userLocations
@@ -49,20 +49,6 @@ struct SharedView: View {
                 .onDisappear {
                     dismiss()
                 }
-//            HStack {
-//                Picker("Map Type", selection: $viewModel.mapType) {
-//                    ForEach(MapType.allCases) { type in
-//                        Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
-//                            .tag(type)
-//                    }
-//                }
-//                .padding([.top, .leading])
-//                .onChange(of: viewModel.mapType) {
-//                    viewModel.mapType = viewModel.mapType
-//                    viewModel.checkAndAddSquaresIfNeeded()
-//                    viewModel.adjustMapViewToFitSquares()
-//                }
-//            }
         }
         
     }

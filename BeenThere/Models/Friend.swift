@@ -8,11 +8,11 @@
 import Foundation
 
 struct Friend: Identifiable {
-    let id: String
-    let firstName: String
-    let lastName: String
-    let username: String
-    let locations: [Location]
+    var id: String
+    var firstName: String
+    var lastName: String
+    var username: String
+    var locations: [[String: Any]]
     // Add other properties if needed
     
     init?(from dictionary: [String: Any]) {
@@ -20,7 +20,7 @@ struct Friend: Identifiable {
             let firstName = dictionary["firstName"] as? String,
             let lastName = dictionary["lastName"] as? String,
             let username = dictionary["username"] as? String,
-            let locations = dictionary["locations"] as? [Location] else { return nil }
+        var locations = dictionary["locations"] as? [[String: Any]] else { return nil }
         
         self.id = id
         self.firstName = firstName

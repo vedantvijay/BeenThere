@@ -16,7 +16,7 @@ class AccountViewModel: ObservableObject {
     static let sharedMain = AccountViewModel()
     static let sharedFriend = AccountViewModel()
     static let sharedShared = AccountViewModel()
-    
+    @Published var me: Person?
     @ObservedObject var authViewModel = AuthViewModel()
     @AppStorage("appState") var appState = ""
     @Published var usernameChanged = false
@@ -43,6 +43,28 @@ class AccountViewModel: ObservableObject {
     @Published var receivedFriendRequests: [String] = []
     @Published var profileImageUrl: URL?
     @Published var profileImageUrls: [String: URL] = [:]
+    
+    var userLocations: [Location] {
+        let tempLocations = users.flatMap { user -> [Location] in
+            guard let locationDictionaries = user["locations"] as? [[String: Double]] else {
+                return []
+            }
+            return locationDictionaries.compactMap {
+                guard let lowLatitude = $0["lowLatitude"],
+                      let highLatitude = $0["highLatitude"],
+                      let lowLongitude = $0["lowLongitude"],
+                      let highLongitude = $0["highLongitude"] else {
+                    return nil
+                }
+                return Location(lowLatitude: lowLatitude,
+                                highLatitude: highLatitude,
+                                lowLongitude: lowLongitude,
+                                highLongitude: highLongitude)
+            }
+        }
+        let finalLocations = Array(Set(tempLocations))
+        return finalLocations
+    }
 
     private var accountListener: ListenerRegistration?
     var listeners: [ListenerRegistration] = []
@@ -54,7 +76,7 @@ class AccountViewModel: ObservableObject {
     }
     var friendList: [Friend] {
         friends.compactMap(Friend.init)
-//            .sorted(by: { $0.locations > $1.locations })
+            .sorted(by: { $0.locations.count > $1.locations.count })
     }
 
     
@@ -245,11 +267,19 @@ class AccountViewModel: ObservableObject {
                     return
                 }
                 
-                // Manually add the UID to the document data
                 data["uid"] = friendUID
+                
+                
+                
+                
                 
                 if let friendIndex = self?.friends.firstIndex(where: { ($0["uid"] as? String) == friendUID }) {
                     self?.friends[friendIndex] = data
+                    self?.me?.friends[friendIndex].id = data["uid"] as? String ?? ""
+                    self?.me?.friends[friendIndex].firstName = data["firstName"] as? String ?? ""
+                    self?.me?.friends[friendIndex].lastName = data["lastName"] as? String ?? ""
+                    self?.me?.friends[friendIndex].username = data["username"] as? String ?? ""
+                    self?.me?.friends[friendIndex].locations = data["locations"] as? [[String: Any]] ?? []
                 }
             }
             
@@ -409,15 +439,26 @@ class AccountViewModel: ObservableObject {
                 return
             }
             
+            self?.me?.username = data["username"] as? String ?? ""
+            self?.me?.lowercaseUsername = data["lowercaseUsername"] as? String ?? ""
+            self?.me?.friends = data["friends"] as? [Friend] ?? []
+            self?.me?.id = userID
+            self?.me?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
+            self?.me?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
+            self?.me?.firstName = data["firstName"] as? String ?? ""
+            self?.me?.lastName = data["lastName"] as? String ?? ""
+            
             self?.username = data["username"] as? String ?? ""
             self?.lowercaseUsername = data["lowercaseUsername"] as? String ?? ""
             self?.friends = data["friends"] as? [[String: Any]] ?? []
             self?.uid = userID
             self?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
             self?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
-            self?.fetchFriendsData()
             self?.firstName = data["firstName"] as? String ?? ""
             self?.lastName = data["lastName"] as? String ?? ""
+            
+            self?.fetchFriendsData()
+
 
             if let locationData = data["locations"] as? [[String: Any]] {
                 self?.locations = locationData.compactMap { locationDict in

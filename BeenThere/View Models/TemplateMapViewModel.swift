@@ -17,7 +17,12 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     private let speedReadingsKey = "speedReadings"
 
     
-    @Published var mapType = "personal"
+    @Published var mapSelection: MapSelection = .personal {
+        didSet {
+            observeLocations()
+        }
+    }
+    @Published var friendLocations: [Location]?
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
     @Published var tappedLocation: CLLocationCoordinate2D?
@@ -63,12 +68,43 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     
     func observeLocations() {
-        cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
-            self?.locations = newLocations
-            print("LOG: I tried")
-            self?.adjustMapViewToFitSquares()
+        switch mapSelection {
+        case .personal:
+            friendLocations = nil
+            cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
+                self?.locations = newLocations
+                print("LOG: Personal locations updated")
+                self?.addSquaresToMap(locations: newLocations)
+                self?.adjustMapViewToFitSquares()
+            }
+        case .global:
+            friendLocations = nil
+            guard let globalLocations = accountViewModel?.userLocations else { return } // Assuming globalLocations exist in AccountViewModel
+            locations = globalLocations
+            self.addSquaresToMap(locations: globalLocations)
+            print("LOG: Global locations updated")
+            centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))
+        case .friend(let friendID):
+            fetchFriendLocations(id: friendID)
+            addSquaresToMap(locations: friendLocations ?? [])
+            adjustMapViewToFitSquares()
         }
     }
+    
+    func fetchFriendLocations(id: String) {
+        guard let accountViewModel = accountViewModel else { return }
+        print("UID: \(id)")
+        if let friend = accountViewModel.friendList.first(where: { $0.id == id }) {
+            let tempLocations = friend.locations
+            print("it worked")
+            print(friend.locations.count)
+        } else {
+            print("friend has no chunks")
+            friendLocations = []
+        }
+    }
+
+
 
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
@@ -100,7 +136,36 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.scaleBarView.isHidden = true
     }
 
+    func centerMapOnLocation(location: CLLocation) {
+        guard let mapView = mapView else { return }
+        let coordinate = location.coordinate
+        let zoomLevel = 2
+        let cameraOptions = CameraOptions(center: coordinate, zoom: Double(zoomLevel))
+        mapView.camera.fly(to: cameraOptions, duration: 0.5)
+        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+            self.lastCameraCenter = cameraOptions.center
+            self.lastCameraZoom = cameraOptions.zoom
+            self.lastCameraPitch = cameraOptions.pitch
+        }
+    }
+    
+    func adjustMapViewToFitSquares() {
+        guard let mapView = mapView else { return }
 
+        guard let boundingBox = self.boundingBox(for: self.locations) else { return }
+        
+        let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
+
+        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+        
+        mapView.camera.fly(to: cameraOptions, duration: 0.5)
+        
+        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+            self.lastCameraCenter = cameraOptions.center
+            self.lastCameraZoom = cameraOptions.zoom
+            self.lastCameraPitch = cameraOptions.pitch
+        }
+    }
 
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
         guard let mapView = mapView, let annotationManager = annotationManager else { return }
@@ -149,7 +214,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     
     func addSquaresToMap(locations: [Location]) {
-        print("LOG: step 3")
         guard let mapView = mapView else { return }
 
         var features = [Feature]()
@@ -237,16 +301,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func checkAndAddSquaresIfNeeded() {
         if areSquaresAdded() {
             clearExistingSquares()
-
-            switch mapType {
-            case "personal":
-                addSquaresToMap(locations: locations)
-            case "global":
-                addSquaresToMap(locations: locations)
-            default:
-                // any friend
-                addSquaresToMap(locations: locations)
-            }
+            addSquaresToMap(locations: locations)
         }
     }
 
@@ -290,24 +345,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let northEast = CLLocationCoordinate2D(latitude: maxLat, longitude: maxLong)
 
         return (southWest, northEast)
-    }
-
-    func adjustMapViewToFitSquares() {
-        guard let mapView = mapView else { return }
-
-        guard let boundingBox = self.boundingBox(for: mapType == "personal" ? self.locations : posts.map { $0.location }) else { return }
-        
-        let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
-
-        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-        
-        mapView.camera.fly(to: cameraOptions, duration: 0.5)
-        
-        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
-            self.lastCameraCenter = cameraOptions.center
-            self.lastCameraZoom = cameraOptions.zoom
-            self.lastCameraPitch = cameraOptions.pitch
-        }
     }
     
     func generateGridlines(insetBy inset: Double = 0.25) -> [LineString] {

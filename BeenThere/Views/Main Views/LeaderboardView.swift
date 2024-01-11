@@ -96,11 +96,11 @@ struct LeaderboardView: View {
                         }
                         
                         else if leaderboardScope == "global" {
-                            Section {
-                                NavigationLink("Shared Map") {
-                                    SharedView()
-                                }
-                            }
+//                            Section {
+//                                NavigationLink("Shared Map") {
+//                                    SharedView(viewModel: sharedMapViewModel, accountViewModel: viewModel)
+//                                }
+//                            }
                             
                             ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                                 let person = viewModel.sortedUsersByLocationCount()[index]

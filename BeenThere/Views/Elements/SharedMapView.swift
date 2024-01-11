@@ -9,7 +9,7 @@ import SwiftUI
 import MapboxMaps
 
 struct SharedMapView: UIViewRepresentable {
-    @EnvironmentObject var viewModel: SharedMapViewModel
+    @ObservedObject var viewModel: SharedMapViewModel
     @Environment(\.colorScheme) var colorScheme
 
     func makeCoordinator() -> SharedMapViewModel {

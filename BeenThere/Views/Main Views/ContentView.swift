@@ -30,7 +30,6 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-    @State private var mapSelection: String = "Personal"
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -68,11 +67,15 @@ struct ContentView: View {
                         }
                         VStack {
                             // The map picker should go right here
-                            Picker("Map Selection", selection: $mapSelection) {
+                            Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
                                 Text("Personal").tag(MapSelection.personal)
                                 Text("Global").tag(MapSelection.global)
                                 ForEach(accountViewModel.friendList) { friend in
-                                    Text(friend.firstName + friend.lastName).tag(MapSelection.friend(friend.id))
+                                        Text(friend.firstName + " " + friend.lastName)
+//                                        .onTapGesture {
+//                                            mainMapViewModel.friendLocations = friend.locations
+//                                        }
+                                        .tag(MapSelection.friend(friend.id))
                                 }
                             }
                             HStack {

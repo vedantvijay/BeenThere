@@ -31,13 +31,5 @@ class SharedMapViewModel: TemplateMapViewModel {
         addGridlinesToMap()
         centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))
     }
-
-    func centerMapOnLocation(location: CLLocation) {
-        guard let mapView = mapView else { return }
-        let coordinate = location.coordinate
-        let zoomLevel = 2
-        let cameraOptions = CameraOptions(center: coordinate, zoom: Double(zoomLevel))
-        mapView.mapboxMap.setCamera(to: cameraOptions)
-    }
 }
 
