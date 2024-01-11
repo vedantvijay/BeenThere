@@ -17,7 +17,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     private let speedReadingsKey = "speedReadings"
 
     
-    @Published var mapType = MapType.visited
+    @Published var mapType = "personal"
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
     @Published var tappedLocation: CLLocationCoordinate2D?
@@ -95,8 +95,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 
         mapView?.ornaments.options.logo.position = .bottomLeft
         mapView?.ornaments.options.attributionButton.position = .bottomRight
-        mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 60)
-        mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 60)
+        mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 20)
+        mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 20)
         mapView?.ornaments.scaleBarView.isHidden = true
     }
 
@@ -235,18 +235,17 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     }
     
     func checkAndAddSquaresIfNeeded() {
-        print("LOG: step 1")
         if areSquaresAdded() {
-            print("LOG: step 2")
             clearExistingSquares()
 
             switch mapType {
-            case .visited:
+            case "personal":
                 addSquaresToMap(locations: locations)
-
-            case .photos:
-                let photoLocations = posts.compactMap { $0.location }
-                addSquaresToMap(locations: photoLocations)
+            case "global":
+                addSquaresToMap(locations: locations)
+            default:
+                // any friend
+                addSquaresToMap(locations: locations)
             }
         }
     }
@@ -296,7 +295,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares() {
         guard let mapView = mapView else { return }
 
-        guard let boundingBox = self.boundingBox(for: mapType == .visited ? self.locations : posts.map { $0.location }) else { return }
+        guard let boundingBox = self.boundingBox(for: mapType == "personal" ? self.locations : posts.map { $0.location }) else { return }
         
         let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
 

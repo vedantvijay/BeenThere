@@ -15,8 +15,14 @@ enum Tab {
     case feed, map, leaderboards, profile
 }
 
-enum MapType: String, CaseIterable, Identifiable {
-    case visited, photos
+//enum MapType: String, CaseIterable, Identifiable {
+//    case mine, global
+//
+//    var id: String { self.rawValue }
+//}
 
-    var id: String { self.rawValue }
+enum MapSelection: Hashable {
+    case personal
+    case global
+    case friend(String) // Using friend's UID as unique identifier
 }

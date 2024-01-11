@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreLocation
 import FirebaseAuth
+import Kingfisher
 import MapboxCoreNavigation
 import MapboxNavigation
 import MapboxDirections
@@ -29,9 +30,7 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-    @State private var currentSpeed: Double = 0.0
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var mapSelection: String = "Personal"
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -55,6 +54,7 @@ struct ContentView: View {
                 case .map:
                     
                     ZStack(alignment: .top) {
+                        
                         ZStack(alignment: .bottom) {
                             MainMapView()
                                 .disabled(isInteractingWithSlidyView)
@@ -64,44 +64,41 @@ struct ContentView: View {
                                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                     mainMapViewModel.showTappedLocation = false
                                 }
-                            VStack {
-                                Spacer()
-                                if let lastLocation = mainMapViewModel.locationManager.location {
-                                    Text("\(Int(currentSpeed.rounded())) mph")
-                                        .padding(.bottom, 50)
-                                        .padding(.bottom)
-                                        .foregroundStyle(.secondary)
-                                        .onReceive(timer) { _ in
-                                            if lastLocation.speedAccuracy != -1 {
-                                                self.currentSpeed = lastLocation.speed.magnitude
-                                            }
-                                        }
-                                }
-                            }
-                            SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
+//                            SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
                         }
-                        HStack {
-                            if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
-                                Button {
-                                    showSettingsAlert = true
-                                } label: {
-                                    Image(systemName: "location.slash.circle.fill")
+                        VStack {
+                            // The map picker should go right here
+                            Picker("Map Selection", selection: $mapSelection) {
+                                Text("Personal").tag(MapSelection.personal)
+                                Text("Global").tag(MapSelection.global)
+                                ForEach(accountViewModel.friendList) { friend in
+                                    Text(friend.firstName + friend.lastName).tag(MapSelection.friend(friend.id))
                                 }
-                                .buttonStyle(.bordered)
-                                .tint(.red)
                             }
-                            if let lastLocation = mainMapViewModel.locationManager.location {
-                                if lastLocation.speed.magnitude > 100 * 0.45 && lastLocation.speed.magnitude != -1 && lastLocation.speedAccuracy.magnitude < 10 * 0.44704 && lastLocation.speedAccuracy.magnitude != -1 {
+                            HStack {
+                                if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                                     Button {
-                                        showSpeedAlert = true
+                                        showSettingsAlert = true
                                     } label: {
-                                        Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
+                                        Image(systemName: "location.slash.circle.fill")
                                     }
                                     .buttonStyle(.bordered)
-                                    .tint(.orange)
+                                    .tint(.red)
+                                }
+                                if let lastLocation = mainMapViewModel.locationManager.location {
+                                    if lastLocation.speed.magnitude > 100 * 0.447 && lastLocation.speed.magnitude != -1 && lastLocation.speedAccuracy.magnitude < 10 * 0.44704 && lastLocation.speedAccuracy.magnitude != -1 {
+                                        Button {
+                                            showSpeedAlert = true
+                                        } label: {
+                                            Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
+                                        }
+                                        .buttonStyle(.bordered)
+                                        .tint(.orange)
+                                    }
                                 }
                             }
                         }
+                        
                     }
                     .onChange(of: locationManagerDelegate.authorizationStatus) {
                         self.authorizationStatus = locationManagerDelegate.authorizationStatus

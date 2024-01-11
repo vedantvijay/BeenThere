@@ -56,6 +56,7 @@
 		C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */; };
 		C0F46EED2AF9BD3400C2776A /* MainMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EEC2AF9BD3400C2776A /* MainMapViewModel.swift */; };
 		C0FAD0EF2B2A7B84000BA998 /* SlidyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FAD0EE2B2A7B84000BA998 /* SlidyView.swift */; };
+		C0FDEA702B506E7E00F728BA /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FDEA6F2B506E7E00F728BA /* Friend.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -115,6 +116,7 @@
 		C0F46EEA2AF9BD2700C2776A /* MainMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapView.swift; sourceTree = "<group>"; };
 		C0F46EEC2AF9BD3400C2776A /* MainMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMapViewModel.swift; sourceTree = "<group>"; };
 		C0FAD0EE2B2A7B84000BA998 /* SlidyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidyView.swift; sourceTree = "<group>"; };
+		C0FDEA6F2B506E7E00F728BA /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				C03424C62B0C55BD00A9CA9A /* Post.swift */,
+				C0FDEA6F2B506E7E00F728BA /* Friend.swift */,
 				C03424C82B0C562500A9CA9A /* Location.swift */,
 				C03424CA2B0C568400A9CA9A /* User.swift */,
 				C0EAC0BA2B1409250003B44E /* Enums.swift */,
@@ -369,6 +372,7 @@
 				C03424CB2B0C568400A9CA9A /* User.swift in Sources */,
 				C044EF082AED84D800AEC9E2 /* LeaderboardView.swift in Sources */,
 				C08531732AF2C03A00EAA434 /* SharedMapViewModel.swift in Sources */,
+				C0FDEA702B506E7E00F728BA /* Friend.swift in Sources */,
 				C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */,
 				C0F46EE92AF954B900C2776A /* FeedView.swift in Sources */,
 				C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */,

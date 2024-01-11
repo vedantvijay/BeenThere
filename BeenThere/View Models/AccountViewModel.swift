@@ -52,6 +52,11 @@ class AccountViewModel: ObservableObject {
         let regex = "^[a-zA-Z0-9]{4,15}$"
         return newUsername.range(of: regex, options: .regularExpression) != nil
     }
+    var friendList: [Friend] {
+        friends.compactMap(Friend.init)
+//            .sorted(by: { $0.locations > $1.locations })
+    }
+
     
     var minutesSinceLastLogin: Int? {
         guard let user = Auth.auth().currentUser else {
