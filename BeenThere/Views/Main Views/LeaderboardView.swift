@@ -164,8 +164,6 @@ struct LeaderboardView: View {
                                 }
                             }
                         }
-
-
                     }
                 }
             }

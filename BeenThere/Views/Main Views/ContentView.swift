@@ -6,6 +6,8 @@ import MapboxNavigation
 import MapboxDirections
 
 struct ContentView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @AppStorage("username") var username = ""
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var authViewModel: AuthViewModel
@@ -27,7 +29,9 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-
+    @State private var currentSpeed: Double = 0.0
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var usesMetric: Bool {
         let locale = Locale.current
@@ -50,60 +54,74 @@ struct ContentView: View {
                         .ignoresSafeArea()
                 case .map:
                     
-                        ZStack(alignment: .top) {
-                            ZStack(alignment: .bottom) {
-                                MainMapView()
-                                    .disabled(isInteractingWithSlidyView)
-                                    .ignoresSafeArea()
-                                    .environmentObject(mainMapViewModel)
-                                    .onTapGesture {
-                                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                                        mainMapViewModel.showTappedLocation = false
-                                    }
-                                SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
+                    ZStack(alignment: .top) {
+                        ZStack(alignment: .bottom) {
+                            MainMapView()
+                                .disabled(isInteractingWithSlidyView)
+                                .ignoresSafeArea()
+                                .environmentObject(mainMapViewModel)
+                                .onTapGesture {
+                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                    mainMapViewModel.showTappedLocation = false
+                                }
+                            VStack {
+                                Spacer()
+                                if let lastLocation = mainMapViewModel.locationManager.location {
+                                    Text("\(Int(currentSpeed.rounded())) mph")
+                                        .padding(.bottom, 50)
+                                        .padding(.bottom)
+                                        .foregroundStyle(.secondary)
+                                        .onReceive(timer) { _ in
+                                            if lastLocation.speedAccuracy != -1 {
+                                                self.currentSpeed = lastLocation.speed.magnitude
+                                            }
+                                        }
+                                }
                             }
-                            HStack {
-                                if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
+                            SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
+                        }
+                        HStack {
+                            if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
+                                Button {
+                                    showSettingsAlert = true
+                                } label: {
+                                    Image(systemName: "location.slash.circle.fill")
+                                }
+                                .buttonStyle(.bordered)
+                                .tint(.red)
+                            }
+                            if let lastLocation = mainMapViewModel.locationManager.location {
+                                if lastLocation.speed.magnitude > 100 * 0.45 && lastLocation.speed.magnitude != -1 && lastLocation.speedAccuracy.magnitude < 10 * 0.44704 && lastLocation.speedAccuracy.magnitude != -1 {
                                     Button {
-                                        showSettingsAlert = true
+                                        showSpeedAlert = true
                                     } label: {
-                                        Image(systemName: "location.slash.circle.fill")
+                                        Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
                                     }
                                     .buttonStyle(.bordered)
-                                    .tint(.red)
-                                }
-                                if let lastLocation = mainMapViewModel.locationManager.location {
-                                    if lastLocation.speed.magnitude > 100 * 0.45 {
-                                        Button {
-                                            showSpeedAlert = true
-                                        } label: {
-                                            Image(systemName: "gauge.open.with.lines.needle.84percent.exclamation")
-                                        }
-                                        .buttonStyle(.bordered)
-                                        .tint(.orange)
-                                    }
+                                    .tint(.orange)
                                 }
                             }
                         }
-                        .onChange(of: locationManagerDelegate.authorizationStatus) {
-                            self.authorizationStatus = locationManagerDelegate.authorizationStatus
-                        }
-
+                    }
+                    .onChange(of: locationManagerDelegate.authorizationStatus) {
+                        self.authorizationStatus = locationManagerDelegate.authorizationStatus
+                    }
                     
-                                    
+                    
+                    
                 case .leaderboards:
                     LeaderboardView()
                         .ignoresSafeArea()
                         .environmentObject(friendMapViewModel)
                         .environmentObject(sharedMapViewModel)
                         .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
-
+                    
                 case .profile:
                     ProfileView()
                         .ignoresSafeArea()
                         .environmentObject(accountViewModel)
                         .background(Color(uiColor: UIColor(red: 0.23, green: 0.27, blue: 0.36, alpha: 1)))
-
+                    
                 }
                 if !isKeyboardVisible {
                     CustomTabBarView(selection: $selection)
@@ -116,16 +134,16 @@ struct ContentView: View {
                 }
             }
         }
-
-        .alert(isPresented: $showSettingsAlert) {
-            Alert(
-                title: Text("Location Access Denied"),
-                message: Text("To enable location access, please go to Settings and allow always location access for this app."),
-                primaryButton: .default(Text("Go to Settings"), action: {
-                    openAppSettings()
-                }),
-                secondaryButton: .cancel()
-            )
+        
+        .alert("Location Access Denied", isPresented: $showSettingsAlert) {
+            Button("Dismiss") {
+                dismiss()
+            }
+            Button("Go To Settings") {
+                openAppSettings()
+            }
+        } message: {
+            Text("In order for this app to work as inteneded, please set your \"Location\" setting to \"Always\"")
         }
         .alert(isPresented: $showSpeedAlert) {
             Alert(

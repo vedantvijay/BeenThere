@@ -14,7 +14,97 @@ import SwiftUI
 
 class FriendMapViewModel: TemplateMapViewModel {
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
-    override func observeLocations() { }
+    
+    override func addSquaresToMap(locations: [Location]) {
+        print("LOG: step 3")
+        guard let mapView = mapView else { return }
+
+        var features = [Feature]()
+        
+        locations.forEach { location in
+            let coordinates = [
+                CLLocationCoordinate2D(latitude: location.lowLatitude, longitude: location.lowLongitude),
+                CLLocationCoordinate2D(latitude: location.lowLatitude, longitude: location.highLongitude),
+                CLLocationCoordinate2D(latitude: location.highLatitude, longitude: location.highLongitude),
+                CLLocationCoordinate2D(latitude: location.highLatitude, longitude: location.lowLongitude),
+                CLLocationCoordinate2D(latitude: location.lowLatitude, longitude: location.lowLongitude)
+            ]
+            
+            let polygon = Polygon([coordinates])
+            let feature = Feature(geometry: .polygon(polygon))
+            features.append(feature)
+        }
+        
+        let sourceId = "square-source"
+        let layerId = "square-fill-layer"
+        var source = GeoJSONSource()
+        let featureCollection = FeatureCollection(features: features)
+
+        source.data = .featureCollection(FeatureCollection(features: features))
+        
+        let setupLayers = { [weak self] in
+            do {
+                if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
+                            try mapView.mapboxMap.style.updateGeoJSONSource(withId: sourceId, geoJSON: .featureCollection(featureCollection))
+                        } else {
+                            var source = GeoJSONSource()
+                            source.data = .featureCollection(featureCollection)
+                            try mapView.mapboxMap.style.addSource(source, id: sourceId)
+                        }
+                var fillLayer = FillLayer(id: layerId)
+                fillLayer.source = sourceId
+
+                let fillColorExpression = Exp(.interpolate) {
+                    Exp(.linear)
+                    Exp(.zoom)
+                    0
+                    UIColor.green
+                    1
+                    UIColor.green
+                    6
+                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
+                }
+                fillLayer.fillColor = .expression(fillColorExpression)
+                fillLayer.fillOpacity = .constant(1)
+
+                if mapView.mapboxMap.style.layerExists(withId: layerId) {
+                    try mapView.mapboxMap.style.updateLayer(withId: layerId, type: FillLayer.self) { layer in
+                        layer.fillColor = fillLayer.fillColor
+                        layer.fillOpacity = fillLayer.fillOpacity
+                    }
+                } else {
+                    let landLayerId = mapView.mapboxMap.style.allLayerIdentifiers.first(where: { $0.id.contains("land") || $0.id.contains("landcover") })?.id
+                    if let landLayerId = landLayerId {
+                        try mapView.mapboxMap.style.addLayer(fillLayer, layerPosition: .above(landLayerId))
+                    } else {
+                        try mapView.mapboxMap.style.addLayer(fillLayer)
+                    }
+                }
+
+                self?.currentSquares = Set(features.compactMap { feature in
+                    if case let .string(id) = feature.identifier {
+                        return id
+                    }
+                    return nil
+                })
+                print("LOG: step 4")
+                self?.adjustMapViewToFitSquares()
+
+            } catch {
+                print("Failed to add or update squares on the map: \(error)")
+            }
+        }
+
+        if mapView.mapboxMap.style.isLoaded {
+            setupLayers()
+        } else {
+            mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
+                setupLayers()
+            }
+        }
+//        self.adjustMapViewToFitSquares()
+
+    }
     
     override func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
@@ -44,6 +134,5 @@ class FriendMapViewModel: TemplateMapViewModel {
         mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 10)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 10)
         mapView?.ornaments.scaleBarView.isHidden = true
-
     }
 }

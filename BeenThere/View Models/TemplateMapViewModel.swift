@@ -66,7 +66,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
             self?.locations = newLocations
             print("LOG: I tried")
-//            self?.adjustMapViewToFitSquares()
+            self?.adjustMapViewToFitSquares()
         }
     }
 
@@ -98,7 +98,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 60)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 60)
         mapView?.ornaments.scaleBarView.isHidden = true
-
     }
 
 
@@ -221,9 +220,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     }
                     return nil
                 })
-                print("LOG: step 4")
-                self?.adjustMapViewToFitSquares()
-
             } catch {
                 print("Failed to add or update squares on the map: \(error)")
             }
@@ -475,8 +471,8 @@ extension TemplateMapViewModel: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let newLocation = locations.last {
-            print("Speed Accuracy: \(newLocation.speedAccuracy.description)")
-            print("Speed: \(newLocation.speed.description)")
+//            print("Speed Accuracy: \(newLocation.speedAccuracy.description)")
+//            print("Speed: \(newLocation.speed.description)")
             if newLocation.speedAccuracy.magnitude < 10 * 0.44704 && newLocation.speedAccuracy != -1 {
                 if newLocation.speed <= 100 * 0.44704 && newLocation.speed.magnitude != -1 {
                     checkBeenThere(location: newLocation)
