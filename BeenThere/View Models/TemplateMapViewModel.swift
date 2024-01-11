@@ -22,7 +22,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             observeLocations()
         }
     }
-    @Published var friendLocations: [Location]?
+    @Published var friendLocations: [Location] = []
     @Published var mapView: MapView?
     @Published var annotationManager: PointAnnotationManager?
     @Published var tappedLocation: CLLocationCoordinate2D?
@@ -70,7 +70,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func observeLocations() {
         switch mapSelection {
         case .personal:
-            friendLocations = nil
+            friendLocations = []
             cancellable = accountViewModel?.$locations.sink { [weak self] newLocations in
                 self?.locations = newLocations
                 print("LOG: Personal locations updated")
@@ -78,31 +78,43 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 self?.adjustMapViewToFitSquares()
             }
         case .global:
-            friendLocations = nil
+            friendLocations = []
             guard let globalLocations = accountViewModel?.userLocations else { return } // Assuming globalLocations exist in AccountViewModel
             locations = globalLocations
-            self.addSquaresToMap(locations: globalLocations)
+            addSquaresToMap(locations: globalLocations)
             print("LOG: Global locations updated")
             centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))
         case .friend(let friendID):
             fetchFriendLocations(id: friendID)
-            addSquaresToMap(locations: friendLocations ?? [])
+            addSquaresToMap(locations: friendLocations)
             adjustMapViewToFitSquares()
+            print("adjusted")
         }
     }
     
     func fetchFriendLocations(id: String) {
         guard let accountViewModel = accountViewModel else { return }
         print("UID: \(id)")
-        if let friend = accountViewModel.friendList.first(where: { $0.id == id }) {
-            let tempLocations = friend.locations
-            print("it worked")
-            print(friend.locations.count)
+
+        if let friend = accountViewModel.friends.first(where: { $0["uid"] as? String == id }),
+           let tempFriendLocations = friend["locations"] as? [[String: Any]] {
+            
+            // Convert each dictionary into a Location object
+            friendLocations = tempFriendLocations.compactMap { dict in
+                guard let lowLatitude = dict["lowLatitude"] as? Double,
+                      let highLatitude = dict["highLatitude"] as? Double,
+                      let lowLongitude = dict["lowLongitude"] as? Double,
+                      let highLongitude = dict["highLongitude"] as? Double else {
+                          return nil
+                      }
+                return Location(lowLatitude: lowLatitude, highLatitude: highLatitude, lowLongitude: lowLongitude, highLongitude: highLongitude)
+            }
         } else {
-            print("friend has no chunks")
+            print("friend has no locations")
             friendLocations = []
         }
     }
+
 
 
 
@@ -152,19 +164,33 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares() {
         guard let mapView = mapView else { return }
 
-        guard let boundingBox = self.boundingBox(for: self.locations) else { return }
-        
-        let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
-
-        let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-        
-        mapView.camera.fly(to: cameraOptions, duration: 0.5)
-        
-        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
-            self.lastCameraCenter = cameraOptions.center
-            self.lastCameraZoom = cameraOptions.zoom
-            self.lastCameraPitch = cameraOptions.pitch
+        if mapSelection == .personal {
+            guard let boundingBox = self.boundingBox(for: self.locations) else { return }
+            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
+            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+            mapView.camera.fly(to: cameraOptions, duration: 0.5)
+            
+            if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+                self.lastCameraCenter = cameraOptions.center
+                self.lastCameraZoom = cameraOptions.zoom
+                self.lastCameraPitch = cameraOptions.pitch
+            }
+        } else {
+            guard let boundingBox = self.boundingBox(for: self.friendLocations) else { return }
+            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
+            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
+            mapView.camera.fly(to: cameraOptions, duration: 0.5)
+            
+            if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+                self.lastCameraCenter = cameraOptions.center
+                self.lastCameraZoom = cameraOptions.zoom
+                self.lastCameraPitch = cameraOptions.pitch
+            }
         }
+        
+
+        
+        
     }
 
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {

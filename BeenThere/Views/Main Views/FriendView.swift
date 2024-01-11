@@ -79,7 +79,7 @@ struct FriendView: View {
                                 }
                             }
                             viewModel.locations = locations
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 viewModel.locations = locations
                             }
                         }

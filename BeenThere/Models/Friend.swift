@@ -13,6 +13,7 @@ struct Friend: Identifiable {
     var lastName: String
     var username: String
     var locations: [[String: Any]]
+    
     // Add other properties if needed
     
     init?(from dictionary: [String: Any]) {
@@ -20,7 +21,7 @@ struct Friend: Identifiable {
             let firstName = dictionary["firstName"] as? String,
             let lastName = dictionary["lastName"] as? String,
             let username = dictionary["username"] as? String,
-        var locations = dictionary["locations"] as? [[String: Any]] else { return nil }
+            let locations = dictionary["locations"] as? [[String: Any]] else { return nil }
         
         self.id = id
         self.firstName = firstName

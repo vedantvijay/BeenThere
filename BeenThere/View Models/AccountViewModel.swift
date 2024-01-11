@@ -442,6 +442,7 @@ class AccountViewModel: ObservableObject {
             self?.me?.username = data["username"] as? String ?? ""
             self?.me?.lowercaseUsername = data["lowercaseUsername"] as? String ?? ""
             self?.me?.friends = data["friends"] as? [Friend] ?? []
+            print(data["friends"])
             self?.me?.id = userID
             self?.me?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
             self?.me?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []

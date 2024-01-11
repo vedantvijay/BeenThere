@@ -86,7 +86,6 @@ class FriendMapViewModel: TemplateMapViewModel {
                     }
                     return nil
                 })
-                print("LOG: step 4")
                 self?.adjustMapViewToFitSquares()
 
             } catch {
