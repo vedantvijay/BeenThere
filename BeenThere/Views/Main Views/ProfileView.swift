@@ -41,6 +41,8 @@ struct ProfileView: View {
                     Text("@\(viewModel.username)")
                         .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundStyle(Color.mutedPrimary)
+
                     Text(viewModel.locations.count == 1 ? "\(viewModel.locations.count) Chunk Explored" : "\(viewModel.locations.count) Chunks Explored")
                         .fontWeight(.regular)
                         .foregroundStyle(.secondary)
@@ -60,7 +62,7 @@ struct ProfileView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(uiColor: UIColor(red: 0.08, green: 0.1, blue: 0.15, alpha: 1)))
+            .background(Color.background)
             .navigationDestination(for: DestinationID.self) { id in
                             switch id {
                             case editProfileID:

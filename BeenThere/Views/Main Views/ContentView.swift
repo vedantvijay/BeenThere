@@ -63,6 +63,31 @@ struct ContentView: View {
                                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                     mainMapViewModel.showTappedLocation = false
                                 }
+                            HStack {
+                                if mainMapViewModel.mapSelection != .global {
+                                    Button {
+                                        mainMapViewModel.adjustMapViewToFitSquares()
+                                    } label: {
+                                        Image(systemName: "viewfinder.circle")
+                                            .font(.largeTitle)
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 0.75)))
+                                            .padding(.bottom, 60)
+                                            .padding(.leading)
+                                    }
+                                }
+                                Spacer()
+                                Button {
+                                    mainMapViewModel.centerMapOnLocationWithoutZoom(location: mainMapViewModel.locationManager.location ?? CLLocation())
+                                } label: {
+                                    Image(systemName: "location.circle.fill")
+                                        .font(.largeTitle)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 0.75)))
+                                        .padding(.bottom, 60)
+                                        .padding(.trailing)
+                                }
+                            }
 //                            SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
                         }
                         VStack {
@@ -71,13 +96,16 @@ struct ContentView: View {
                                 Text("Personal").tag(MapSelection.personal)
                                 Text("Global").tag(MapSelection.global)
                                 ForEach(accountViewModel.friendList) { friend in
+                                    if friend.firstName != "" {
                                         Text(friend.firstName + " " + friend.lastName)
-//                                        .onTapGesture {
-//                                            mainMapViewModel.friendLocations = friend.locations
-//                                        }
-                                        .tag(MapSelection.friend(friend.id))
+                                            .tag(MapSelection.friend(friend.id))
+                                    } else {
+                                        Text("@\(friend.username)")
+                                            .tag(MapSelection.friend(friend.id))
+                                    }
                                 }
                             }
+                            .accentColor(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)))
                             HStack {
                                 if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                                     Button {

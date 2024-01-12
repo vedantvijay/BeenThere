@@ -135,7 +135,26 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.scaleBarView.isHidden = true
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
+//        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
+        
+        let scaleExpression = Exp(.interpolate) {
+            Exp(.linear)
+            Exp(.zoom)
+            0
+            0.2
+            8
+            1
+            22
+            1
+        }
+
+        
+        var puck = Puck2DConfiguration.makeDefault(showBearing: true)
+        puck.scale = .expression(scaleExpression)
+        puck.pulsing = .default
+        mapView?.location.options.puckType = .puck2D(puck)
+
+        
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         
         mapView?.ornaments.logoView.alpha = 0.1
@@ -152,7 +171,20 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         guard let mapView = mapView else { return }
         let coordinate = location.coordinate
         let zoomLevel = 2
-        let cameraOptions = CameraOptions(center: coordinate, zoom: Double(zoomLevel))
+        let cameraOptions = CameraOptions(center: coordinate, zoom: Double(zoomLevel), bearing: .zero, pitch: .zero)
+        mapView.camera.fly(to: cameraOptions, duration: 0.5)
+        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+            self.lastCameraCenter = cameraOptions.center
+            self.lastCameraZoom = cameraOptions.zoom
+            self.lastCameraPitch = cameraOptions.pitch
+        }
+    }
+    
+    func centerMapOnLocationWithoutZoom(location: CLLocation) {
+        guard let mapView = mapView else { return }
+        let coordinate = location.coordinate
+//        let zoomLevel = 2
+        let cameraOptions = CameraOptions(center: coordinate, bearing: .zero, pitch: .zero)
         mapView.camera.fly(to: cameraOptions, duration: 0.5)
         if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
             self.lastCameraCenter = cameraOptions.center

@@ -24,10 +24,11 @@ struct ManageFriendsView: View {
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .foregroundColor(.gray)
-                        .fontWeight(.black)
+                        .fontWeight(.regular)
                         .onChange(of: accountViewModel.receivedFriendRequests.count) {
                             print("LOG: Changed")
                         }
+                        .font(.title2)
                     Button("Add") {
                         viewModel.sendFriendRequest(friendUsername: newFriendUsername)
                         newFriendUsername = ""
@@ -41,6 +42,8 @@ struct ManageFriendsView: View {
                     newFriendUsername = ""
                 }
             }
+            .listRowBackground(Color.rowBackground)
+
             if !accountViewModel.sentFriendRequests.isEmpty {
                 Section("Sent") {
                     ForEach(accountViewModel.sentFriendRequests.indices, id: \.self) { index in
@@ -49,7 +52,7 @@ struct ManageFriendsView: View {
                             if let username = accountViewModel.usernameForUID[uid] {
                                 Text("@\(username)")
                                     .foregroundColor(.gray)
-                                
+                                    .font(.title2)
                                 Spacer()
                                 Button("Cancel") {
                                     viewModel.cancelFriendRequest(friendUID: uid)
@@ -62,6 +65,8 @@ struct ManageFriendsView: View {
                             
                         }
                     }
+                    .listRowBackground(Color.rowBackground)
+
                 }
             }
             
@@ -76,7 +81,8 @@ struct ManageFriendsView: View {
                                 if let username = accountViewModel.usernameForUID[uid] {
                                     Text("@\(username)")
                                         .foregroundColor(.gray)
-                                    
+                                        .font(.title2)
+
                                     Spacer()
                                     
                                     Button("Accept") {
@@ -93,6 +99,8 @@ struct ManageFriendsView: View {
                                 
                             }
                         }
+                        .listRowBackground(Color.rowBackground)
+
                     }
                     
                 }
@@ -123,11 +131,23 @@ struct ManageFriendsView: View {
 //                                let displayName = (accountViewModel.friends[index]["firstName"] as? String) ?? "@\((accountViewModel.friends[index]["username"] as? String) ?? "Unknown")"
                                 if let username = accountViewModel.friends[index]["username"] as? String {
                                     if let firstName = accountViewModel.friends[index]["firstName"] as? String {
-                                        Text(firstName)
+                                        VStack(alignment: .leading) {
+                                            Text(firstName)
+                                                .font(.title2)
+                                                .foregroundStyle(Color.mutedPrimary)
+
+                                            Text("@\(username)")
+                                                .foregroundStyle(.secondary)
+                                                .italic()
+                                        }
+                                        
+
                                     } else {
                                         Text("@\(username)")
                                             .italic()
                                             .foregroundStyle(.secondary)
+                                            .font(.title2)
+
                                     }
                                     
                                 }
@@ -143,10 +163,16 @@ struct ManageFriendsView: View {
                             }
                         }
                     }
+                    .listRowBackground(Color.rowBackground)
+
                 }
 
             }
+
        }
+        
+        .listStyle(.plain)
+        .background(Color.background)
         .navigationTitle("Manage Friends")
         .onAppear {
             accountViewModel.updateUsernames()

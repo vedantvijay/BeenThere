@@ -121,7 +121,7 @@ class FriendMapViewModel: TemplateMapViewModel {
         mapView?.ornaments.scaleBarView.isHidden = true
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
+//        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         
         mapView?.ornaments.logoView.alpha = 0.1

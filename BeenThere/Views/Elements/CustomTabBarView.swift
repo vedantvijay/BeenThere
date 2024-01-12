@@ -29,7 +29,7 @@ struct CustomTabBarView: View {
                             .font(.caption)
                     }
                 }
-                .foregroundColor(selection == .profile ? .white : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
+                .foregroundColor(selection == .profile ? Color.mutedPrimary : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
                 .frame(maxWidth: .infinity)
                 VStack {
                     ZStack {
@@ -45,14 +45,14 @@ struct CustomTabBarView: View {
                             Image("explore")
                                 .resizable()
                                 .frame(width: 25, height: 32)
-                                .foregroundColor(selection == .map ? .white : Color(uiColor: UIColor.lightGray))
+                                .foregroundColor(selection == .map ? Color.mutedPrimary : Color(uiColor: UIColor.lightGray))
                         }
                     }
                     Text("Explore")
                         .padding(.top, 3)
                         .font(.caption)
                 }
-                .foregroundColor(selection == .map ? .white : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
+                .foregroundColor(selection == .map ? Color.mutedPrimary : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
                 Button(action: {
                     selection = .leaderboards
                 }) {
@@ -65,7 +65,7 @@ struct CustomTabBarView: View {
                             .font(.caption)
                     }
                 }
-                .foregroundColor(selection == .leaderboards ? .white : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
+                .foregroundColor(selection == .leaderboards ? Color.mutedPrimary : Color(uiColor: UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)))
                 .frame(maxWidth: .infinity)
             }
             .padding(.bottom)

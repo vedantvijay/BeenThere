@@ -24,11 +24,11 @@ struct SettingsItemView: View {
                         .frame(width: 45, height: 45)
                     icon
                         .font(.title)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.mutedPrimary)
                 }
                 
                 Text(text)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.mutedPrimary)
                     .padding(.leading)
                 Spacer()
             }

@@ -30,7 +30,7 @@ struct SlidyView: View {
                 Rectangle()
                     .cornerRadius(15, corners: [.topLeft, .topRight])
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color(uiColor: UIColor(red: 0.15, green: 0.18, blue: 0.25, alpha: 1)))
+                    .foregroundStyle(Color.rowBackground)
                 RoundedRectangle(cornerRadius: 20)
                     .frame(width: 40, height: 5)
                     .padding(6)

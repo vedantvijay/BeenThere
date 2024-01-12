@@ -36,7 +36,7 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .foregroundStyle(Color(uiColor: UIColor(red: 0.15, green: 0.18, blue: 0.25, alpha: 1)))
+                    .foregroundStyle(Color.rowBackground)
             )
         
     }

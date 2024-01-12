@@ -41,6 +41,8 @@ struct FriendView: View {
                         Text(firstName)
                             .font(.largeTitle)
                             .fontWeight(.bold)
+                            .foregroundStyle(Color.mutedPrimary)
+
                     }
                     
                     Text("@\(username)")
@@ -52,20 +54,14 @@ struct FriendView: View {
                 }
                 Spacer()
             }
-            .padding()
-            //                .background {
-            //                    RoundedRectangle(cornerRadius: 25)
-            //                        .frame(maxHeight: 150)
-            //                        .padding()
-            //                        .padding()
+
             //                }
-            Divider()
-                .padding(.horizontal)
             ZStack(alignment: .top) {
                 FriendMapView()
                     .clipShape(RoundedRectangle(cornerRadius: 25))
                     .padding()
                     .padding()
+                    .padding(.bottom)
                     .onAppear {
                         if let locationDictionaries = friend["locations"] as? [[String: Any]] {
                             let locations: [Location] = locationDictionaries.compactMap { locationDict in
@@ -87,25 +83,13 @@ struct FriendView: View {
                     .onDisappear {
                         dismiss()
                     }
-                //                HStack {
-                //                    Picker("Map Type", selection: $viewModel.mapType) {
-                //                        ForEach(MapType.allCases) { type in
-                //                            Label(String(type.rawValue).capitalized, systemImage: type == .visited ? "figure.hiking" : "camera.fill")
-                //                                .tag(type)
-                //                        }
-                //                    }
-                //                    .padding(.top)
-                //                    .padding(.top)
-                //
-                //                    .onChange(of: viewModel.mapType) {
-                //                        viewModel.mapType = viewModel.mapType
-                //                        viewModel.checkAndAddSquaresIfNeeded()
-                //                        viewModel.adjustMapViewToFitSquares()
-                //                    }
-                //                }
             }
             
         }
+        .background(Color.background)
+
+        
+        
     }
 }
 

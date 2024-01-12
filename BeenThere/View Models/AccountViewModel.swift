@@ -269,10 +269,6 @@ class AccountViewModel: ObservableObject {
                 
                 data["uid"] = friendUID
                 
-                
-                
-                
-                
                 if let friendIndex = self?.friends.firstIndex(where: { ($0["uid"] as? String) == friendUID }) {
                     self?.friends[friendIndex] = data
                     self?.me?.friends[friendIndex].id = data["uid"] as? String ?? ""
@@ -455,10 +451,10 @@ class AccountViewModel: ObservableObject {
             self?.uid = userID
             self?.sentFriendRequests = data["sentFriendRequests"] as? [String] ?? []
             self?.receivedFriendRequests = data["receivedFriendRequests"] as? [String] ?? []
+            self?.fetchFriendsData()
             self?.firstName = data["firstName"] as? String ?? ""
             self?.lastName = data["lastName"] as? String ?? ""
             
-            self?.fetchFriendsData()
 
 
             if let locationData = data["locations"] as? [[String: Any]] {

@@ -26,7 +26,7 @@ struct SearchBarView: View {
         VStack {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(uiColor: UIColor(red: 0.15, green: 0.18, blue: 0.25, alpha: 1)))
+                    .fill(Color.rowBackground)
                     .frame(maxHeight: 65)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
@@ -41,7 +41,7 @@ struct SearchBarView: View {
                         .overlay(
                             HStack {
                                 Image("magnifyingGlass")
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.mutedPrimary)
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                                     .padding(8)
                             }
@@ -66,7 +66,7 @@ struct SearchBarView: View {
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                                 .padding(5)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.mutedPrimary)
                         }
                     }
                     

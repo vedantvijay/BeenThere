@@ -56,8 +56,8 @@ struct EditProfileView: View {
 
     
     var body: some View {
-            Form {
-                Section(header: Text("Profile Picture")) {
+            List {
+                Section {
                     HStack {
                         if profileImage != nil {
                             if let profileImage = profileImage {
@@ -96,19 +96,26 @@ struct EditProfileView: View {
                         Button("Change Photo") {
                             showingImagePicker = true
                         }
+                        .foregroundStyle(Color.mutedPrimary)
+
                     }
                 }
+                .listRowBackground(Color.rowBackground)
+
                 
                 Section {
                     HStack {
                         Text("First Name: ")
                             .foregroundStyle(.tertiary)
                         TextField("First Name", text: $firstName)
+                            .foregroundStyle(Color.mutedPrimary)
+
                     }
                     HStack {
                         Text("Last Name: ")
                             .foregroundStyle(.tertiary)
                         TextField("Last Name", text: $lastName)
+                            .foregroundStyle(Color.mutedPrimary)
                         
                     }
                     HStack {
@@ -121,6 +128,8 @@ struct EditProfileView: View {
                                 checkAndSetUsername()
                             }
                         TextField("New Username", text: $newUsername)
+                            .foregroundStyle(Color.mutedPrimary)
+
                             .onChange(of: newUsername) {
                                 checkAndSetUsername()
                             }
@@ -131,34 +140,51 @@ struct EditProfileView: View {
                     if invalidUsernameReason != "" {
                         Text(invalidUsernameReason)
                             .fontWeight(.black)
+                            .foregroundStyle(Color.mutedPrimary)
+
                         
                     } else if isUsernameTaken {
                         Text("Username is already taken")
                             .fontWeight(.black)
                     }
                 }
+                .listRowBackground(Color.rowBackground)
+
                 .onAppear {
                     firstName = accountViewModel.firstName
                     lastName = accountViewModel.lastName
                 }
                 
                 Section {
-                    Button("Save Changes") {
-                        viewModel.saveChanges(uid: accountViewModel.uid, firstName: firstName, lastName: lastName, username: newUsername, profileImage: inputImage) {
-                            // Call a function from another ViewModel here
-                            accountViewModel.fetchProfileImage()
-                            accountViewModel.updateProfileImages()
+                    HStack {
+                        Spacer()
+                        Button("Save Changes") {
+                            viewModel.saveChanges(uid: accountViewModel.uid, firstName: firstName, lastName: lastName, username: newUsername, profileImage: inputImage) {
+                                // Call a function from another ViewModel here
+                                accountViewModel.fetchProfileImage()
+                                accountViewModel.updateProfileImages()
+                            }
+                            dismiss()
                         }
-                        dismiss()
+                        .foregroundStyle(Color.mutedPrimary)
+
+                        .disabled(isDisabled)
+                        Spacer()
                     }
-                    .disabled(isDisabled)
+                    
                 }
+                .listRowBackground(Color.rowBackground)
+
             }
+            .background(Color.background)
+
+            .listStyle(.plain)
             //            .navigationTitle("Edit Profile")
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage)
             }
             .navigationTitle("Edit Profile")
+
         
     }
     

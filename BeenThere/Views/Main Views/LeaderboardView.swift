@@ -46,6 +46,8 @@ struct LeaderboardView: View {
                                                 .bold()
                                                 .padding(.trailing, 3)
                                                 .font(.title2)
+                                                .foregroundStyle(Color.mutedPrimary)
+
                                             if let friendUID = friend["uid"] as? String {
                                                 if let imageUrl = viewModel.profileImageUrls[friendUID] {
                                                     KFImage(imageUrl)
@@ -66,9 +68,11 @@ struct LeaderboardView: View {
                                                 if let friendFirstName = friend["firstName"] as? String, let friendLastName = friend["lastName"] as? String {
                                                     if friendFirstName != "" {
                                                         Text("\(friendFirstName) \(friendLastName)")
-                                                            .fontWeight(friendUsername == viewModel.username ? .bold : .regular)
+                                                            .fontWeight(friendUsername == viewModel.username ? .black : .regular)
                                                             .padding(.trailing, 4)
                                                             .font(.title2)
+                                                            .foregroundStyle(Color.mutedPrimary)
+
                                                     }
                                                     
                                                 } else {
@@ -87,8 +91,11 @@ struct LeaderboardView: View {
                                             }
                                         }
                                         .font(.title3)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
                                     }
                                 }
+                                .listRowBackground(Color.rowBackground)
+
                             } else {
                                 Text("You have no friends added yet.")
                                     .foregroundColor(.gray)
@@ -96,12 +103,6 @@ struct LeaderboardView: View {
                         }
                         
                         else if leaderboardScope == "global" {
-//                            Section {
-//                                NavigationLink("Shared Map") {
-//                                    SharedView(viewModel: sharedMapViewModel, accountViewModel: viewModel)
-//                                }
-//                            }
-                            
                             ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                                 let person = viewModel.sortedUsersByLocationCount()[index]
                                 if let personUsername = person["username"] as? String,
@@ -111,9 +112,10 @@ struct LeaderboardView: View {
                                         // Display the rank
                                         Text("\(index + 1).")
                                             .bold()
+                                            .font(.title2)
                                             .padding(.trailing, 5) // Add some padding to separate the rank from the name
-                                        
-                                        
+                                            .foregroundStyle(Color.mutedPrimary)
+
                                         
                                         if let friendUID = person["uid"] as? String {
                                             if let imageUrl = viewModel.profileImageUrls[friendUID] {
@@ -136,12 +138,15 @@ struct LeaderboardView: View {
                                                 if let personFirstName = person["firstName"] as? String {
                                                     if personFirstName != "" {
                                                         Text(personFirstName)
-                                                            .fontWeight(friendUID == viewModel.uid ? .bold : .regular)
+                                                            .fontWeight(friendUID == viewModel.uid ? .black : .regular)
                                                             .padding(.trailing, 4)
+                                                            .font(.title2)
+                                                            .foregroundStyle(Color.mutedPrimary)
                                                     } else {
                                                         Text("@\(friendUsername)")
                                                             .italic()
                                                             .foregroundStyle(.secondary)
+                                                            .font(.title2)
                                                     }
                                                 }
                                             }
@@ -149,12 +154,15 @@ struct LeaderboardView: View {
                                         Spacer()
                                         Text("\(personLocations.count)")
                                             .foregroundStyle(.tertiary)
+                                        
                                     }
                                     .font(.title3)
                                 }
+                                
                             }
+                            .listRowBackground(Color.rowBackground)
+
                             .onAppear {
-                                // Scroll to the user's position
                                 if let userIndex = viewModel.sortedUsersByLocationCount().firstIndex(where: { $0["username"] as? String == viewModel.username }) {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                         withAnimation {
@@ -164,10 +172,17 @@ struct LeaderboardView: View {
                                 }
                             }
                         }
+                        
+
                     }
+                    .listStyle(.plain)
+
                 }
+
             }
-            .navigationTitle("Leaderboards")
+            .background(Color.background)
+//            .navigationTitle("Leaderboards")
+
             .navigationBarTitleDisplayMode(.inline)
         }
         .environmentObject(friendMapViewModel)
