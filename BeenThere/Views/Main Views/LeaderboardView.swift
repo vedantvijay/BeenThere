@@ -35,7 +35,9 @@ struct LeaderboardView: View {
                 }
                 Spacer()
                 ScrollViewReader { proxy in
+                    // TODO: global and friends should be refactored into a single stuct that can be reused
                     List {
+                        // MARK: -Friends
                         if leaderboardScope == "friends" {
                             if !viewModel.sortedFriendsByLocationCount().isEmpty {
                                 ForEach(viewModel.sortedFriendsByLocationCount().indices, id: \.self) { index in
@@ -101,19 +103,17 @@ struct LeaderboardView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-                        
+                        // MARK: -Global
                         else if leaderboardScope == "global" {
                             ForEach(viewModel.sortedUsersByLocationCount().indices, id: \.self) { index in
                                 let person = viewModel.sortedUsersByLocationCount()[index]
                                 if let personUsername = person["username"] as? String,
-    //                               let personUID = person["uid"] as? String,
                                    let personLocations = person["locations"] as? [[String: Any]] {
                                     HStack {
-                                        // Display the rank
                                         Text("\(index + 1).")
                                             .bold()
                                             .font(.title2)
-                                            .padding(.trailing, 5) // Add some padding to separate the rank from the name
+                                            .padding(.trailing, 5)
                                             .foregroundStyle(Color.mutedPrimary)
 
                                         

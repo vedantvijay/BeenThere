@@ -171,7 +171,7 @@ struct ContentView: View {
                 openAppSettings()
             }
         } message: {
-            Text("In order for this app to work as inteneded, please set your \"Location\" setting to \"Always\"")
+            Text("In order for this app to work as intended, please set your \"Location\" setting to \"Always\"")
         }
         .alert(isPresented: $showSpeedAlert) {
             Alert(
