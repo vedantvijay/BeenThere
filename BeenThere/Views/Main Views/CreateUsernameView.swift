@@ -112,7 +112,6 @@ struct CreateUsernameView: View {
                 if isCheckingUsername {
                     ProgressView()
                         .shadow(radius: 1, x: 0.5, y: 1)
-
                 } else {
                     if !(!isUsernameValid || isCheckingUsername || isUsernameTaken) {
                         Button("Create Username") {

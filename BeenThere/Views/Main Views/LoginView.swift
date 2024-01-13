@@ -31,11 +31,22 @@ struct LoginView: View {
                 
                 // Vignette Effect
 //            LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(1)]), startPoint: .top, endPoint: .bottom)
+            if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
                 RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
                                center: .center,
-                               startRadius: UIScreen.main.bounds.height*0,
+                               startRadius:
+                                    UIScreen.main.bounds.width*0,
+                               endRadius: UIScreen.main.bounds.height*0.8)
+                .ignoresSafeArea()
+            } else {
+                RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
+                               center: .center,
+                               startRadius:
+                                    UIScreen.main.bounds.height*0,
                                endRadius: UIScreen.main.bounds.height*0.55)
                 .ignoresSafeArea()
+            }
+                
             
             VStack {
                 Spacer()

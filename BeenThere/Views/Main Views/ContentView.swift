@@ -91,21 +91,39 @@ struct ContentView: View {
 //                            SlidyView(isInteractingWithSlidyView: $isInteractingWithSlidyView, screenHeight: geometry.size.height, screenWidth: geometry.size.width)
                         }
                         VStack {
-                            // The map picker should go right here
-                            Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
-                                Text("Personal").tag(MapSelection.personal)
-                                Text("Global").tag(MapSelection.global)
-                                ForEach(accountViewModel.friendList) { friend in
-                                    if friend.firstName != "" {
-                                        Text(friend.firstName + " " + friend.lastName)
-                                            .tag(MapSelection.friend(friend.id))
-                                    } else {
-                                        Text("@\(friend.username)")
-                                            .tag(MapSelection.friend(friend.id))
+                            if UIDevice.current.userInterfaceIdiom == .pad {
+                                Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
+                                    Text("Personal").tag(MapSelection.personal)
+                                    Text("Global").tag(MapSelection.global)
+                                    ForEach(accountViewModel.friendList) { friend in
+                                        if friend.firstName != "" {
+                                            Text(friend.firstName + " " + friend.lastName)
+                                                .tag(MapSelection.friend(friend.id))
+                                        } else {
+                                            Text("@\(friend.username)")
+                                                .tag(MapSelection.friend(friend.id))
+                                        }
                                     }
                                 }
+                                .padding(.top)
+                                .accentColor(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)))
+                            } else {
+                                Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
+                                    Text("Personal").tag(MapSelection.personal)
+                                    Text("Global").tag(MapSelection.global)
+                                    ForEach(accountViewModel.friendList) { friend in
+                                        if friend.firstName != "" {
+                                            Text(friend.firstName + " " + friend.lastName)
+                                                .tag(MapSelection.friend(friend.id))
+                                        } else {
+                                            Text("@\(friend.username)")
+                                                .tag(MapSelection.friend(friend.id))
+                                        }
+                                    }
+                                }
+                                .accentColor(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)))
                             }
-                            .accentColor(Color(uiColor: UIColor(red: 0.29, green: 0.47, blue: 0.94, alpha: 1)))
+                            
                             HStack {
                                 if !(authorizationStatus == .authorizedAlways || authorizationStatus == .notDetermined) {
                                     Button {

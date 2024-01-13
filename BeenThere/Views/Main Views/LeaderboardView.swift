@@ -18,19 +18,38 @@ struct LeaderboardView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("Scope", selection: $leaderboardScope) {
-                    ForEach(scopeOptions, id: \.self) {
-                        Text($0)
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    Picker("Scope", selection: $leaderboardScope) {
+                        ForEach(scopeOptions, id: \.self) {
+                            Text($0)
+                        }
                     }
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                .onDisappear {
-                    viewModel.updateProfileImages()
-                }
-                .onAppear {
-                    if viewModel.users.count == 0 {
-                        viewModel.setUpFirestoreListener()
+                    .pickerStyle(.segmented)
+                    .padding()
+                    .padding(.top)
+                    .onDisappear {
+                        viewModel.updateProfileImages()
+                    }
+                    .onAppear {
+                        if viewModel.users.count == 0 {
+                            viewModel.setUpFirestoreListener()
+                        }
+                    }
+                } else {
+                    Picker("Scope", selection: $leaderboardScope) {
+                        ForEach(scopeOptions, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    .onDisappear {
+                        viewModel.updateProfileImages()
+                    }
+                    .onAppear {
+                        if viewModel.users.count == 0 {
+                            viewModel.setUpFirestoreListener()
+                        }
                     }
                 }
                 Spacer()
