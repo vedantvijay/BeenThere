@@ -39,6 +39,7 @@
 		C09C698D2AE88382008A3148 /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C698C2AE88382008A3148 /* FriendView.swift */; };
 		C09C69912AE883C2008A3148 /* FriendMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69902AE883C2008A3148 /* FriendMapView.swift */; };
 		C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C69922AE88405008A3148 /* FriendMapViewModel.swift */; };
+		C09C6FAE2B530EFA00D07748 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C6FAD2B530EFA00D07748 /* SplashView.swift */; };
 		C0B4C0242B0126A0006D5022 /* TemplateMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B4C0232B0126A0006D5022 /* TemplateMapViewModel.swift */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
@@ -97,6 +98,7 @@
 		C09C698C2AE88382008A3148 /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
 		C09C69902AE883C2008A3148 /* FriendMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapView.swift; sourceTree = "<group>"; };
 		C09C69922AE88405008A3148 /* FriendMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendMapViewModel.swift; sourceTree = "<group>"; };
+		C09C6FAD2B530EFA00D07748 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		C0B4C0232B0126A0006D5022 /* TemplateMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateMapViewModel.swift; sourceTree = "<group>"; };
 		C0C808D42ADD83420070E679 /* BeenThere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeenThere.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0C808D72ADD83420070E679 /* BeenThereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeenThereApp.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 		C03424C42B0C534100A9CA9A /* Main Views */ = {
 			isa = PBXGroup;
 			children = (
+				C09C6FAD2B530EFA00D07748 /* SplashView.swift */,
 				C0C808D92ADD83420070E679 /* ContentView.swift */,
 				C0FAD0EE2B2A7B84000BA998 /* SlidyView.swift */,
 				C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */,
@@ -367,6 +370,7 @@
 				C0EAC0BD2B1507140003B44E /* CreatePostView.swift in Sources */,
 				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
 				C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */,
+				C09C6FAE2B530EFA00D07748 /* SplashView.swift in Sources */,
 				C03424C92B0C562500A9CA9A /* Location.swift in Sources */,
 				C08531752AF2C27700EAA434 /* SharedView.swift in Sources */,
 				C03424CB2B0C568400A9CA9A /* User.swift in Sources */,
@@ -529,7 +533,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -549,7 +553,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.11;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -568,7 +572,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -588,7 +592,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.11;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

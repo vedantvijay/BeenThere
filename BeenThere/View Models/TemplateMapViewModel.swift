@@ -193,14 +193,23 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         }
     }
     
-    func adjustMapViewToFitSquares() {
+    func splashDefault() {
+        guard let mapView = mapView else { return }
+        
+        let cameraOptions = CameraOptions(center: CLLocationCoordinate2D(latitude: 50, longitude: 50), zoom: 0)
+        mapView.mapboxMap.setCamera(to: cameraOptions)
+    }
+    
+    
+    
+    func adjustMapViewToFitSquares(duration: Double = 0.5) {
         guard let mapView = mapView else { return }
 
         if mapSelection == .personal {
             guard let boundingBox = self.boundingBox(for: self.locations) else { return }
             let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
             let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-            mapView.camera.fly(to: cameraOptions, duration: 0.5)
+            mapView.camera.fly(to: cameraOptions, duration: duration)
             
             if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
                 self.lastCameraCenter = cameraOptions.center
@@ -211,7 +220,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             guard let boundingBox = self.boundingBox(for: self.friendLocations) else { return }
             let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
             let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-            mapView.camera.fly(to: cameraOptions, duration: 0.5)
+            mapView.camera.fly(to: cameraOptions, duration: duration)
             
             if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
                 self.lastCameraCenter = cameraOptions.center
