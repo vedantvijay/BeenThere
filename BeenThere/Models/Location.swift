@@ -5,6 +5,7 @@ struct Location: Codable, Hashable {
     var highLatitude: Double
     var lowLongitude: Double
     var highLongitude: Double
+    var timestamp: Double?
 }
 
 extension Location {

@@ -27,7 +27,7 @@ struct SplashView: View {
                 Text("Been There")
                     .font(.largeTitle)
                     .fontWeight(.black)
-                    .foregroundStyle(.mutedPrimary)
+//                    .foregroundStyle(.mutedPrimary)
                     .shadow(radius: 5)
             }
         }

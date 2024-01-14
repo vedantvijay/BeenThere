@@ -76,11 +76,12 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 print("LOG: Personal locations updated")
                 self?.addSquaresToMap(locations: newLocations)
                 self?.adjustMapViewToFitSquares()
+//                self?.mapSelection = .personal
             }
         case .global:
             friendLocations = []
-            guard let globalLocations = accountViewModel?.userLocations else { return } // Assuming globalLocations exist in AccountViewModel
-            locations = globalLocations
+            guard let globalLocations = accountViewModel?.userLocations else { return }
+//            locations = globalLocations
             addSquaresToMap(locations: globalLocations)
             print("LOG: Global locations updated")
             centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))

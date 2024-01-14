@@ -219,7 +219,9 @@ struct ContentView: View {
                 }
                 mainMapViewModel.updateMapStyleURL()
             }
-           
+            .onChange(of: mainMapViewModel.locations) {
+                mainMapViewModel.mapSelection = .personal
+            }
             .onAppear {
                 if colorScheme == .light {
                     print("LOG: light mode")
@@ -246,16 +248,15 @@ struct ContentView: View {
                 SplashView()
                     .opacity(splashOpacity)
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) { // 3 seconds delay
-                            withAnimation {
-                                splashOpacity = 0
-                            }
-                        }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                             mainMapViewModel.splashDefault()
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                            self.showSplash = false
+                            withAnimation {
+                                splashOpacity = 0
+                                self.showSplash = false
+                            }
+//                            self.showSplash = false
                             mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
                         }
                     }
