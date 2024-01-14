@@ -223,6 +223,7 @@ struct ContentView: View {
                 mainMapViewModel.mapSelection = .personal
             }
             .onAppear {
+                showSplash = true
                 if colorScheme == .light {
                     print("LOG: light mode")
                     mainMapViewModel.isDarkModeEnabled = false

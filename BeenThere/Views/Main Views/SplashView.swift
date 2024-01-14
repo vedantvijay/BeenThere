@@ -13,7 +13,6 @@ struct SplashView: View {
             Image("splashMap")
                 .resizable()
                 .scaledToFill()
-//                .opacity(0.5)
                 .ignoresSafeArea()
             Color(.background)
                 .opacity(0.9
