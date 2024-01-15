@@ -10,14 +10,7 @@ import SwiftUI
 struct SplashView: View {
     var body: some View {
         ZStack {
-            Image("splashMap")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-            Color(.background)
-                .opacity(0.9
-                )
-                .ignoresSafeArea()
+            SplashBackground()
             VStack {
                 Image("icon")
                     .resizable()
@@ -31,6 +24,19 @@ struct SplashView: View {
             }
         }
         .preferredColorScheme(.dark)
+    }
+}
+
+struct SplashBackground: View {
+    var body: some View {
+        Image("splashMap")
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea()
+        Color(.background)
+            .opacity(0.9
+            )
+            .ignoresSafeArea()
     }
 }
 

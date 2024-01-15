@@ -57,92 +57,95 @@ struct CreateUsernameView: View {
                     }
                 }
         } else {
+            GeometryReader { geometry in
             ZStack {
-                // Background
-                ForEach(imageNames.indices, id: \.self) { index in
-                               Image(imageNames[index])
-                                   .resizable()
-                                   .scaledToFill()
-                                   .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                                   .clipped()
-                                   .opacity(currentImageIndex == index ? 1 : 0)
-                                   .animation(.easeIn(duration: 2), value: currentImageIndex)  // Only animate opacity changes
-                                   .ignoresSafeArea()
-                                   .blur(radius: 2)
-    //                               .brightness(-0.1)
-                }
-                    
-                    // Vignette Effect
-    //            LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(1)]), startPoint: .top, endPoint: .bottom)
-                    RadialGradient(gradient: Gradient(colors: [Color.clear, Color.black.opacity(1)]),
-                                   center: .center,
-                                   startRadius: UIScreen.main.bounds.height*0,
-                                   endRadius: UIScreen.main.bounds.height*0.55)
+                Color(.background)
                     .ignoresSafeArea()
-                
-                VStack {
-                    Spacer()
-                    TextField("Username", text: $newUsername)
-                        .shadow(color: .black, radius: 1, x: 0.5, y: 1)
-                        .fontWeight(.black)
-                        .onChange(of: newUsername) {
-                            checkAndSetUsername()
+                    VStack(spacing: 20) {
+                        ZStack {
+                            Circle()
+                                .fill(.accent)
+                                .frame(width: 125, height: 125)
+                            Image("at")
+                                .resizable()
+                                .frame(width: 75, height: 75)
                         }
-                        .onChange(of: username) {
-                            if username != "" {
-                                appState = "authenticated"
-                            }
-                        }
-                        .onAppear {
-                            if username != "" {
-                                appState = "authenticated"
-                            }
-                            if !authViewModel.isAuthenticated || !authViewModel.isSignedIn || Auth.auth().currentUser == nil {
-                                accountViewModel.signOut()
-                                appState = "notAuthenticated"
-                            }
-                        }
-                        .textFieldStyle(.roundedBorder)
                         .padding()
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .focused($isUsernameFieldFocused)
-                    
-                    if invalidUsernameReason != "" {
-                        Text(invalidUsernameReason)
-                            .foregroundStyle(.white)
-                            .shadow(color: .black, radius: 1, x: 0.5, y: 1)
-                            .fontWeight(.black)
-
-                    } else if isUsernameTaken {
-                        Text("Username is already taken")
-                            .foregroundStyle(.white)
-                            .shadow(color: .black, radius: 1, x: 0.5, y: 1)
-                            .fontWeight(.black)
-                    }
-                    if isCheckingUsername {
-                        ProgressView()
-                            .shadow(radius: 1, x: 0.5, y: 1)
-                    } else {
-                        if !(!isUsernameValid || isCheckingUsername || isUsernameTaken) {
-                            Button("Create Username") {
+                        Text("Claim you username")
+                            .font(.title2)
+                            .bold()
+                        TextField("Username", text: $newUsername)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .focused($isUsernameFieldFocused)
+                            .textFieldStyle(WhiteBorder())
+                            .frame(width: geometry.size.width * 0.9, height: 60)
+                        ZStack {
+                            Button {
                                 if authViewModel.isAuthenticated && authViewModel.isSignedIn {
                                     appState = "authenticated"
                                     setUsernameInFirestore()
                                 }
+                            } label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.button)
+                                    Text("Next")
+                                        .foregroundStyle((isChangeButtonDisabled || isCheckingUsername) ? .white.opacity(0.1) : Color.mutedPrimary)
+                                }
                             }
-                            .shadow(color: .black, radius: 1, x: 0.5, y: 1)
-                            .fontWeight(.black)
-                            .disabled(isChangeButtonDisabled)
-                            .buttonStyle(.bordered)
-                            .tint(.green)
+                            .bold()
+                            .disabled(isChangeButtonDisabled || isCheckingUsername)
+                            .frame(width: geometry.size.width * 0.9, height: 60)
+                            if isCheckingUsername {
+                                ProgressView()
+                            }
                         }
                         
-                    }
-                    Spacer()
-                }
-                .padding()
+                        
+                        if invalidUsernameReason != "" {
+                            Text(invalidUsernameReason)
+                                .foregroundStyle(.red)
+                                .font(.caption)
+                                .padding(10)
+                                .background(
+                                    Capsule()
+                                        .foregroundStyle(.red.opacity(0.1))
+                                )
 
+                        } else if isUsernameTaken {
+                            Text("Username is already taken")
+                                .foregroundStyle(.red)
+                                .font(.caption)
+                                .padding(10)
+                                .background(
+                                    Capsule()
+                                        .foregroundStyle(.red.opacity(0.1))
+                                )
+                        }
+                        Spacer()
+                    }
+                    .padding()
+
+                }
+                
+            }
+            .onChange(of: newUsername) {
+                checkAndSetUsername()
+            }
+            .onChange(of: username) {
+                if username != "" {
+                    appState = "authenticated"
+                }
+            }
+            .onAppear {
+                if username != "" {
+                    appState = "authenticated"
+                }
+                if !authViewModel.isAuthenticated || !authViewModel.isSignedIn || Auth.auth().currentUser == nil {
+                    accountViewModel.signOut()
+                    appState = "notAuthenticated"
+                }
             }
             .preferredColorScheme(.light)
             .onReceive(timer) { _ in
@@ -239,6 +242,19 @@ struct CreateUsernameView: View {
             return "Invalid username format."
         }
         return ""
+    }
+}
+
+struct WhiteBorder: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding()
+            .frame(height: 60)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.textFieldBorder, lineWidth:3)
+                    .fill(.textField)
+            )
     }
 }
 
