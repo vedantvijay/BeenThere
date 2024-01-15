@@ -1,18 +1,21 @@
-import SwiftUI
 import AuthenticationServices
 import Firebase
 import FirebaseAuth
+import GoogleSignIn
+import GoogleSignInSwift
+import SwiftUI
+
 
 struct LoginView: View {
     @AppStorage("appState") var appState = "opening"
     @EnvironmentObject var accountViewModel: AccountViewModel
     @State private var isAppleSignInPresented: Bool = false
     @State private var currentImageIndex: Int = 0
+    @ObservedObject var viewModel = AuthenticationViewModel()
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                
                 Color(.background)
                     .opacity(0.9)
                     .ignoresSafeArea()
@@ -22,15 +25,37 @@ struct LoginView: View {
                         .frame(width: 100, height: 100)
                     VStack {
                         Text("Welcome to Been There!")
-//                        Text("Login or create an account")
                     }
                     .shadow(color: .black, radius: 3, x: 1, y: 2)
                     .font(.title)
                     .foregroundColor(.white)
-                    VStack(spacing: 10) {
+                    VStack(spacing: 20) {
                         SignInApple()
                             .frame(width: geometry.size.width - 100, height: 50)
                             .shadow(color: .black, radius: 3, x: 1, y: 2)
+                        Button {
+                            Task {
+                                await viewModel.signInWithGoogle()
+                            }
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 7)
+                                    .foregroundStyle(.white)
+                                    .frame(width: geometry.size.width - 100, height: 50)
+                                    .shadow(color: .black, radius: 3, x: 1, y: 2)
+                                HStack {
+                                    Image("googleIcon")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                    Text("Sign in with Google")
+                                        .foregroundStyle(.black)
+                                        .bold()
+                                        .font(.headline)
+                                }
+                            }
+                            
+                        }
+                            
                     }
                 }
             }
@@ -100,6 +125,7 @@ struct SignInApple: View {
         }
     }
 }
+
 
 #Preview {
     LoginView()
