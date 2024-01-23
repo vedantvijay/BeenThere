@@ -30,7 +30,7 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-    @State private var showSplash: Bool = true
+    @AppStorage("showSplash") var showSplash: Bool = true
     @State private var splashOpacity = 1.0
 
     
@@ -257,23 +257,11 @@ struct ContentView: View {
                                 splashOpacity = 0
                                 self.showSplash = false
                             }
-//                            self.showSplash = false
                             mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
                         }
                     }
             }
-
         }
-//        .sheet(isPresented: $mainMapViewModel.showTappedLocation) {
-//            if mainMapViewModel.tappedLocation != nil {
-//                DirectionsSheetView(location: mainMapViewModel.tappedLocation!)
-//                        .presentationDetents([.height(200)])
-//                        .presentationDragIndicator(.visible)
-//                        .presentationBackground(.thinMaterial)
-//                        .presentationBackgroundInteraction(.enabled)
-//            }
-//            
-//        }
     }
     
     private func requestLocationAccess() {

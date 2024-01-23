@@ -48,11 +48,16 @@ class AuthViewModel: ObservableObject {
 @main
 struct BeenThereApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.scenePhase) var scenePhase
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var accountViewModel = AccountViewModel()
     @AppStorage("appState") var appState = "notAuthenticated"
     @AppStorage("username") var username = ""
-    
+    @AppStorage("showSplash") var showSplash: Bool = true
+
+    init() {
+        setupTerminationObserver()
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -80,7 +85,6 @@ struct BeenThereApp: App {
                 if username == "" {
                     accountViewModel.signOut()
                 }
-                
             }
         }
         .environmentObject(accountViewModel)
@@ -99,6 +103,14 @@ struct BeenThereApp: App {
                 accountViewModel.signOut()
                 appState = "notAuthenticated"
             }
+        }
+    }
+    
+    private func setupTerminationObserver() {
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { _ in
+            // The app is about to terminate, save your data here
+            showSplash = true
+            print("App is terminating. Saved data to UserDefaults.")
         }
     }
 }
