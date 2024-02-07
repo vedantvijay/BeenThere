@@ -30,10 +30,9 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-    @AppStorage("showSplash") var showSplash: Bool = true
+    @State private var showSplash: Bool = true
     @State private var splashOpacity = 1.0
 
-    
     var usesMetric: Bool {
         let locale = Locale.current
         switch locale.measurementSystem {
