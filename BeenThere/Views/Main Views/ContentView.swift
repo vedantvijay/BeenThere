@@ -30,8 +30,8 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-    @State private var showSplash: Bool = true
-    @State private var splashOpacity = 1.0
+//    @State private var showSplash: Bool = true
+//    @State private var splashOpacity = 1.0
 
     var usesMetric: Bool {
         let locale = Locale.current
@@ -222,7 +222,6 @@ struct ContentView: View {
                 mainMapViewModel.mapSelection = .personal
             }
             .onAppear {
-                showSplash = true
                 if colorScheme == .light {
                     print("LOG: light mode")
                     mainMapViewModel.isDarkModeEnabled = false
@@ -244,22 +243,7 @@ struct ContentView: View {
                     isKeyboardVisible = false
                 }
             }
-            if showSplash {
-                SplashView()
-                    .opacity(splashOpacity)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            mainMapViewModel.splashDefault()
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                            withAnimation {
-                                splashOpacity = 0
-                                self.showSplash = false
-                            }
-                            mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
-                        }
-                    }
-            }
+         
         }
     }
     

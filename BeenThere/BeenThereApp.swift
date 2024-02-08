@@ -51,8 +51,13 @@ struct BeenThereApp: App {
     @Environment(\.scenePhase) var scenePhase
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var accountViewModel = AccountViewModel()
+    @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: AccountViewModel.sharedMain)
+
     @AppStorage("appState") var appState = "notAuthenticated"
     @AppStorage("username") var username = ""
+    @State private var showSplash: Bool = true
+    @State private var splashOpacity = 1.0
+
 
 //    init() {
 //        setupTerminationObserver()
@@ -63,8 +68,26 @@ struct BeenThereApp: App {
             ZStack {
                 switch appState {
                 case "authenticated":
-                    ContentView()
-                        .statusBarHidden()
+                    if showSplash {
+                        SplashView()
+                            .opacity(splashOpacity)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    mainMapViewModel.splashDefault()
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                                    withAnimation {
+                                        splashOpacity = 0
+                                        self.showSplash = false
+                                    }
+                                    mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
+                                }
+                            }
+                    } else {
+                        ContentView()
+                            .statusBarHidden()
+                    }
+                    
                 case "createUser":
                     CreateUsernameView()
                         .statusBarHidden()
