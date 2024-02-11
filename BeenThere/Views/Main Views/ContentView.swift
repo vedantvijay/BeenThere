@@ -30,8 +30,8 @@ struct ContentView: View {
     @State private var showNavigation = false
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
-//    @State private var showSplash: Bool = true
-//    @State private var splashOpacity = 1.0
+    @State private var showSplash: Bool = true
+    @State private var splashOpacity = 1.0
 
     var usesMetric: Bool {
         let locale = Locale.current
@@ -204,35 +204,35 @@ struct ContentView: View {
                 mainMapViewModel.locations = accountViewModel.locations
                 mainMapViewModel.addSquaresToMap(locations: accountViewModel.locations)
             }
-            .onChange(of: colorScheme) {
-                if colorScheme == .light {
-                    print("LOG: light mode")
-                    mainMapViewModel.isDarkModeEnabled = false
-                    friendMapViewModel.isDarkModeEnabled = false
-                    sharedMapViewModel.isDarkModeEnabled = false
-                } else {
-                    print("LOG: dark mode")
-                    mainMapViewModel.isDarkModeEnabled = true
-                    friendMapViewModel.isDarkModeEnabled = true
-                    sharedMapViewModel.isDarkModeEnabled = true
-                }
-                mainMapViewModel.updateMapStyleURL()
-            }
+//            .onChange(of: colorScheme) {
+//                if colorScheme == .light {
+//                    print("LOG: light mode")
+//                    mainMapViewModel.isDarkModeEnabled = false
+//                    friendMapViewModel.isDarkModeEnabled = false
+//                    sharedMapViewModel.isDarkModeEnabled = false
+//                } else {
+//                    print("LOG: dark mode")
+//                    mainMapViewModel.isDarkModeEnabled = true
+//                    friendMapViewModel.isDarkModeEnabled = true
+//                    sharedMapViewModel.isDarkModeEnabled = true
+//                }
+//                mainMapViewModel.updateMapStyleURL()
+//            }
             .onChange(of: mainMapViewModel.locations) {
                 mainMapViewModel.mapSelection = .personal
             }
             .onAppear {
-                if colorScheme == .light {
-                    print("LOG: light mode")
-                    mainMapViewModel.isDarkModeEnabled = false
-                    friendMapViewModel.isDarkModeEnabled = false
-                    sharedMapViewModel.isDarkModeEnabled = false
-                } else {
-                    print("LOG: dark mode")
-                    mainMapViewModel.isDarkModeEnabled = true
-                    friendMapViewModel.isDarkModeEnabled = true
-                    sharedMapViewModel.isDarkModeEnabled = true
-                }
+//                if colorScheme == .light {
+//                    print("LOG: light mode")
+//                    mainMapViewModel.isDarkModeEnabled = false
+//                    friendMapViewModel.isDarkModeEnabled = false
+//                    sharedMapViewModel.isDarkModeEnabled = false
+//                } else {
+//                    print("LOG: dark mode")
+//                    mainMapViewModel.isDarkModeEnabled = true
+//                    friendMapViewModel.isDarkModeEnabled = true
+//                    sharedMapViewModel.isDarkModeEnabled = true
+//                }
                 mainMapViewModel.updateMapStyleURL()
                 accountViewModel.ensureUserHasUIDAttribute()
                 let notificationCenter = NotificationCenter.default
@@ -243,6 +243,23 @@ struct ContentView: View {
                     isKeyboardVisible = false
                 }
             }
+            if showSplash {
+                SplashView()
+                    .opacity(splashOpacity)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            mainMapViewModel.splashDefault()
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                            withAnimation {
+                                splashOpacity = 0
+                                showSplash = false
+                            }
+                            mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
+                        }
+                    }
+            }
+            
          
         }
     }
