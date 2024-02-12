@@ -204,35 +204,35 @@ struct ContentView: View {
                 mainMapViewModel.locations = accountViewModel.locations
                 mainMapViewModel.addSquaresToMap(locations: accountViewModel.locations)
             }
-//            .onChange(of: colorScheme) {
-//                if colorScheme == .light {
-//                    print("LOG: light mode")
-//                    mainMapViewModel.isDarkModeEnabled = false
-//                    friendMapViewModel.isDarkModeEnabled = false
-//                    sharedMapViewModel.isDarkModeEnabled = false
-//                } else {
-//                    print("LOG: dark mode")
-//                    mainMapViewModel.isDarkModeEnabled = true
-//                    friendMapViewModel.isDarkModeEnabled = true
-//                    sharedMapViewModel.isDarkModeEnabled = true
-//                }
-//                mainMapViewModel.updateMapStyleURL()
-//            }
+            .onChange(of: colorScheme) {
+                if colorScheme == .light {
+                    print("LOG: light mode")
+                    mainMapViewModel.isDarkModeEnabled = false
+                    friendMapViewModel.isDarkModeEnabled = false
+                    sharedMapViewModel.isDarkModeEnabled = false
+                } else {
+                    print("LOG: dark mode")
+                    mainMapViewModel.isDarkModeEnabled = true
+                    friendMapViewModel.isDarkModeEnabled = true
+                    sharedMapViewModel.isDarkModeEnabled = true
+                }
+                mainMapViewModel.updateMapStyleURL()
+            }
             .onChange(of: mainMapViewModel.locations) {
                 mainMapViewModel.mapSelection = .personal
             }
             .onAppear {
-//                if colorScheme == .light {
-//                    print("LOG: light mode")
-//                    mainMapViewModel.isDarkModeEnabled = false
-//                    friendMapViewModel.isDarkModeEnabled = false
-//                    sharedMapViewModel.isDarkModeEnabled = false
-//                } else {
-//                    print("LOG: dark mode")
-//                    mainMapViewModel.isDarkModeEnabled = true
-//                    friendMapViewModel.isDarkModeEnabled = true
-//                    sharedMapViewModel.isDarkModeEnabled = true
-//                }
+                if colorScheme == .light {
+                    print("LOG: light mode")
+                    mainMapViewModel.isDarkModeEnabled = false
+                    friendMapViewModel.isDarkModeEnabled = false
+                    sharedMapViewModel.isDarkModeEnabled = false
+                } else {
+                    print("LOG: dark mode")
+                    mainMapViewModel.isDarkModeEnabled = true
+                    friendMapViewModel.isDarkModeEnabled = true
+                    sharedMapViewModel.isDarkModeEnabled = true
+                }
                 mainMapViewModel.updateMapStyleURL()
                 accountViewModel.ensureUserHasUIDAttribute()
                 let notificationCenter = NotificationCenter.default
