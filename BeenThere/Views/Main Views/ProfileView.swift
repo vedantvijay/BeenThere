@@ -38,9 +38,13 @@ struct ProfileView: View {
 //                        .shadow(radius: 10)
 //                }
                 VStack(spacing: 10) {
+                    Text("\(viewModel.firstName) \(viewModel.lastName)")
+                        .font(.title)
+                        .fontWeight(.black)
+                        .foregroundStyle(Color.mutedPrimary)
                     Text("@\(viewModel.username)")
                         .font(.title2)
-                        .fontWeight(.bold)
+//                        .fontWeight(.bold)
                         .foregroundStyle(Color.mutedPrimary)
 
                     Text(viewModel.locations.count == 1 ? "\(viewModel.locations.count) Chunk Explored" : "\(viewModel.locations.count) Chunks Explored")
