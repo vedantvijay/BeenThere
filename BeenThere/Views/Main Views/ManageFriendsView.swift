@@ -7,15 +7,20 @@
 
 import SwiftUI
 import AlertToast
-import Kingfisher
+//import Kingfisher
+
 
 struct ManageFriendsView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ManageFriendsViewModel()
     @EnvironmentObject var accountViewModel: AccountViewModel
-    
+
     @State private var newFriendUsername = ""
     
+    // State for unfriend confirmation
+    @State private var showUnfriendAlert = false
+    @State private var unfriendUID: String? = nil
+
     var body: some View {
         List {
             Section {
@@ -59,14 +64,10 @@ struct ManageFriendsView: View {
                                 }
                                 .buttonStyle(.bordered)
                                 .tint(.red)
-                                
                             }
-                            
-                            
                         }
                     }
                     .listRowBackground(Color.rowBackground)
-
                 }
             }
             
@@ -90,73 +91,48 @@ struct ManageFriendsView: View {
                                     }
                                     .tint(.green)
                                     .buttonStyle(.bordered)
+                                    
                                     Button("Reject") {
                                         viewModel.rejectFriendRequest(friendUID: uid)
                                     }
                                     .tint(.red)
                                     .buttonStyle(.bordered)
                                 }
-                                
                             }
                         }
                         .listRowBackground(Color.rowBackground)
-
                     }
-                    
                 }
             }
+            
             if !accountViewModel.friends.isEmpty {
                 Section("Friends") {
                     ForEach(accountViewModel.friends.indices, id: \.self) { index in
                         HStack {
                             if let uid = accountViewModel.friends[index]["uid"] as? String {
-                                // Display the user's photo if available
-                                if let imageUrl = accountViewModel.profileImageUrls[uid] {
-                                    KFImage(imageUrl)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .clipShape(Circle())
-                                        .frame(width: 50, height: 50)
-                                        .padding(.trailing, 10)
-                                } else {
-                                    Image(systemName: "person.crop.circle")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .foregroundStyle(.secondary)
-                                        .padding(.trailing, 10)
-
-                                }
-                                
-                                // Display the first name if available, otherwise username
-//                                let displayName = (accountViewModel.friends[index]["firstName"] as? String) ?? "@\((accountViewModel.friends[index]["username"] as? String) ?? "Unknown")"
                                 if let username = accountViewModel.friends[index]["username"] as? String {
                                     if let firstName = accountViewModel.friends[index]["firstName"] as? String {
                                         VStack(alignment: .leading) {
                                             Text(firstName)
                                                 .font(.title2)
                                                 .foregroundStyle(Color.mutedPrimary)
-
                                             Text("@\(username)")
                                                 .foregroundStyle(.secondary)
                                                 .italic()
                                         }
-                                        
-
                                     } else {
                                         Text("@\(username)")
                                             .italic()
                                             .foregroundStyle(.secondary)
                                             .font(.title2)
-
                                     }
-                                    
                                 }
-//                                Text(displayName)
-//                                    .fontWeight(.black)
-                                
+
                                 Spacer()
                                 Button("Unfriend") {
-                                    viewModel.unfriend(friendUID: uid)
+                                    // Set the UID and trigger the confirmation alert
+                                    unfriendUID = uid
+                                    showUnfriendAlert = true
                                 }
                                 .tint(.red)
                                 .buttonStyle(.bordered)
@@ -164,13 +140,9 @@ struct ManageFriendsView: View {
                         }
                     }
                     .listRowBackground(Color.rowBackground)
-
                 }
-
             }
-
-       }
-        
+        }
         .listStyle(.plain)
         .background(Color.background)
         .navigationTitle("Manage Friends")
@@ -207,6 +179,17 @@ struct ManageFriendsView: View {
         .toast(isPresenting: $viewModel.showRequestAccepted) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "Friend Request Accepted!")
         }
+        // Confirmation Alert for Unfriend
+        .alert("Unfriend?", isPresented: $showUnfriendAlert, actions: {
+            Button("Cancel", role: .cancel) {}
+            Button("Unfriend", role: .destructive) {
+                if let uid = unfriendUID {
+                    viewModel.unfriend(friendUID: uid)
+                }
+            }
+        }, message: {
+            Text("Are you sure you want to remove this friend?")
+        })
     }
 }
 

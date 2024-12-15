@@ -1,12 +1,4 @@
-//
-//  FriendView.swift
-//  BeenThere
-//
-//  Created by Jared Jones on 10/24/23.
-//
-
 import SwiftUI
-import Kingfisher
 
 struct FriendView: View {
     @Environment(\.dismiss) var dismiss
@@ -21,20 +13,20 @@ struct FriendView: View {
     var body: some View {
         VStack {
             HStack(alignment: .center) {
-                Spacer()
-                if let imageUrl = accountViewModel.profileImageUrls[(friend["uid"] as? String)!] {
-                    KFImage(imageUrl)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 125, height: 125)
-                        .clipShape(Circle())
-                    
-                } else {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .frame(width: 125, height: 125)
-                        .foregroundStyle(.secondary)
-                }
+//                Spacer()
+//                if let imageUrl = accountViewModel.profileImageUrls[(friend["uid"] as? String)!] {
+//                    KFImage(imageUrl)
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fill)
+//                        .frame(width: 125, height: 125)
+//                        .clipShape(Circle())
+//                    
+//                } else {
+//                    Image(systemName: "person.crop.circle")
+//                        .resizable()
+//                        .frame(width: 125, height: 125)
+//                        .foregroundStyle(.secondary)
+//                }
                 Spacer()
                 VStack(spacing: 10) {
                     if firstName != "" {

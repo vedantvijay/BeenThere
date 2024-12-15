@@ -9,15 +9,6 @@
 /* Begin PBXBuildFile section */
 		C001517D2AF53211007DA96F /* ChangeUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C001517C2AF53211007DA96F /* ChangeUsernameView.swift */; };
 		C01B08522B2CDA300097D828 /* SettingsItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01B08512B2CDA300097D828 /* SettingsItemView.swift */; };
-		C01B19122B266B9D00E42FE5 /* MapboxCoreNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19112B266B9D00E42FE5 /* MapboxCoreNavigation */; };
-		C01B19142B266B9D00E42FE5 /* MapboxNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19132B266B9D00E42FE5 /* MapboxNavigation */; };
-		C01B19172B266C0900E42FE5 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19162B266C0900E42FE5 /* FirebaseAppCheck */; };
-		C01B19192B266C0900E42FE5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19182B266C0900E42FE5 /* FirebaseAuth */; };
-		C01B191B2B266C0900E42FE5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C01B191A2B266C0900E42FE5 /* FirebaseFirestore */; };
-		C01B191D2B266C0900E42FE5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = C01B191C2B266C0900E42FE5 /* FirebaseStorage */; };
-		C01B19202B266C3000E42FE5 /* MapboxGeocoder in Frameworks */ = {isa = PBXBuildFile; productRef = C01B191F2B266C3000E42FE5 /* MapboxGeocoder */; };
-		C01B19232B266C4100E42FE5 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19222B266C4100E42FE5 /* Kingfisher */; };
-		C01B19262B266C4E00E42FE5 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C01B19252B266C4E00E42FE5 /* AlertToast */; };
 		C0245CCD2AF947CD00C7CD4F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0245CCC2AF947CD00C7CD4F /* ProfileView.swift */; };
 		C03126972B213146004CAE0B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03126962B213146004CAE0B /* SearchBar.swift */; };
 		C03424C72B0C55BD00A9CA9A /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03424C62B0C55BD00A9CA9A /* Post.swift */; };
@@ -28,6 +19,13 @@
 		C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04E072B2B02BA2500340D58 /* EditProfileViewModel.swift */; };
 		C053C1B52AFA94E6006B1230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B42AFA94E6006B1230 /* LoginView.swift */; };
 		C053C1B72AFA950C006B1230 /* CreateUsernameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C053C1B62AFA950C006B1230 /* CreateUsernameView.swift */; };
+		C06311942D0F4B4100958126 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C06311932D0F4B4100958126 /* FirebaseAuth */; };
+		C06311962D0F4B4100958126 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C06311952D0F4B4100958126 /* FirebaseFirestore */; };
+		C06311992D0F4C2A00958126 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = C06311982D0F4C2A00958126 /* MapboxMaps */; };
+		C063119B2D0F4D1300958126 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C063119A2D0F4D1300958126 /* GoogleSignIn */; };
+		C063119D2D0F4D1300958126 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C063119C2D0F4D1300958126 /* GoogleSignInSwift */; };
+		C06311A02D0F4E9F00958126 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = C063119F2D0F4E9F00958126 /* FirebaseStorage */; };
+		C06311A32D0F4F2500958126 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = C06311A22D0F4F2500958126 /* AlertToast */; };
 		C06A55572B26508F0081B137 /* RouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06A55562B26508F0081B137 /* RouteView.swift */; };
 		C06A55592B26626A0081B137 /* NavigatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06A55582B26626A0081B137 /* NavigatingView.swift */; };
 		C085316D2AF1E6F900EAA434 /* SharedMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C085316C2AF1E6F900EAA434 /* SharedMapView.swift */; };
@@ -42,8 +40,6 @@
 		C09C6FAE2B530EFA00D07748 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09C6FAD2B530EFA00D07748 /* SplashView.swift */; };
 		C0B4C0242B0126A0006D5022 /* TemplateMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B4C0232B0126A0006D5022 /* TemplateMapViewModel.swift */; };
 		C0C3168C2B54C68D00192C89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C0C3168B2B54C68D00192C89 /* GoogleService-Info.plist */; };
-		C0C3168F2B54C6EB00192C89 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C0C3168E2B54C6EB00192C89 /* GoogleSignIn */; };
-		C0C316912B54C6EB00192C89 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C0C316902B54C6EB00192C89 /* GoogleSignInSwift */; };
 		C0C316932B54CC9600192C89 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C316922B54CC9600192C89 /* AuthenticationViewModel.swift */; };
 		C0C808D82ADD83420070E679 /* BeenThereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D72ADD83420070E679 /* BeenThereApp.swift */; };
 		C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C808D92ADD83420070E679 /* ContentView.swift */; };
@@ -52,7 +48,6 @@
 		C0D2A9082AE585CB006326C1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9072AE585CB006326C1 /* SettingsView.swift */; };
 		C0D2A90A2AE58EF5006326C1 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */; };
 		C0D2A90C2AE593D1006326C1 /* ManageFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */; };
-		C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */; };
 		C0EAC0BB2B1409250003B44E /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAC0BA2B1409250003B44E /* Enums.swift */; };
 		C0EAC0BD2B1507140003B44E /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAC0BC2B1507140003B44E /* CreatePostView.swift */; };
 		C0F46EE72AF954A000C2776A /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F46EE62AF954A000C2776A /* FeedViewModel.swift */; };
@@ -114,7 +109,6 @@
 		C0D2A9072AE585CB006326C1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C0D2A9092AE58EF5006326C1 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
 		C0D2A90B2AE593D1006326C1 /* ManageFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFriendsView.swift; sourceTree = "<group>"; };
-		C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPT.swift; sourceTree = "<group>"; };
 		C0EAC0BA2B1409250003B44E /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		C0EAC0BC2B1507140003B44E /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		C0F46EE62AF954A000C2776A /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
@@ -130,17 +124,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C01B19142B266B9D00E42FE5 /* MapboxNavigation in Frameworks */,
-				C01B19172B266C0900E42FE5 /* FirebaseAppCheck in Frameworks */,
-				C01B19202B266C3000E42FE5 /* MapboxGeocoder in Frameworks */,
-				C01B19262B266C4E00E42FE5 /* AlertToast in Frameworks */,
-				C01B19122B266B9D00E42FE5 /* MapboxCoreNavigation in Frameworks */,
-				C0C3168F2B54C6EB00192C89 /* GoogleSignIn in Frameworks */,
-				C01B19232B266C4100E42FE5 /* Kingfisher in Frameworks */,
-				C01B191B2B266C0900E42FE5 /* FirebaseFirestore in Frameworks */,
-				C01B19192B266C0900E42FE5 /* FirebaseAuth in Frameworks */,
-				C01B191D2B266C0900E42FE5 /* FirebaseStorage in Frameworks */,
-				C0C316912B54C6EB00192C89 /* GoogleSignInSwift in Frameworks */,
+				C063119D2D0F4D1300958126 /* GoogleSignInSwift in Frameworks */,
+				C06311A32D0F4F2500958126 /* AlertToast in Frameworks */,
+				C06311992D0F4C2A00958126 /* MapboxMaps in Frameworks */,
+				C063119B2D0F4D1300958126 /* GoogleSignIn in Frameworks */,
+				C06311942D0F4B4100958126 /* FirebaseAuth in Frameworks */,
+				C06311962D0F4B4100958126 /* FirebaseFirestore in Frameworks */,
+				C06311A02D0F4E9F00958126 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,11 +230,18 @@
 			path = Trash;
 			sourceTree = "<group>";
 		};
+		C063119E2D0F4E9F00958126 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C0C808CB2ADD83420070E679 = {
 			isa = PBXGroup;
 			children = (
-				C0E48CF62AF82C4100E6DD27 /* ChatGPT.swift */,
 				C0C808D62ADD83420070E679 /* BeenThere */,
+				C063119E2D0F4E9F00958126 /* Frameworks */,
 				C0C808D52ADD83420070E679 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -297,17 +294,13 @@
 			);
 			name = BeenThere;
 			packageProductDependencies = (
-				C01B19112B266B9D00E42FE5 /* MapboxCoreNavigation */,
-				C01B19132B266B9D00E42FE5 /* MapboxNavigation */,
-				C01B19162B266C0900E42FE5 /* FirebaseAppCheck */,
-				C01B19182B266C0900E42FE5 /* FirebaseAuth */,
-				C01B191A2B266C0900E42FE5 /* FirebaseFirestore */,
-				C01B191C2B266C0900E42FE5 /* FirebaseStorage */,
-				C01B191F2B266C3000E42FE5 /* MapboxGeocoder */,
-				C01B19222B266C4100E42FE5 /* Kingfisher */,
-				C01B19252B266C4E00E42FE5 /* AlertToast */,
-				C0C3168E2B54C6EB00192C89 /* GoogleSignIn */,
-				C0C316902B54C6EB00192C89 /* GoogleSignInSwift */,
+				C06311932D0F4B4100958126 /* FirebaseAuth */,
+				C06311952D0F4B4100958126 /* FirebaseFirestore */,
+				C06311982D0F4C2A00958126 /* MapboxMaps */,
+				C063119A2D0F4D1300958126 /* GoogleSignIn */,
+				C063119C2D0F4D1300958126 /* GoogleSignInSwift */,
+				C063119F2D0F4E9F00958126 /* FirebaseStorage */,
+				C06311A22D0F4F2500958126 /* AlertToast */,
 			);
 			productName = BeenThere;
 			productReference = C0C808D42ADD83420070E679 /* BeenThere.app */;
@@ -338,12 +331,10 @@
 			);
 			mainGroup = C0C808CB2ADD83420070E679;
 			packageReferences = (
-				C01B19102B266B9D00E42FE5 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
-				C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				C01B191E2B266C3000E42FE5 /* XCRemoteSwiftPackageReference "MapboxGeocoder" */,
-				C01B19212B266C4100E42FE5 /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				C01B19242B266C4E00E42FE5 /* XCRemoteSwiftPackageReference "AlertToast" */,
 				C0C3168D2B54C6EB00192C89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				C06311922D0F4B4100958126 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C06311972D0F4C2A00958126 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				C06311A12D0F4F2500958126 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = C0C808D52ADD83420070E679 /* Products */;
 			projectDirPath = "";
@@ -376,7 +367,6 @@
 				C0C808DA2ADD83420070E679 /* ContentView.swift in Sources */,
 				C09C69932AE88405008A3148 /* FriendMapViewModel.swift in Sources */,
 				C0FAD0EF2B2A7B84000BA998 /* SlidyView.swift in Sources */,
-				C0E48CF72AF82C4100E6DD27 /* ChatGPT.swift in Sources */,
 				C0EAC0BD2B1507140003B44E /* CreatePostView.swift in Sources */,
 				C0F46EEB2AF9BD2700C2776A /* MainMapView.swift in Sources */,
 				C04E072C2B02BA2500340D58 /* EditProfileViewModel.swift in Sources */,
@@ -639,39 +629,23 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C01B19102B266B9D00E42FE5 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.17.0;
-			};
-		};
-		C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		C06311922D0F4B4100958126 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 10.19.0;
+				minimumVersion = 11.6.0;
 			};
 		};
-		C01B191E2B266C3000E42FE5 /* XCRemoteSwiftPackageReference "MapboxGeocoder" */ = {
+		C06311972D0F4C2A00958126 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mapbox/MapboxGeocoder.swift";
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.1;
+				branch = main;
+				kind = branch;
 			};
 		};
-		C01B19212B266C4100E42FE5 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.10.1;
-			};
-		};
-		C01B19242B266C4E00E42FE5 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+		C06311A12D0F4F2500958126 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/elai950/AlertToast";
 			requirement = {
@@ -690,60 +664,40 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C01B19112B266B9D00E42FE5 /* MapboxCoreNavigation */ = {
+		C06311932D0F4B4100958126 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C01B19102B266B9D00E42FE5 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
-			productName = MapboxCoreNavigation;
-		};
-		C01B19132B266B9D00E42FE5 /* MapboxNavigation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B19102B266B9D00E42FE5 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
-			productName = MapboxNavigation;
-		};
-		C01B19162B266C0900E42FE5 /* FirebaseAppCheck */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAppCheck;
-		};
-		C01B19182B266C0900E42FE5 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = C06311922D0F4B4100958126 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		C01B191A2B266C0900E42FE5 /* FirebaseFirestore */ = {
+		C06311952D0F4B4100958126 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = C06311922D0F4B4100958126 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		C01B191C2B266C0900E42FE5 /* FirebaseStorage */ = {
+		C06311982D0F4C2A00958126 /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C01B19152B266C0900E42FE5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
+			package = C06311972D0F4C2A00958126 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
 		};
-		C01B191F2B266C3000E42FE5 /* MapboxGeocoder */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B191E2B266C3000E42FE5 /* XCRemoteSwiftPackageReference "MapboxGeocoder" */;
-			productName = MapboxGeocoder;
-		};
-		C01B19222B266C4100E42FE5 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B19212B266C4100E42FE5 /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		C01B19252B266C4E00E42FE5 /* AlertToast */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C01B19242B266C4E00E42FE5 /* XCRemoteSwiftPackageReference "AlertToast" */;
-			productName = AlertToast;
-		};
-		C0C3168E2B54C6EB00192C89 /* GoogleSignIn */ = {
+		C063119A2D0F4D1300958126 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C0C3168D2B54C6EB00192C89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
 		};
-		C0C316902B54C6EB00192C89 /* GoogleSignInSwift */ = {
+		C063119C2D0F4D1300958126 /* GoogleSignInSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C0C3168D2B54C6EB00192C89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		C063119F2D0F4E9F00958126 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C06311922D0F4B4100958126 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		C06311A22D0F4F2500958126 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C06311A12D0F4F2500958126 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

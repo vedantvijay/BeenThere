@@ -80,8 +80,7 @@ struct SignInApple: View {
             case .success(let authResults):
                 if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
                     let credential = OAuthProvider.credential(withProviderID: "apple.com",
-                                                              idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
-                                                              rawNonce: nil)
+                                                              idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!, accessToken: nil)
                     
                     Auth.auth().signIn(with: credential) { (authResult, error) in
                         if let error = error {
@@ -109,8 +108,8 @@ struct SignInApple: View {
             if let document = document, !document.exists {
                 let data: [String: Any] = [
                     "uid": Auth.auth().currentUser?.uid ?? "",
-                    "firstName": appleIDCredential.fullName?.givenName?.description as? String ?? "",
-                    "lastName": appleIDCredential.fullName?.familyName?.description as? String ?? ""
+                    "firstName": appleIDCredential.fullName?.givenName ?? "",
+                    "lastName": appleIDCredential.fullName?.familyName ?? ""
                 ]
                 userDocumentRef.setData(data) { error in
                     if let error = error {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAuth
 
 struct CreateUsernameView: View {
     @Environment(\.dismiss) var dismiss

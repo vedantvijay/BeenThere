@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Kingfisher
+//import Kingfisher
 
 struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
@@ -19,24 +19,24 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             VStack {
-                if let imageUrl = viewModel.profileImageUrl {
-                    KFImage(imageUrl)
-                        .resizable()
-                        .placeholder {
-                            ProgressView()
-                        }
-                        .scaledToFill()
-                        .frame(width: 150, height: 150)
-                        .clipShape(Circle())
-                        .shadow(radius: 10)
-                } else {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 150, height: 150)
-                        .clipShape(Circle())
-                        .shadow(radius: 10)
-                }
+//                if let imageUrl = viewModel.profileImageUrl {
+//                    KFImage(imageUrl)
+//                        .resizable()
+//                        .placeholder {
+//                            ProgressView()
+//                        }
+//                        .scaledToFill()
+//                        .frame(width: 150, height: 150)
+//                        .clipShape(Circle())
+//                        .shadow(radius: 10)
+//                } else {
+//                    Image(systemName: "person.crop.circle")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .frame(width: 150, height: 150)
+//                        .clipShape(Circle())
+//                        .shadow(radius: 10)
+//                }
                 VStack(spacing: 10) {
                     Text("@\(viewModel.username)")
                         .font(.title2)

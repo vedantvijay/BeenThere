@@ -1,4 +1,6 @@
 import Firebase
+import FirebaseCore
+import FirebaseAuth
 import Foundation
 import GoogleSignIn
 import GoogleSignInSwift

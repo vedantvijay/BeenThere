@@ -76,15 +76,26 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 print("LOG: Personal locations updated")
                 self?.addSquaresToMap(locations: newLocations)
                 self?.adjustMapViewToFitSquares()
-//                self?.mapSelection = .personal
             }
         case .global:
             friendLocations = []
             guard let globalLocations = accountViewModel?.userLocations else { return }
-//            locations = globalLocations
             addSquaresToMap(locations: globalLocations)
             print("LOG: Global locations updated")
             centerMapOnLocation(location: locationManager.location ?? CLLocation(latitude: 50, longitude: 50))
+        case .friends:
+            // Gather all friends' locations and show them
+            friendLocations = []
+            guard let accountViewModel = accountViewModel else { return }
+            
+            friendLocations = gatherAllFriendsLocations(from: accountViewModel.friends)
+            if !friendLocations.isEmpty {
+                addSquaresToMap(locations: friendLocations)
+                adjustMapViewToFitSquares()
+                print("LOG: Friends' locations updated")
+            } else {
+                print("No friends' locations found")
+            }
         case .friend(let friendID):
             fetchFriendLocations(id: friendID)
             addSquaresToMap(locations: friendLocations)
@@ -92,7 +103,24 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             print("adjusted")
         }
     }
-    
+
+    func gatherAllFriendsLocations(from friends: [[String: Any]]) -> [Location] {
+        var allFriendLocations: [Location] = []
+        for friend in friends {
+            if let friendLocationsData = friend["locations"] as? [[String: Any]] {
+                for dict in friendLocationsData {
+                    if let lowLatitude = dict["lowLatitude"] as? Double,
+                       let highLatitude = dict["highLatitude"] as? Double,
+                       let lowLongitude = dict["lowLongitude"] as? Double,
+                       let highLongitude = dict["highLongitude"] as? Double {
+                        let location = Location(lowLatitude: lowLatitude, highLatitude: highLatitude, lowLongitude: lowLongitude, highLongitude: highLongitude)
+                        allFriendLocations.append(location)
+                    }
+                }
+            }
+        }
+        return allFriendLocations
+    }
     func fetchFriendLocations(id: String) {
         guard let accountViewModel = accountViewModel else { return }
         print("UID: \(id)")
@@ -122,7 +150,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func configureMapView(with frame: CGRect, styleURI: StyleURI) {
         let mapInitOptions = MapInitOptions(styleURI: styleURI)
         mapView?.mapboxMap.onEvery(event: .cameraChanged) { [weak self] _ in
-            guard let cameraState = self?.mapView?.cameraState else { return }
+            guard let cameraState = self?.mapView?.mapboxMap.cameraState else { return }
             self?.lastCameraCenter = cameraState.center
             self?.lastCameraZoom = cameraState.zoom
             self?.lastCameraPitch = cameraState.pitch
@@ -206,33 +234,35 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     func adjustMapViewToFitSquares(duration: Double = 0.5) {
         guard let mapView = mapView else { return }
 
-        if mapSelection == .personal {
-            guard let boundingBox = self.boundingBox(for: self.locations) else { return }
-            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
-            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-            mapView.camera.fly(to: cameraOptions, duration: duration)
-            
-            if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
-                self.lastCameraCenter = cameraOptions.center
-                self.lastCameraZoom = cameraOptions.zoom
-                self.lastCameraPitch = cameraOptions.pitch
-            }
-        } else {
-            guard let boundingBox = self.boundingBox(for: self.friendLocations) else { return }
-            let coordinateBounds = CoordinateBounds(southwest: boundingBox.southWest, northeast: boundingBox.northEast)
-            let cameraOptions = mapView.mapboxMap.camera(for: coordinateBounds, padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), bearing: .zero, pitch: .zero)
-            mapView.camera.fly(to: cameraOptions, duration: duration)
-            
-            if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
-                self.lastCameraCenter = cameraOptions.center
-                self.lastCameraZoom = cameraOptions.zoom
-                self.lastCameraPitch = cameraOptions.pitch
-            }
-        }
-        
+        let locationsToUse = (mapSelection == .personal) ? self.locations : self.friendLocations
+        guard let boundingBox = self.boundingBox(for: locationsToUse) else { return }
 
+        // Create a Polygon that represents the bounding box
+        let coordinates = [
+            boundingBox.southWest,
+            CLLocationCoordinate2D(latitude: boundingBox.southWest.latitude, longitude: boundingBox.northEast.longitude),
+            boundingBox.northEast,
+            CLLocationCoordinate2D(latitude: boundingBox.northEast.latitude, longitude: boundingBox.southWest.longitude),
+            boundingBox.southWest
+        ]
         
+        let polygon = Polygon([coordinates])
+        let geometry = Geometry.polygon(polygon)
+
+        let cameraOptions = mapView.mapboxMap.camera(
+            for: geometry,
+            padding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50),
+            bearing: 0,
+            pitch: 0
+        )
         
+        mapView.camera.fly(to: cameraOptions, duration: duration)
+
+        if self.lastCameraCenter != CLLocationCoordinate2D(latitude: 0, longitude: 0) {
+            self.lastCameraCenter = cameraOptions.center
+            self.lastCameraZoom = cameraOptions.zoom
+            self.lastCameraPitch = cameraOptions.pitch
+        }
     }
 
     func addAnnotationAndCenterMap(at coordinate: CLLocationCoordinate2D) {
@@ -302,7 +332,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         
         let sourceId = "square-source"
         let layerId = "square-fill-layer"
-        var source = GeoJSONSource()
+        var source = GeoJSONSource(id: sourceId)
         let featureCollection = FeatureCollection(features: features)
 
         source.data = .featureCollection(FeatureCollection(features: features))
@@ -312,11 +342,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
                             try mapView.mapboxMap.style.updateGeoJSONSource(withId: sourceId, geoJSON: .featureCollection(featureCollection))
                         } else {
-                            var source = GeoJSONSource()
+                            var source = GeoJSONSource(id: sourceId)
                             source.data = .featureCollection(featureCollection)
-                            try mapView.mapboxMap.style.addSource(source, id: sourceId)
+                            try mapView.mapboxMap.style.addSource(source)
                         }
-                var fillLayer = FillLayer(id: layerId)
+                var fillLayer = FillLayer(id: layerId, source: sourceId)
                 fillLayer.source = sourceId
 
                 let fillColorExpression = Exp(.interpolate) {
@@ -449,11 +479,11 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         let gridlines = generateGridlines()
         let features = gridlines.map { Feature(geometry: .lineString($0)) }
 
-        var source = GeoJSONSource()
+        var source = GeoJSONSource(id: "gridline-source")
         source.data = .featureCollection(FeatureCollection(features: features))
 
         let addLayer = {
-            var lineLayer = LineLayer(id: "gridline-layer")
+            var lineLayer = LineLayer(id: "gridline-layer", source: "gridline-source")
             lineLayer.source = "gridline-source"
             lineLayer.lineColor = .constant(StyleColor(self.isDarkModeEnabled ? .white : .black))
             lineLayer.lineWidth = .constant(1)
@@ -483,7 +513,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 
         if mapView.mapboxMap.style.isLoaded {
             do {
-                try mapView.mapboxMap.style.addSource(source, id: "gridline-source")
+                try mapView.mapboxMap.style.addSource(source)
                 addLayer()
             } catch {
                 print("Error adding gridlines source to the map: \(error)")
@@ -491,7 +521,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         } else {
             mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
                 do {
-                    try mapView.mapboxMap.style.addSource(source, id: "gridline-source")
+                    try mapView.mapboxMap.style.addSource(source)
                     addLayer()
                 } catch {
                     print("Error adding gridlines source to the map: \(error)")

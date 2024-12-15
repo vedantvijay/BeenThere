@@ -1,10 +1,7 @@
 import SwiftUI
 import CoreLocation
 import FirebaseAuth
-import Kingfisher
-import MapboxCoreNavigation
-import MapboxNavigation
-import MapboxDirections
+//import Kingfisher
 
 struct ContentView: View {
     @Environment(\.dismiss) var dismiss
@@ -17,9 +14,9 @@ struct ContentView: View {
     @StateObject var sharedMapViewModel = SharedMapViewModel(accountViewModel: AccountViewModel.sharedShared)
     @StateObject var mainMapViewModel = MainMapViewModel(accountViewModel: AccountViewModel.sharedMain)
     @StateObject private var locationManagerDelegate = LocationManagerDelegate()
-    @StateObject var navigationManager = NavigationManager()
+//    @StateObject var navigationManager = NavigationManager()
     @State private var isNavigationActive = false
-    @State private var activeRoute: Route?
+//    @State private var activeRoute: Route?
     @State private var isKeyboardVisible = false
     @Environment(\.colorScheme) var colorScheme
     @State private var showTestDialog = false
@@ -98,6 +95,7 @@ struct ContentView: View {
                                     Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
                                         Text("Personal").tag(MapSelection.personal)
                                         Text("Global").tag(MapSelection.global)
+                                        Text("Friends").tag(MapSelection.friends)
                                         ForEach(accountViewModel.friendList) { friend in
                                             if friend.firstName != "" {
                                                 Text(friend.firstName + " " + friend.lastName)
@@ -114,6 +112,7 @@ struct ContentView: View {
                                     Picker("Map Selection", selection: $mainMapViewModel.mapSelection) {
                                         Text("Personal").tag(MapSelection.personal)
                                         Text("Global").tag(MapSelection.global)
+                                        Text("Friends").tag(MapSelection.friends)
                                         ForEach(accountViewModel.friendList) { friend in
                                             if friend.firstName != "" {
                                                 Text(friend.firstName + " " + friend.lastName)

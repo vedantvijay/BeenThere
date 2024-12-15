@@ -36,7 +36,7 @@ class FriendMapViewModel: TemplateMapViewModel {
         
         let sourceId = "square-source"
         let layerId = "square-fill-layer"
-        var source = GeoJSONSource()
+        var source = GeoJSONSource(id: sourceId)
         let featureCollection = FeatureCollection(features: features)
 
         source.data = .featureCollection(FeatureCollection(features: features))
@@ -46,11 +46,11 @@ class FriendMapViewModel: TemplateMapViewModel {
                 if mapView.mapboxMap.style.sourceExists(withId: sourceId) {
                             try mapView.mapboxMap.style.updateGeoJSONSource(withId: sourceId, geoJSON: .featureCollection(featureCollection))
                         } else {
-                            var source = GeoJSONSource()
+                            var source = GeoJSONSource(id: sourceId)
                             source.data = .featureCollection(featureCollection)
-                            try mapView.mapboxMap.style.addSource(source, id: sourceId)
+                            try mapView.mapboxMap.style.addSource(source)
                         }
-                var fillLayer = FillLayer(id: layerId)
+                var fillLayer = FillLayer(id: layerId, source: sourceId)
                 fillLayer.source = sourceId
 
                 let fillColorExpression = Exp(.interpolate) {

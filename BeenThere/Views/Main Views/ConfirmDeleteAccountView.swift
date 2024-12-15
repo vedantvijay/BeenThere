@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAuth
 import AuthenticationServices
 
 struct ConfirmDeleteAccountView: View {
@@ -47,7 +48,7 @@ struct ConfirmDeleteAccountView: View {
                             if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
                                 let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                                           idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
-                                                                          rawNonce: nil)
+                                                                          accessToken: nil)
                                 
                                 Auth.auth().signIn(with: credential) { (authResult, error) in
                                     if let error = error {
@@ -73,7 +74,7 @@ struct ConfirmDeleteAccountView: View {
                             if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
                                 let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                                           idToken: String(data: appleIDCredential.identityToken!, encoding: .utf8)!,
-                                                                          rawNonce: nil)
+                                                                          accessToken: nil)
                                 
                                 Auth.auth().signIn(with: credential) { (authResult, error) in
                                     if let error = error {

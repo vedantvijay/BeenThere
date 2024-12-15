@@ -24,5 +24,6 @@ enum Tab {
 enum MapSelection: Hashable {
     case personal
     case global
+    case friends
     case friend(String) // Using friend's UID as unique identifier
 }
