@@ -205,6 +205,7 @@
 				C09C698C2AE88382008A3148 /* FriendView.swift */,
 				C0F46EE82AF954B900C2776A /* FeedView.swift */,
 				C0EAC0BC2B1507140003B44E /* CreatePostView.swift */,
+				C0D2A9072AE585CB006326C1 /* SettingsView.swift */,
 			);
 			path = "Main Views";
 			sourceTree = "<group>";
@@ -217,7 +218,6 @@
 				C001517C2AF53211007DA96F /* ChangeUsernameView.swift */,
 				C085316C2AF1E6F900EAA434 /* SharedMapView.swift */,
 				C03126962B213146004CAE0B /* SearchBar.swift */,
-				C0D2A9072AE585CB006326C1 /* SettingsView.swift */,
 				C01B08512B2CDA300097D828 /* SettingsItemView.swift */,
 			);
 			path = Elements;
@@ -534,7 +534,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -554,7 +554,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -573,7 +573,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeenThere/BeenThere.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "BeenThere/Resources/Preview\\ Content";
 				DEVELOPMENT_TEAM = 5SGZH379X4;
 				ENABLE_PREVIEWS = YES;
@@ -593,7 +593,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.jareddanieljones.BeenThere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

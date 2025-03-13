@@ -28,7 +28,7 @@ struct ContentView: View {
     @State private var isInteractingWithSlidyView = false
     @State private var showSpeedAlert = false
     @State private var showSplash: Bool = true
-    @State private var splashOpacity = 1.0
+    @State private var splashOpacity = 0.98
 
     var usesMetric: Bool {
         let locale = Locale.current
@@ -59,10 +59,10 @@ struct ContentView: View {
                                     .disabled(isInteractingWithSlidyView)
                                     .ignoresSafeArea()
                                     .environmentObject(mainMapViewModel)
-                                    .onTapGesture {
-                                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                                        mainMapViewModel.showTappedLocation = false
-                                    }
+//                                    .onTapGesture {
+//                                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                                        mainMapViewModel.showTappedLocation = false
+//                                    }
                                 HStack {
                                     if mainMapViewModel.mapSelection != .global {
                                         Button {
@@ -285,6 +285,7 @@ struct ContentView: View {
 
 class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableObject {
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    @Published var currentHeading: CLHeading? = nil
     private var locationManager: CLLocationManager?
 
     override init() {
@@ -306,7 +307,16 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
             self.locationManager?.requestAlwaysAuthorization()
         }
         self.authorizationStatus = status
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
+            locationManager?.startUpdatingHeading()
+        }
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        currentHeading = newHeading
+        print("Heading updated: \(newHeading.trueHeading)")
+    }
+
 }
 
 //#Preview {

@@ -57,6 +57,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.startUpdatingLocation()
+        locationManager.stopUpdatingHeading()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
@@ -164,7 +165,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.scaleBarView.isHidden = true
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        mapView?.location.options.puckType = .puck2D(.makeDefault(showBearing: true))
+        mapView?.gestures.options.doubleTapToZoomInEnabled = true
+
         
         let scaleExpression = Exp(.interpolate) {
             Exp(.linear)
@@ -186,8 +188,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         
         self.annotationManager = mapView?.annotations.makePointAnnotationManager()
         
-        mapView?.ornaments.logoView.alpha = 0.1
-        mapView?.ornaments.attributionButton.alpha = 0.1
+        mapView?.ornaments.logoView.alpha = 1
+        mapView?.ornaments.attributionButton.alpha = 1
 
         mapView?.ornaments.options.logo.position = .bottomLeft
         mapView?.ornaments.options.attributionButton.position = .bottomRight
