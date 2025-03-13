@@ -312,4 +312,3 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
 //#Preview {
 //    ContentView()
 //}
-
