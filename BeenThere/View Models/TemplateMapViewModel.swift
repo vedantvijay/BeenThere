@@ -57,7 +57,6 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.startUpdatingLocation()
-        locationManager.stopUpdatingHeading()
         locationManager.startMonitoringSignificantLocationChanges()
         locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
@@ -181,6 +180,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
 
         
         var puck = Puck2DConfiguration.makeDefault(showBearing: true)
+        mapView?.location.options.puckBearingEnabled = true
         puck.scale = .expression(scaleExpression)
         puck.pulsing = .default
         mapView?.location.options.puckType = .puck2D(puck)

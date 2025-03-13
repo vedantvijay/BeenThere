@@ -285,7 +285,6 @@ struct ContentView: View {
 
 class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableObject {
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
-    @Published var currentHeading: CLHeading? = nil
     private var locationManager: CLLocationManager?
 
     override init() {
@@ -311,12 +310,6 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate, ObservableOb
             locationManager?.startUpdatingHeading()
         }
     }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        currentHeading = newHeading
-        print("Heading updated: \(newHeading.trueHeading)")
-    }
-
 }
 
 //#Preview {
