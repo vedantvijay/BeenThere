@@ -65,9 +65,6 @@ struct BeenThereApp: App {
             ZStack {
                 switch appState {
                 case "authenticated":
-
-                           
-
                             ContentView()
                                 .statusBarHidden()
                         
@@ -86,7 +83,7 @@ struct BeenThereApp: App {
                 }
             }
             .preferredColorScheme(.dark)
-            .onAppear {
+            .task {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     determineUIState()
                 }

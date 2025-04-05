@@ -220,7 +220,7 @@ struct ContentView: View {
             .onChange(of: mainMapViewModel.locations) {
                 mainMapViewModel.mapSelection = .personal
             }
-            .onAppear {
+            .task {
                 if colorScheme == .light {
                     print("LOG: light mode")
                     mainMapViewModel.isDarkModeEnabled = false
@@ -245,7 +245,7 @@ struct ContentView: View {
             if showSplash {
                 SplashView()
                     .opacity(splashOpacity)
-                    .onAppear {
+                    .task {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                             mainMapViewModel.splashDefault()
                         }

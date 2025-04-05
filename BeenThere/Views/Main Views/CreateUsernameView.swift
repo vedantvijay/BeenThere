@@ -50,7 +50,7 @@ struct CreateUsernameView: View {
     var body: some View {
         if showSplash {
             SplashView()
-                .onAppear {
+                .task {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         withAnimation {
                             showSplash = false

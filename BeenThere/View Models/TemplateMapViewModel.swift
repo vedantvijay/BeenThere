@@ -46,6 +46,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
     var currentSquares = Set<String>()
     var db = Firestore.firestore()
     var locationsListener: ListenerRegistration?
+    var spinTimer: Timer?
     
     var accountViewModel: AccountViewModel?
     var cancellable: AnyCancellable?
@@ -196,6 +197,10 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 20)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 20)
         mapView?.ornaments.scaleBarView.isHidden = true
+        
+        if spinTimer == nil && !areSquaresAdded() {
+            startGlobeSpin()
+        }
     }
 
     func centerMapOnLocation(location: CLLocation) {
@@ -310,6 +315,30 @@ class TemplateMapViewModel: NSObject, ObservableObject {
             self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot6czi600kb01qq4arcfy2g")
         } else {
             self.mapView?.mapboxMap.style.uri = StyleURI(rawValue: "mapbox://styles/jaredjones/clot66ah300l501pe2lmbg11p")
+        }
+    }
+    
+    func startGlobeSpin() {
+        spinTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] timer in
+            guard let self = self, let mapView = self.mapView else { return }
+            if self.areSquaresAdded() {
+                timer.invalidate()
+                self.spinTimer = nil
+                self.adjustMapViewToFitSquares(duration: 1.5)
+            } else {
+                var newBearing = mapView.cameraState.bearing + 0.5
+                if newBearing >= 360 {
+                    newBearing -= 360
+                }
+                let currentCamera = mapView.cameraState
+                let cameraOptions = CameraOptions(
+                    center: currentCamera.center,
+                    zoom: currentCamera.zoom,
+                    bearing: newBearing,
+                    pitch: currentCamera.pitch
+                )
+                mapView.camera.ease(to: cameraOptions, duration: 0.05)
+            }
         }
     }
     
