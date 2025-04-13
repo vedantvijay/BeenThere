@@ -1,4 +1,4 @@
-# Welcome To [Been There](https://apps.apple.com/us/app/incremental-calisthenics/id6448679255)!
+# Welcome To [Been There](https://apps.apple.com/us/app/been-there-location-plotter/id6469519863)!
 
 ## Setup
 1. Add your own GoogleService-Info.plist file
