@@ -1,3 +1,28 @@
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
 *.xcuserstate
-ChatGPT.swift
-.DS_Store
+*.xcworkspace/xcuserdata/
+project.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# SwiftPM
+.swiftpm/xcode/
+.swiftpm/config.json
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+
+# Other
+*.DS_Store
+*.env
