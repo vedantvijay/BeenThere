@@ -166,6 +166,13 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         mapView?.isOpaque = false
         mapView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView?.gestures.options.doubleTapToZoomInEnabled = true
+        // Restrict how far out the user can zoom
+        let cameraBounds = CameraBoundsOptions(
+            bounds: nil,
+            maxZoom: nil, minZoom: 1.0,
+            maxPitch: nil, minPitch: nil
+        )
+        try? mapView?.mapboxMap.setCameraBounds(with: cameraBounds)
 
         
         let scaleExpression = Exp(.interpolate) {
@@ -242,7 +249,22 @@ class TemplateMapViewModel: NSObject, ObservableObject {
         guard let mapView = mapView else { return }
 
         let locationsToUse = (mapSelection == .personal) ? self.locations : self.friendLocations
-        guard let boundingBox = self.boundingBox(for: locationsToUse) else { return }
+        guard let boundingBox = self.boundingBox(for: locationsToUse) else {
+            // No saved squares: fall back to user's location or spin globe until data arrives
+            if let userLocation = locationManager.location {
+                // Center on current user location at a default zoom level
+                centerMapOnLocation(location: userLocation)
+                // Stop any globe spinning since we have a location
+                spinTimer?.invalidate()
+                spinTimer = nil
+            } else {
+                // If no user location yet, start spinning globe
+                if spinTimer == nil {
+                    startGlobeSpin()
+                }
+            }
+            return
+        }
 
         // Create a Polygon that represents the bounding box
         let coordinates = [
@@ -333,7 +355,7 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 let currentCamera = mapView.cameraState
                 let cameraOptions = CameraOptions(
                     center: currentCamera.center,
-                    zoom: currentCamera.zoom,
+                    zoom: 2,
                     bearing: newBearing,
                     pitch: currentCamera.pitch
                 )
@@ -388,7 +410,8 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                     1
                     UIColor.green
                     6
-                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
+                    UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1)
+//                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
                 }
                 fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
@@ -417,12 +440,14 @@ class TemplateMapViewModel: NSObject, ObservableObject {
                 print("Failed to add or update squares on the map: \(error)")
             }
         }
-
-        if mapView.mapboxMap.style.isLoaded {
+        
+        if mapView.mapboxMap.style.isStyleLoaded {
             setupLayers()
+            startGlobeSpin()
         } else {
             mapView.mapboxMap.onNext(event: .styleLoaded) { _ in
                 setupLayers()
+                self.startGlobeSpin()
             }
         }
     }

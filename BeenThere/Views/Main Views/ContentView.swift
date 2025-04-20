@@ -199,6 +199,7 @@ struct ContentView: View {
                     message: Text("Location tracking will be disabled until you are travelling less than 100 mph.")
                 )
             }
+            // maybe not needed
             .onChange(of: accountViewModel.locations.count) {
                 mainMapViewModel.locations = accountViewModel.locations
                 mainMapViewModel.addSquaresToMap(locations: accountViewModel.locations)
@@ -241,25 +242,8 @@ struct ContentView: View {
                 notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
                     isKeyboardVisible = false
                 }
+                mainMapViewModel.startGlobeSpin()
             }
-            if showSplash {
-                SplashView()
-                    .opacity(splashOpacity)
-                    .task {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            mainMapViewModel.splashDefault()
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                            withAnimation {
-                                splashOpacity = 0
-                                showSplash = false
-                            }
-                            mainMapViewModel.adjustMapViewToFitSquares(duration: 1.5)
-                        }
-                    }
-            }
-            
-         
         }
     }
     

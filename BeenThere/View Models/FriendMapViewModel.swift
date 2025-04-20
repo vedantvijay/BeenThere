@@ -61,7 +61,8 @@ class FriendMapViewModel: TemplateMapViewModel {
                     1
                     UIColor.green
                     6
-                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
+                    UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1)
+//                    self!.isDarkModeEnabled ? UIColor(red: 0/255, green: 100/255, blue: 0/255, alpha: 1) : UIColor(red: 144/255, green: 238/255, blue: 144/255, alpha: 1)
                 }
                 fillLayer.fillColor = .expression(fillColorExpression)
                 fillLayer.fillOpacity = .constant(1)
@@ -132,5 +133,11 @@ class FriendMapViewModel: TemplateMapViewModel {
         mapView?.ornaments.options.logo.margins = CGPoint(x: 10, y: 10)
         mapView?.ornaments.options.attributionButton.margins = CGPoint(x: 0, y: 10)
         mapView?.ornaments.scaleBarView.isHidden = true
+        let cameraBounds = CameraBoundsOptions(
+            bounds: nil,
+            maxZoom: nil, minZoom: 1.0,
+            maxPitch: nil, minPitch: nil
+        )
+        try? mapView?.mapboxMap.setCameraBounds(with: cameraBounds)
     }
 }

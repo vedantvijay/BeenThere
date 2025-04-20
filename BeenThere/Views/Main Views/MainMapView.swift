@@ -34,8 +34,8 @@ struct MainMapView: UIViewRepresentable {
         
         // Defer other updates until the style is loaded.
         uiView.mapboxMap.onNext(event: .styleLoaded) { _ in
-            viewModel.addGridlinesToMap()
-            viewModel.checkAndAddSquaresIfNeeded()
+//            viewModel.addGridlinesToMap()
+//            viewModel.checkAndAddSquaresIfNeeded()
         }
     }
 }
